@@ -28,115 +28,52 @@
             line-height: 1.5;
         }
         
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 20px; 
-        }
-        
-        @media (min-width: 768px) {
-            .container { grid-template-columns: 1fr 1fr; }
-        }
-
-        .panel { 
-            background: var(--card-bg); 
-            padding: 24px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
-        }
-        
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 768px) { .container { grid-template-columns: 1fr 1fr; } }
+        .panel { background: var(--card-bg); padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .full-width { grid-column: 1 / -1; }
         
         h1 { font-size: 1.5rem; color: var(--text-main); margin-top: 0; margin-bottom: 24px; text-align: center; }
         h2 { font-size: 1.25rem; color: var(--text-main); margin-top: 0; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
         h3 { font-size: 1.05rem; color: var(--text-muted); margin-top: 24px; margin-bottom: 8px; }
 
-        /* Category Headers */
         .category-header { font-size: 1.2rem; color: var(--text-main); margin: 24px 0 12px 0; padding-bottom: 6px; border-bottom: 2px solid var(--border); font-weight: bold; }
         .subcategory-header { font-size: 1.05rem; color: var(--primary); margin: 16px 0 12px 0; font-weight: 600; padding-left: 8px; border-left: 4px solid var(--primary); }
 
-        /* Product Grid */
-        .product-grid-inner { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 16px; 
-            margin-bottom: 24px;
-        }
-        
-        .product-card { 
-            border: 2px solid var(--border); 
-            border-radius: 12px; 
-            padding: 16px; 
-            text-align: center; 
-            cursor: pointer; 
-            transition: all 0.2s ease;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
+        .product-grid-inner { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .product-card { border: 2px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s ease; background: #fff; display: flex; flex-direction: column; align-items: center; }
         .product-card:hover { border-color: #93c5fd; transform: translateY(-2px); }
         .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 12px; background: #fafafa;}
         .product-card.selected { border-color: var(--primary); background-color: #eff6ff; }
         .product-card .price { font-weight: 600; color: var(--primary); margin-top: auto; }
         .product-card .cost-badge { font-size: 0.8rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
         
-        /* Added Items List (Samples & Gifts) */
+        .btn-crawl { background-color: #03c75a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-top: 8px; width: 100%; transition: background-color 0.2s; }
+        .btn-crawl:hover { background-color: #02a348; }
+        .btn-crawl:disabled { background-color: #a7f3d0; cursor: not-allowed; }
+
         .added-item-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
         .added-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; }
         .added-item-del { color: var(--danger); cursor: pointer; font-weight: bold; padding: 4px; }
         
-        /* Package Visualizer */
-        .package-visualizer {
-            display: flex; align-items: center; gap: 12px; padding: 16px; background-color: #eff6ff; 
-            border-radius: 8px; border: 1px dashed var(--primary); overflow-x: auto; margin-bottom: 16px;
-        }
-        .pkg-item { 
-            display: flex; flex-direction: column; align-items: center; text-align: center; width: 100px; flex-shrink: 0; 
-        }
-        .pkg-item img { 
-            width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid var(--primary); 
-            margin-bottom: 6px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .pkg-item span { 
-            font-size: 0.75rem; line-height: 1.2; word-break: keep-all; color: #374151; font-weight: 600; 
-        }
+        .package-visualizer { display: flex; align-items: center; gap: 12px; padding: 16px; background-color: #eff6ff; border-radius: 8px; border: 1px dashed var(--primary); overflow-x: auto; margin-bottom: 16px; }
+        .pkg-item { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100px; flex-shrink: 0; }
+        .pkg-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 6px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .pkg-item span { font-size: 0.75rem; line-height: 1.2; word-break: keep-all; color: #374151; font-weight: 600; }
         .pkg-plus { font-weight: bold; color: #9ca3af; font-size: 1.5rem; flex-shrink: 0; }
 
-        /* Tables & Inputs */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
         th, td { border: 1px solid var(--border); padding: 12px; }
         th { background-color: #f9fafb; text-align: center; font-weight: 600; }
         td { text-align: right; }
         td:first-child { text-align: left; }
         
-        input[type="number"], input[type="text"] { 
-            width: 100px; 
-            padding: 6px 8px; 
-            text-align: right; 
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        
-        input[type="number"]:focus, input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
+        input[type="number"], input[type="text"] { width: 100px; padding: 6px 8px; text-align: right; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
         select { padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border); }
         button { background-color: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-        button:hover { background-color: var(--primary-hover); }
-
-        /* Result Table specific styles */
+        
         #resultTable th, #resultTable td { text-align: right; padding: 12px 8px; }
         #resultTable td:first-child { text-align: center; font-weight: 600; }
-        
         .result-highlight { font-weight: bold; color: var(--danger); font-size: 1.05em; }
         .success-highlight { font-weight: bold; color: var(--success); font-size: 1.05em; }
         .bep-row { background-color: #fef2f2; }
@@ -144,35 +81,10 @@
         
         .summary-text { text-align: right; margin-top: 12px; color: var(--text-muted); font-size: 0.9rem; }
         
-        /* Status Bar */
-        #db-status {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+        #db-status { padding: 10px; margin-bottom: 20px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.9rem; }
         .status-loading { background-color: #fef3c7; color: #b45309; }
         .status-success { background-color: #d1fae5; color: #065f46; }
         .status-mock { background-color: #e0e7ff; color: #3730a3; }
-        
-        /* 네이버 크롤링 버튼 스타일 */
-        .btn-crawl {
-            background-color: #03c75a; 
-            color: white; 
-            border: none; 
-            padding: 6px 10px; 
-            border-radius: 6px; 
-            font-size: 0.8rem; 
-            font-weight: bold;
-            cursor: pointer; 
-            margin-top: 8px;
-            width: 100%;
-            transition: background-color 0.2s;
-        }
-        .btn-crawl:hover { background-color: #02a348; }
-        .btn-crawl:disabled { background-color: #a7f3d0; cursor: not-allowed; }
         
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
@@ -182,97 +94,42 @@
 <body>
 
 <h1>공동구매 시뮬레이터</h1>
-
-<div id="db-status" class="status-loading">데이터베이스 연결 및 데이터를 불러오는 중입니다...</div>
+<div id="db-status" class="status-loading">데이터베이스 연결 및 가격 데이터 연동 중입니다...</div>
 
 <div class="container">
-    <!-- 제품 선택 패널 -->
     <div class="panel full-width">
         <h2>1. 제품 선택 (다중 선택 가능)</h2>
-        <div id="product-list" style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
-            <!-- Products will be injected here -->
-        </div>
+        <div id="product-list" style="max-height: 600px; overflow-y: auto; padding-right: 8px;"></div>
     </div>
 
-    <!-- 변수 입력 패널 (변동비) -->
     <div class="panel">
-        <h2>2. 시뮬레이션 설정 (목표 및 비율)</h2>
+        <h2>2. 시뮬레이션 설정</h2>
         <table>
+            <tr><td>목표 판매 수량 (개)</td><td><input type="text" inputmode="numeric" id="targetQty" value="300" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><th colspan="2">변동비 비율 설정 (%)</th></tr>
+            <tr><td>제품공급가 비율 <span style="font-size:0.8em; color:var(--primary);">(자동계산)</span></td><td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()"> %</td></tr>
+            <tr><td>배송비 비율</td><td><input type="number" id="ratioShipping" value="7" step="1" oninput="calculate()"> %</td></tr>
+            <tr><td>플랫폼 수수료 비율</td><td><input type="number" id="ratioPlatform" value="5" step="0.1" oninput="calculate()"> %</td></tr>
+            <tr><td>카드 수수료 비율</td><td><input type="number" id="ratioCard" value="2" step="1" oninput="calculate()"> %</td></tr>
             <tr>
-                <td>목표 판매 수량 (개)</td>
-                <td><input type="text" inputmode="numeric" id="targetQty" value="300" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <th colspan="2">변동비 비율 설정 (%)</th>
-            </tr>
-            <tr>
-                <td>제품공급가 비율 <span style="font-size:0.8em; color:var(--primary);">(자동계산)</span></td>
-                <td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()"> %</td>
-            </tr>
-            <tr>
-                <td>배송비 비율</td>
-                <td><input type="number" id="ratioShipping" value="7" step="1" oninput="calculate()"> %</td>
-            </tr>
-            <tr>
-                <td>
-                    플랫폼 수수료 비율
-                    <div style="margin-top:6px; display:flex; gap:4px;">
-                        <select id="countrySelect" style="width:48%; font-size:0.8rem;" onchange="updatePlatformOptions()">
-                            <option value="KR">한국</option>
-                            <option value="US">미국</option>
-                            <option value="SEA">동남아</option>
-                            <option value="CUSTOM">직접입력</option>
-                        </select>
-                        <select id="platformSelect" style="width:48%; font-size:0.8rem;" onchange="updatePlatformFee()">
-                            <!-- Options -->
-                        </select>
-                    </div>
-                </td>
-                <td><input type="number" id="ratioPlatform" value="5" step="0.1" oninput="calculate()"> %</td>
-            </tr>
-            <tr>
-                <td>카드 수수료 비율</td>
-                <td><input type="number" id="ratioCard" value="2" step="1" oninput="calculate()"> %</td>
-            </tr>
-            <tr>
-                <td>
-                    공구 수수료율 설정
-                    <div style="margin-top:6px; font-size:0.85em; color:var(--text-muted);">
-                        <label><input type="radio" name="gongguType" value="percent" checked onchange="toggleGongguType()"> 수수료율만 적용</label><br>
-                        <label><input type="radio" name="gongguType" value="mixed" onchange="toggleGongguType()"> 계약금 + 수수료율</label>
-                    </div>
-                </td>
+                <td>공구 수수료율 설정</td>
                 <td>
                     <select id="ratioGonggu" style="width:80px; padding:4px;" onchange="calculate()">
                         <option value="25">25</option><option value="30">30</option>
                         <option value="35" selected>35</option><option value="40">40</option>
                         <option value="45">45</option><option value="50">50</option>
-                        <option value="55">55</option><option value="60">60</option>
                     </select> %
                 </td>
             </tr>
-            <tr id="gongguDownPaymentRow" style="display:none; background-color: #fdf2f8;">
-                <td style="padding-left: 20px;">↳ <strong>공구 계약금 (원)</strong></td>
-                <td><input type="text" inputmode="numeric" id="gongguDownPayment" value="0" oninput="formatInput(this); updateGongguDownPayment()"></td>
-            </tr>
-            <tr>
-                <td>인센티브 비율</td>
-                <td><input type="number" id="ratioIncentive" value="5" step="1" oninput="calculate()"> %</td>
-            </tr>
-            <tr>
-                <td>MCN 수수료 비율</td>
-                <td><input type="number" id="ratioReferral" value="5" step="1" oninput="calculate()"> %</td>
-            </tr>
+            <tr><td>인센티브 비율</td><td><input type="number" id="ratioIncentive" value="5" step="1" oninput="calculate()"> %</td></tr>
+            <tr><td>MCN 수수료 비율</td><td><input type="number" id="ratioReferral" value="5" step="1" oninput="calculate()"> %</td></tr>
         </table>
     </div>
 
-    <!-- 고정비 & 공통비 설정 패널 -->
     <div class="panel">
         <h2 style="margin-bottom: 0; border-bottom: none;">3. 고정비 / 4. 공통비 설정 (원)</h2>
-        
         <h3>▶ 3. 고정비 설정</h3>
 
-        <!-- 샘플 자동계산 위젯 (Add 방식) -->
         <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
             <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main);">🧪 샘플 추가 (고정비 연동)</h4>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -286,7 +143,6 @@
             </div>
         </div>
 
-        <!-- 사은품 자동계산 위젯 (Add 방식) -->
         <div style="background: #fdf2f8; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border);">
             <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main);">🎁 사은품 추가 (고정비 연동)</h4>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -301,88 +157,29 @@
         </div>
 
         <table style="margin-top: 0;">
-            <tr>
-                <th colspan="2">항목 및 설정값</th>
-            </tr>
             <tr style="background-color: #eef2ff;">
                 <td><strong>참여 인원 (명)</strong></td>
-                <td>
-                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
-                        <input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--primary);"> 명
-                    </div>
-                </td>
+                <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--primary);"> 명</td>
             </tr>
-            <tr>
-                <td>인건비 <span style="font-size:0.8em; color:var(--text-muted);">(인당 15만)</span></td>
-                <td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>여비교통비 <span style="font-size:0.8em; color:var(--text-muted);">(인당 5만)</span></td>
-                <td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>식대 <span style="font-size:0.8em; color:var(--text-muted);">(인당 3만)</span></td>
-                <td><input type="text" inputmode="numeric" id="fcFood" value="30,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>장소대여비</td>
-                <td><input type="text" inputmode="numeric" id="fcRent" value="200,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>소품비</td>
-                <td><input type="text" inputmode="numeric" id="fcProps" value="200,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>기타 프린터비 등</td>
-                <td><input type="text" inputmode="numeric" id="fcOther" value="30,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>공구 계약금 <span style="font-size:0.8em; color:var(--gift);">(자동연동)</span></td>
-                <td><input type="text" inputmode="numeric" id="fcGongguContract" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td>
-            </tr>
-            <tr>
-                <td>샘플비 <span style="font-size:0.8em; color:var(--success);">(자동연동)</span></td>
-                <td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td>
-            </tr>
-            <tr>
-                <td>사은품 <span style="font-size:0.8em; color:var(--gift);">(자동연동)</span></td>
-                <td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td>
-            </tr>
-            <tr>
-                <th style="text-align: left; background-color: #f3f4f6;">고정비 총계</th>
-                <th style="text-align: right; background-color: #f3f4f6;" id="totalFcDisplay">0 원</th>
-            </tr>
+            <tr><td>인건비</td><td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><td>여비교통비</td><td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><td>식대</td><td><input type="text" inputmode="numeric" id="fcFood" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><td>장소대여비</td><td><input type="text" inputmode="numeric" id="fcRent" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><td>소품비</td><td><input type="text" inputmode="numeric" id="fcProps" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><td>기타 프린터비 등</td><td><input type="text" inputmode="numeric" id="fcOther" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
+            <tr><td>샘플비 <span style="font-size:0.8em; color:var(--success);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td></tr>
+            <tr><td>사은품 <span style="font-size:0.8em; color:var(--gift);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td></tr>
+            <tr><th style="text-align: left; background-color: #f3f4f6;">고정비 총계</th><th style="text-align: right; background-color: #f3f4f6;" id="totalFcDisplay">0 원</th></tr>
         </table>
 
         <h3 style="margin-top: 32px;">▶ 4. 공통비 설정</h3>
         <table style="margin-top: 0;">
-            <tr>
-                <th colspan="2">기초 공통비 (원)</th>
-            </tr>
-            <tr>
-                <td>임원 인건비</td>
-                <td><input type="text" inputmode="numeric" id="ccExecutive" value="50,000,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>경영관리유닛</td>
-                <td><input type="text" inputmode="numeric" id="ccManagement" value="50,000,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
-            <tr>
-                <td>연구소</td>
-                <td><input type="text" inputmode="numeric" id="ccResearch" value="50,000,000" oninput="formatInput(this); calculate()"></td>
-            </tr>
+            <tr><td>임원/경영/연구소 총합</td><td><input type="text" inputmode="numeric" id="ccTotal" value="150,000,000" oninput="formatInput(this); calculate()"></td></tr>
             <tr style="background-color: #eef2ff;">
                 <td><strong>프로젝트 배부율 (%)</strong></td>
-                <td>
-                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
-                        <input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--primary);"> %
-                    </div>
-                </td>
+                <td><input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--primary);"> %</td>
             </tr>
-            <tr>
-                <th style="text-align: left; background-color: #f3f4f6;">적용 공통비 (배부액)</th>
-                <th style="text-align: right; background-color: #f3f4f6;" id="totalCcDisplay">0 원</th>
-            </tr>
+            <tr><th style="text-align: left; background-color: #f3f4f6;">적용 공통비 (배부액)</th><th style="text-align: right; background-color: #f3f4f6;" id="totalCcDisplay">0 원</th></tr>
         </table>
     </div>
 
@@ -395,43 +192,15 @@
 
         <table id="resultTable">
             <thead>
-                <tr>
-                    <th style="width: 16%;">구분</th>
-                    <th style="width: 14%;">매출액 (원)</th>
-                    <th style="width: 14%;">변동비 (원)</th>
-                    <th style="width: 14%;">공헌이익 (원)</th>
-                    <th style="width: 14%;">고정비 (원)</th>
-                    <th style="width: 14%;">적용 공통비 (원)</th>
-                    <th style="width: 14%;">영업이익 (원)</th>
-                </tr>
+                <tr><th style="width: 16%;">구분</th><th>매출액 (원)</th><th>변동비 (원)</th><th>공헌이익 (원)</th><th>고정비 (원)</th><th>적용 공통비</th><th>영업이익 (원)</th></tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>단위당 (1패키지 기준)</td>
-                    <td id="resUnitRev">0</td>
-                    <td id="resUnitVc">0</td>
-                    <td id="resUnitCm">0</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
+                <tr><td>단위당 (1패키지)</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
                 <tr class="bep-row">
-                    <td>손익분기점 (BEP)</td>
-                    <td id="resBepRev">0<br><span style="font-size:0.85em; color:var(--danger);">(0개)</span></td>
-                    <td id="resBepVc">0</td>
-                    <td id="resBepCm">0</td>
-                    <td id="resBepFc">0</td>
-                    <td id="resBepCc">0</td>
-                    <td class="result-highlight" id="resBepOp">0</td>
+                    <td>손익분기점 (BEP)</td><td id="resBepRev">0</td><td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td class="result-highlight" id="resBepOp">0</td>
                 </tr>
                 <tr class="target-row">
-                    <td>목표 달성 시</td>
-                    <td class="result-highlight" id="resTargetRev">0</td>
-                    <td id="resTargetVc">0</td>
-                    <td class="result-highlight" id="resTargetCm">0</td>
-                    <td id="resTargetFc">0</td>
-                    <td id="resTargetCc">0</td>
-                    <td class="success-highlight" id="resTargetOp">0</td>
+                    <td>목표 달성 시</td><td class="result-highlight" id="resTargetRev">0</td><td id="resTargetVc">0</td><td class="result-highlight" id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td class="success-highlight" id="resTargetOp">0</td>
                 </tr>
             </tbody>
         </table>
@@ -443,19 +212,16 @@
 </div>
 
 <script>
-    // Supabase Setup
     var SUPABASE_URL = 'https://rayhgqcpupwmwpymtkwg.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheWhncWNwdXB3bXdweW10a3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjc2MTEsImV4cCI6MjA4NDg0MzYxMX0.Ng4K86amltnarVwbQ8FVfw1rTJK03NTE5g3QDoLMFTc';
     var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     var productsData = [];
     var selectedProducts = [];
-    
-    // Arrays for added items
     var addedSamples = [];
     var addedGifts = [];
 
-    // Image Map
+    // 제품 이미지 맵핑 복구
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
         'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9icjMwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUxMDUsImV4cCI6MjA5NjgwNTEwNX0.utXjZK_UPv63dRtfqhBF5jnLrz3jSZ6LFdkwRN-U_WQ',
@@ -471,167 +237,60 @@
         'Core Impact': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/coreimpact.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9jb3JlaW1wYWN0LmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2NTIsImV4cCI6MjA5NjgwNTY1Mn0.-i_vLHYLF0vRVYlz-OQ-XmBt3Xi48gtOcsbwBBIfqco'
     };
 
-    var platformData = {
-        'KR': [
-            {name: '네이버 스마트스토어 (5%)', fee: 5},
-            {name: '틱톡 샵 KR (6%)', fee: 6},
-            {name: '유튜브 쇼핑 (6%)', fee: 6},
-            {name: '쿠팡 (11%)', fee: 11},
-            {name: '그립 (12%)', fee: 12}
-        ],
-        'US': [
-            {name: 'TikTok Shop US (6%)', fee: 6},
-            {name: 'YouTube Shopping (6%)', fee: 6},
-            {name: 'Amazon (15%)', fee: 15}
-        ],
-        'SEA': [
-            {name: 'TikTok Shop (6%)', fee: 6},
-            {name: 'Shopee (10%)', fee: 10},
-            {name: 'Lazada (10%)', fee: 10}
-        ],
-        'CUSTOM': [ {name: '직접입력', fee: 0} ]
-    };
+    var fallbackImg = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=300&q=80';
+    var formatNum = (num) => { if(!isFinite(num)) return '0'; return Math.round(num).toLocaleString('ko-KR'); };
+    function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
+    function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
 
-    // Helper functions
-    var formatNum = (num) => {
-        if(!isFinite(num)) return '0';
-        return Math.round(num).toLocaleString('ko-KR');
-    };
-
-    function formatInput(el) {
-        let val = el.value.replace(/[^0-9]/g, '');
-        el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR');
-    }
-
-    function getNum(id) {
-        let val = document.getElementById(id).value;
-        if(!val) return 0;
-        return Number(val.toString().replace(/,/g, '')) || 0;
-    }
-
-    // Load Data
     async function fetchProducts() {
         try {
-            const { data: products, error: prodErr } = await supabaseClient
-                .from('products')
-                .select('id, clean_name, main_category, sub_category, volume, color_option, qty')
-                .in('main_category', ['Skincare Product', 'Device Product', 'Haircare Product', 'Hair Care']) 
-                .limit(200); 
-
-            if (prodErr) throw prodErr;
-
+            const { data: products, error: prodErr } = await supabaseClient.from('products').select('id, clean_name, main_category, sub_category').limit(100);
             const productIds = products.map(p => p.id);
-
-            const { data: prices, error: priceErr } = await supabaseClient
-                .from('product_prices')
-                .select('*') // 소비자정가와 프로모션가를 모두 가져오기 위해 * 사용
-                .eq('currency', 'KRW')
-                .in('product_id', productIds);
-                
-            const { data: costs, error: costErr } = await supabaseClient
-                .from('product_costs')
-                .select('product_id, production_cost, currency')
-                .in('product_id', productIds);
+            const { data: prices } = await supabaseClient.from('product_prices').select('*').eq('currency', 'KRW').in('product_id', productIds);
+            const { data: costs } = await supabaseClient.from('product_costs').select('product_id, production_cost').in('product_id', productIds);
+            
+            // 새벽에 크롤링 봇이 수집해둔 최신 외부 가격 데이터 가져오기
+            const { data: extPrices } = await supabaseClient.from('external_product_prices').select('*');
 
             productsData = products.map(p => {
                 const priceObj = prices?.find(pr => pr.product_id === p.id);
-                const costObj = costs?.find(c => c.product_id === p.id && (c.currency === 'KRW' || !c.currency)) 
-                             || costs?.find(c => c.product_id === p.id);
+                const costObj = costs?.find(c => c.product_id === p.id);
+                const extPriceObj = extPrices?.find(ep => ep.product_id === p.id && ep.platform === 'Naver'); 
                 
-                let displayName = p.clean_name || '제품명 없음';
-                let options = [];
-                if (p.volume && p.volume.trim() !== '') options.push(p.volume.trim());
-                if (p.color_option && p.color_option.trim() !== '') options.push(p.color_option.trim());
-                if (p.qty && p.qty.trim() !== '') options.push(p.qty.trim());
-                if (options.length > 0) displayName += ` (${options.join(', ')})`;
-                
-                const fallbackImg = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=300&q=80';
-                
-                // 소비자정가(MSRP)와 프로모션가(Selling Price) 매핑
                 const msrp = priceObj?.b2c_msrp || 0;
-                const promoPrice = msrp * 0.7; // 프로모션가는 소비자정가의 70%로 고정
+                
+                // 크롤링된 가격이 있으면 그것을 쓰고, 없으면 정가의 70% 계산
+                const promoPrice = (extPriceObj && extPriceObj.scraped_price) ? extPriceObj.scraped_price : (msrp * 0.7);
+                const source = (extPriceObj && extPriceObj.scraped_price) ? 'Naver 자동' : '기본할인';
 
                 return {
-                    id: p.id,
-                    name: displayName, 
-                    cleanName: p.clean_name || '', 
-                    mainCategory: p.main_category || '', 
+                    id: p.id, name: p.clean_name || '제품', cleanName: p.clean_name || '', 
+                    mainCategory: p.main_category || '스킨케어', 
                     imageUrl: productImageMap[p.clean_name?.trim()] || fallbackImg,
-                    msrp: msrp, // 소비자정가
-                    price: promoPrice, // 프로모션가 (실제 공구 적용가)
-                    cost: costObj?.production_cost || 0 
+                    msrp: msrp, price: promoPrice, cost: costObj?.production_cost || 0, source: source
                 };
             });
 
-            // Filter out specific names
-            const excludedKeywords = ['스칼프 md', 'echrever', '크리스탈'];
-            productsData = productsData.filter(prod => {
-                const lowerName = prod.name.toLowerCase();
-                return !excludedKeywords.some(keyword => lowerName.includes(keyword));
-            });
-            
             document.getElementById('db-status').className = 'status-success';
-            document.getElementById('db-status').innerText = '데이터 로딩 성공!';
+            document.getElementById('db-status').innerText = 'DB 연동 완료 (자동 수집된 가격이 있으면 바로 반영됩니다!)';
             
         } catch (error) {
-            console.error("데이터 로드 실패:", error.message);
-            document.getElementById('db-status').className = 'status-mock';
-            document.getElementById('db-status').innerText = 'DB 연결 오류가 발생했습니다.';
+            console.error(error);
         } finally {
-            if(productsData.length > 0) {
-                const preselectedNames = ['Plan Tox Lifting Ampoule', 'Lift-Toning Sun Protector Cream', 'Root Vitality Volume Shampoo'];
-                productsData.forEach(p => {
-                    if(preselectedNames.includes(p.cleanName)) selectedProducts.push(p.id);
-                });
-                if(selectedProducts.length === 0) selectedProducts.push(productsData[0].id);
-            }
-            populateSelects(); 
-            updatePlatformOptions();
-            renderProducts();
-            updateAutoSupplyRatio();
-            updateFixedCostsByPeople(); 
+            if(productsData.length > 0) selectedProducts.push(productsData[0].id);
+            populateSelects(); renderProducts(); updateAutoSupplyRatio();
         }
     }
 
-    // Platform logic
-    function updatePlatformOptions() {
-        const country = document.getElementById('countrySelect').value;
-        const platSelect = document.getElementById('platformSelect');
-        platSelect.innerHTML = '';
-        platformData[country].forEach(p => { platSelect.innerHTML += `<option value="${p.fee}">${p.name}</option>`; });
-        updatePlatformFee();
-    }
-    function updatePlatformFee() {
-        if (document.getElementById('countrySelect').value !== 'CUSTOM') {
-            document.getElementById('ratioPlatform').value = document.getElementById('platformSelect').value;
-        }
-        calculate();
-    }
-
-    // Gonggu DP Logic
-    function toggleGongguType() {
-        const type = document.querySelector('input[name="gongguType"]:checked').value;
-        document.getElementById('gongguDownPaymentRow').style.display = type === 'mixed' ? 'table-row' : 'none';
-        if (type !== 'mixed') document.getElementById('gongguDownPayment').value = '';
-        updateGongguDownPayment();
-    }
-    function updateGongguDownPayment() {
-        document.getElementById('fcGongguContract').value = formatNum(getNum('gongguDownPayment'));
-        calculate();
-    }
-
-    // Sample & Gift Logic (Add/Remove)
     function populateSelects() {
-        const gSel = document.getElementById('giftSelect');
         const sSel = document.getElementById('sampleSelect');
-        gSel.innerHTML = '<option value="">선택</option>';
+        const gSel = document.getElementById('giftSelect');
         sSel.innerHTML = '<option value="">선택</option>';
-        
+        gSel.innerHTML = '<option value="">선택</option>';
         productsData.forEach(p => {
-            const shortName = p.name.length > 25 ? p.name.substring(0, 25) + '...' : p.name;
-            const opt = `<option value="${p.id}">${shortName} (원가: ${formatNum(p.cost)})</option>`;
-            gSel.innerHTML += opt;
+            const opt = `<option value="${p.id}">${p.name} (원가: ${formatNum(p.cost)})</option>`;
             sSel.innerHTML += opt;
+            gSel.innerHTML += opt;
         });
     }
 
@@ -639,31 +298,16 @@
         const id = document.getElementById('sampleSelect').value;
         const qty = getNum('sampleQty');
         if(!id || qty <= 0) return;
-        
         const p = productsData.find(x => x.id === id);
         addedSamples.push({ id: p.id, name: p.name, cost: p.cost, qty: qty, img: p.imageUrl });
         updateSampleUI();
     }
-
-    function removeSample(idx) {
-        addedSamples.splice(idx, 1);
-        updateSampleUI();
-    }
-
+    function removeSample(idx) { addedSamples.splice(idx, 1); updateSampleUI(); }
     function updateSampleUI() {
-        let listHtml = '';
-        let totalCost = 0;
+        let listHtml = '', totalCost = 0;
         addedSamples.forEach((s, idx) => {
-            let lineCost = s.cost * s.qty;
-            totalCost += lineCost;
-            listHtml += `
-                <div class="added-item">
-                    <span>${s.name} x ${formatNum(s.qty)}개</span>
-                    <div>
-                        <span style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span>
-                        <span class="added-item-del" onclick="removeSample(${idx})">X</span>
-                    </div>
-                </div>`;
+            let lineCost = s.cost * s.qty; totalCost += lineCost;
+            listHtml += `<div class="added-item"><span>${s.name} x ${formatNum(s.qty)}개</span><div><span style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeSample(${idx})">X</span></div></div>`;
         });
         document.getElementById('sampleAddedList').innerHTML = listHtml;
         document.getElementById('sampleCostDisplay').innerText = formatNum(totalCost);
@@ -675,31 +319,16 @@
         const id = document.getElementById('giftSelect').value;
         const qty = getNum('giftQty');
         if(!id || qty <= 0) return;
-        
         const p = productsData.find(x => x.id === id);
         addedGifts.push({ id: p.id, name: p.name, cost: p.cost, qty: qty, img: p.imageUrl });
         updateGiftUI();
     }
-
-    function removeGift(idx) {
-        addedGifts.splice(idx, 1);
-        updateGiftUI();
-    }
-
+    function removeGift(idx) { addedGifts.splice(idx, 1); updateGiftUI(); }
     function updateGiftUI() {
-        let listHtml = '';
-        let totalCost = 0;
+        let listHtml = '', totalCost = 0;
         addedGifts.forEach((g, idx) => {
-            let lineCost = g.cost * g.qty;
-            totalCost += lineCost;
-            listHtml += `
-                <div class="added-item">
-                    <span>${g.name} x ${formatNum(g.qty)}개</span>
-                    <div>
-                        <span style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span>
-                        <span class="added-item-del" onclick="removeGift(${idx})">X</span>
-                    </div>
-                </div>`;
+            let lineCost = g.cost * g.qty; totalCost += lineCost;
+            listHtml += `<div class="added-item"><span>${g.name} x ${formatNum(g.qty)}개</span><div><span style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeGift(${idx})">X</span></div></div>`;
         });
         document.getElementById('giftAddedList').innerHTML = listHtml;
         document.getElementById('giftCostDisplay').innerText = formatNum(totalCost);
@@ -716,10 +345,7 @@
     }
 
     function updateAutoSupplyRatio() {
-        if (selectedProducts.length === 0) {
-            document.getElementById('ratioSupply').value = 0;
-            return;
-        }
+        if (selectedProducts.length === 0) { document.getElementById('ratioSupply').value = 0; return; }
         let tc = 0, tp = 0;
         selectedProducts.forEach(id => {
             const p = productsData.find(x => x.id === id);
@@ -732,21 +358,20 @@
         const container = document.getElementById('product-list');
         container.innerHTML = '';
         
-        // Grouping
+        // 카테고리 분류 로직 복구 (기타 카테고리 제거)
         const grouped = {
-            '스킨케어': { '부스터': [], '앰플': [], '크림': [], '마스크': [], '기기': [], '기타': [] },
-            '헤어케어': { '기본': [] },
-            '기타': { '기본': [] }
+            '스킨케어': { '부스터': [], '앰플': [], '크림': [], '마스크': [], '기기': [] },
+            '헤어케어': { '기본': [] }
         };
 
         productsData.forEach(prod => {
             const name = prod.cleanName ? prod.cleanName.toLowerCase() : prod.name.toLowerCase();
             const mainCat = prod.mainCategory ? prod.mainCategory.toLowerCase() : '';
             
-            let mainGroup = '기타', subGroup = '기본';
+            let mainGroup = null, subGroup = null;
 
             if (mainCat.includes('hair') || name.includes('shampoo') || name.includes('scalp')) {
-                mainGroup = '헤어케어';
+                mainGroup = '헤어케어'; subGroup = '기본';
             } else if (mainCat.includes('device') || name.includes('core impact') || name.includes('hyper shot')) {
                 mainGroup = '스킨케어'; subGroup = '기기';
             } else if (name.includes('booster') && !name.includes('mask')) {
@@ -757,16 +382,15 @@
                 mainGroup = '스킨케어'; subGroup = '크림';
             } else if (name.includes('mask')) {
                 mainGroup = '스킨케어'; subGroup = '마스크';
-            } else if (mainCat.includes('skin') || mainCat === '') {
-                mainGroup = '스킨케어'; subGroup = '기타';
             }
 
-            if (!grouped[mainGroup]) grouped[mainGroup] = {};
-            if (!grouped[mainGroup][subGroup]) grouped[mainGroup][subGroup] = [];
-            grouped[mainGroup][subGroup].push(prod);
+            // '기타'에 해당하는 제품은 렌더링 그룹에 추가하지 않음
+            if (mainGroup && subGroup && grouped[mainGroup] && grouped[mainGroup][subGroup]) {
+                grouped[mainGroup][subGroup].push(prod);
+            }
         });
 
-        // Rendering HTML
+        // 렌더링
         for (const [mainName, subGroups] of Object.entries(grouped)) {
             const hasProducts = Object.values(subGroups).some(arr => arr.length > 0);
             if (!hasProducts) continue;
@@ -778,7 +402,6 @@
 
             for (const [subName, prods] of Object.entries(subGroups)) {
                 if (prods.length === 0) continue;
-
                 if (subName !== '기본') {
                     const subTitle = document.createElement('div');
                     subTitle.className = 'subcategory-header';
@@ -795,14 +418,16 @@
                     card.id = `prod-${prod.id}`;
                     card.onclick = () => toggleProduct(prod.id);
                     
-                    // 소비자정가와 프로모션가 병기 UI 추가 (크롤링 버튼 포함)
+                    // 출처(source)가 Naver 자동이면 초록색 배지로 표시
+                    const priceLabel = prod.source.includes('Naver') ? `<span style="color:#03c75a;">[${prod.source}]</span> ` : '';
+
                     card.innerHTML = `
                         <img src="${prod.imageUrl}" alt="${prod.name}">
-                        <div style="font-weight:600; font-size:1.05rem; margin-bottom:12px;">${prod.name}</div>
+                        <div style="font-weight:600; font-size:1.05rem; margin-bottom:12px; margin-top:10px;">${prod.name}</div>
                         <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
-                        <div class="price" id="price-${prod.id}" style="margin-bottom:4px;">프로모션가: ${formatNum(prod.price)}원</div>
-                        <div class="cost-badge">원가 참고: ${formatNum(prod.cost)}원</div>
-                        <button class="btn-crawl" onclick="event.stopPropagation(); fetchNaverPrice('${prod.id}')">네이버 최저가 불러오기</button>
+                        <div class="price" id="price-${prod.id}" style="margin-bottom:4px;">${priceLabel}프로모션가: ${formatNum(prod.price)}원</div>
+                        <div class="cost-badge">원가: ${formatNum(prod.cost)}원</div>
+                        <button class="btn-crawl" onclick="event.stopPropagation(); fetchNaverPrice('${prod.id}')">URL 입력 & 수동 갱신</button>
                     `;
                     grid.appendChild(card);
                 });
@@ -814,16 +439,44 @@
     function toggleProduct(id) {
         const index = selectedProducts.indexOf(id);
         if (index > -1) {
-            if (selectedProducts.length > 1) {
-                selectedProducts.splice(index, 1);
-                document.getElementById(`prod-${id}`).classList.remove('selected');
-            }
+            if (selectedProducts.length > 1) { selectedProducts.splice(index, 1); document.getElementById(`prod-${id}`).classList.remove('selected'); }
         } else {
-            selectedProducts.push(id);
-            document.getElementById(`prod-${id}`).classList.add('selected');
+            selectedProducts.push(id); document.getElementById(`prod-${id}`).classList.add('selected');
         }
-        updateAutoSupplyRatio();
-        calculate();
+        updateAutoSupplyRatio(); calculate();
+    }
+
+    // 수동 크롤링 로직 (URL을 입력받아 Edge Function 호출)
+    async function fetchNaverPrice(productId) {
+        const targetUrl = prompt("네이버 상품 URL을 입력하시면 크롤링을 시도하며, 이후부터 매일 새벽 자동으로 갱신됩니다.");
+        if (!targetUrl || targetUrl.trim() === '') return;
+
+        const btn = document.querySelector(`#prod-${productId} .btn-crawl`);
+        const originalText = btn.innerText;
+        btn.innerText = "수집 중... ⏳"; btn.disabled = true;
+
+        try {
+            const { data, error } = await supabaseClient.functions.invoke('crawl-price', {
+                body: { productId: productId, platform: 'Naver', url: targetUrl }
+            });
+
+            if (error) throw error;
+            if (data && data.success) {
+                alert(`성공! 새 가격: ${formatNum(data.numericPrice)}원\n(이제 이 제품은 매일 새벽 스케줄러에 의해 자동 수집됩니다.)`);
+                applyNewPrice(productId, data.numericPrice, 'Naver 수동갱신');
+            }
+        } catch (err) { alert("크롤링 실패: " + err.message); } 
+        finally { btn.innerText = originalText; btn.disabled = false; }
+    }
+
+    function applyNewPrice(productId, newPrice, source) {
+        const prod = productsData.find(p => p.id === productId);
+        if(prod) {
+            prod.price = newPrice;
+            const priceEl = document.getElementById(`price-${productId}`);
+            if(priceEl) priceEl.innerHTML = `<span style="color:#03c75a;">[${source}]</span> 프로모션가: ${formatNum(newPrice)}원`;
+            updateAutoSupplyRatio(); calculate();
+        }
     }
 
     function calculate() {
@@ -831,172 +484,64 @@
         const samEl = document.getElementById('selected-sample-info');
         const gifEl = document.getElementById('selected-gift-info');
 
-        if (selectedProducts.length === 0) {
-            pkgEl.innerHTML = `<span><strong>현재 패키지 구성:</strong> 선택된 제품이 없습니다.</span>`;
-            samEl.style.display = 'none';
-            gifEl.style.display = 'none';
-            return;
-        }
+        if (selectedProducts.length === 0) return;
 
-        // Selected Package
-        let packagePrice = 0;
-        let itemsHtml = [];
+        let packagePrice = 0; let itemsHtml = [];
         selectedProducts.forEach(id => {
             const p = productsData.find(x => x.id === id);
-            if(p) {
-                packagePrice += p.price; // 계산은 프로모션가 기준
-                itemsHtml.push(`<div class="pkg-item"><img src="${p.imageUrl}"><span>${p.name}</span></div>`);
-            }
+            if(p) { packagePrice += p.price; itemsHtml.push(`<div class="pkg-item"><img src="${p.imageUrl}"><span>${p.name}</span></div>`); }
         });
-        pkgEl.innerHTML = `
-            <div style="display:flex; align-items:center; margin-right:16px; flex-shrink:0; color: #1e3a8a;">
-                <span><strong>현재 패키지 구성 (${selectedProducts.length}종):</strong></span>
-            </div>
-            ${itemsHtml.join('<div class="pkg-plus">+</div>')}
-        `;
+        pkgEl.innerHTML = `<div style="color: #1e3a8a; margin-right:16px;"><strong>패키지 구성 (${selectedProducts.length}종)</strong></div>${itemsHtml.join('<div class="pkg-plus">+</div>')}`;
 
-        // Samples Render
+        // 샘플/사은품 렌더
         if (addedSamples.length > 0) {
             samEl.style.display = 'flex';
             let samHtml = addedSamples.map(s => `<div class="pkg-item"><img src="${s.img}" style="border-color:var(--success);"><span>${s.name}<br><span style="color:var(--success);">(${formatNum(s.qty)}개)</span></span></div>`).join('');
             samEl.innerHTML = `<div style="color:var(--success); margin-right:16px;"><strong>제공 샘플:</strong></div>${samHtml}`;
         } else { samEl.style.display = 'none'; }
 
-        // Gifts Render
         if (addedGifts.length > 0) {
             gifEl.style.display = 'flex';
             let gifHtml = addedGifts.map(g => `<div class="pkg-item"><img src="${g.img}" style="border-color:var(--gift);"><span>${g.name}<br><span style="color:var(--gift);">(${formatNum(g.qty)}개)</span></span></div>`).join('');
             gifEl.innerHTML = `<div style="color:var(--gift); margin-right:16px;"><strong>제공 사은품:</strong></div>${gifHtml}`;
         } else { gifEl.style.display = 'none'; }
 
-        // Logic
         const targetQty = getNum('targetQty');
-        const rSupply = Number(document.getElementById('ratioSupply').value) / 100;
-        const rShipping = Number(document.getElementById('ratioShipping').value) / 100;
-        const rPlatform = Number(document.getElementById('ratioPlatform').value) / 100;
-        const rCard = Number(document.getElementById('ratioCard').value) / 100;
-        const rGonggu = Number(document.getElementById('ratioGonggu').value) / 100;
-        const rIncentive = Number(document.getElementById('ratioIncentive').value) / 100;
-        const rReferral = Number(document.getElementById('ratioReferral').value) / 100;
-
-        const totalVcRatio = rSupply + rShipping + rPlatform + rCard + rGonggu + rIncentive + rReferral; 
-        const cmRatio = 1 - totalVcRatio;
-
+        const totalVcRatio = (Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + Number(document.getElementById('ratioGonggu').value) + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)) / 100; 
+        
         const unitRev = packagePrice;
         const unitVc = packagePrice * totalVcRatio;
-        const unitCm = packagePrice * cmRatio;
+        const unitCm = packagePrice * (1 - totalVcRatio);
 
-        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + 
-                        getNum('fcProps') + getNum('fcGongguContract') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther');
-        
-        const ccRate = Number(document.getElementById('ccAllocationRate').value) / 100;
-        const totalCc = (getNum('ccExecutive') + getNum('ccManagement') + getNum('ccResearch')) * ccRate;
+        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther');
+        const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
         
         document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
         document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
 
         const totalFixedAndCommon = totalFc + totalCc;
         const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
-        const bepRev = bepQty * unitRev;
-        const bepVc = bepQty * unitVc;
-        const bepCm = bepRev - bepVc;
-        const bepOp = bepCm - totalFc - totalCc;
-
-        const targetRev = targetQty * unitRev;
-        const targetVc = targetQty * unitVc;
-        const targetCm = targetRev - targetVc;
-        const targetOp = targetCm - totalFc - totalCc;
 
         document.getElementById('resUnitRev').innerText = formatNum(unitRev);
         document.getElementById('resUnitVc').innerText = formatNum(unitVc);
         document.getElementById('resUnitCm').innerText = formatNum(unitCm);
 
-        document.getElementById('resBepRev').innerHTML = `${formatNum(bepRev)}<br><span style="font-size:0.85em; color:var(--danger);">(${formatNum(Math.ceil(bepQty))}개)</span>`;
-        document.getElementById('resBepVc').innerText = formatNum(bepVc);
-        document.getElementById('resBepCm').innerText = formatNum(bepCm);
+        document.getElementById('resBepRev').innerHTML = `${formatNum(bepQty * unitRev)}<br><span style="font-size:0.85em; color:var(--danger);">(${formatNum(Math.ceil(bepQty))}개)</span>`;
+        document.getElementById('resBepVc').innerText = formatNum(bepQty * unitVc);
+        document.getElementById('resBepCm').innerText = formatNum((bepQty * unitRev) - (bepQty * unitVc));
         document.getElementById('resBepFc').innerText = formatNum(totalFc);
         document.getElementById('resBepCc').innerText = formatNum(totalCc);
-        document.getElementById('resBepOp').innerText = formatNum(Math.abs(bepOp) < 1 ? 0 : bepOp); 
+        document.getElementById('resBepOp').innerText = 0; 
 
-        document.getElementById('resTargetRev').innerText = formatNum(targetRev);
-        document.getElementById('resTargetVc').innerText = formatNum(targetVc);
-        document.getElementById('resTargetCm').innerText = formatNum(targetCm);
+        document.getElementById('resTargetRev').innerText = formatNum(targetQty * unitRev);
+        document.getElementById('resTargetVc').innerText = formatNum(targetQty * unitVc);
+        document.getElementById('resTargetCm').innerText = formatNum((targetQty * unitRev) - (targetQty * unitVc));
         document.getElementById('resTargetFc').innerText = formatNum(totalFc);
         document.getElementById('resTargetCc').innerText = formatNum(totalCc);
-        
-        document.getElementById('resTargetOp').innerText = formatNum(targetOp);
-        document.getElementById('resTargetOp').style.color = targetOp >= 0 ? 'var(--success)' : 'var(--danger)';
+        document.getElementById('resTargetOp').innerText = formatNum((targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc);
 
         document.getElementById('resTargetQtyText').innerText = formatNum(targetQty);
         document.getElementById('resBepQtyText').innerText = formatNum(Math.ceil(bepQty)); 
-    }
-
-    function resetTable() {
-        const zeros = ['resUnitRev', 'resUnitVc', 'resUnitCm', 'resBepVc', 'resBepCm', 'resBepFc', 'resBepCc', 'resBepOp', 'resTargetRev', 'resTargetVc', 'resTargetCm', 'resTargetFc', 'resTargetCc', 'resTargetOp', 'resTargetQtyText', 'resBepQtyText'];
-        zeros.forEach(id => document.getElementById(id).innerText = '0');
-        document.getElementById('resBepRev').innerHTML = '0<br><span style="font-size:0.85em; color:var(--danger);">(0개)</span>';
-        document.getElementById('totalFcDisplay').innerText = '0 원';
-        document.getElementById('totalCcDisplay').innerText = '0 원';
-    }
-
-    // 네이버 가격 크롤링 연동 함수
-    async function fetchNaverPrice(productId) {
-        const targetUrl = prompt("크롤링할 상품의 네이버 스마트스토어 URL을 입력해주세요.\n(URL을 비워두고 확인을 누르면 테스트용 가격으로 연동됩니다.)");
-        if (targetUrl === null) return; // 취소 버튼 클릭 시 종료
-
-        const btn = document.querySelector(`#prod-${productId} .btn-crawl`);
-        const originalText = btn.innerText;
-        btn.innerText = "불러오는 중... ⏳";
-        btn.disabled = true;
-
-        try {
-            if (targetUrl.trim() === '') {
-                // URL 미입력시 테스트용 더미 가격(소비자정가의 50% 등)을 적용
-                const prod = productsData.find(p => p.id === productId);
-                const mockPrice = Math.floor(prod.msrp * 0.5 / 100) * 100; // 50% 할인된 가격 (100원 단위)
-                applyNewPrice(productId, mockPrice, '테스트');
-                alert(`URL이 입력되지 않아 테스트용 가격(${formatNum(mockPrice)}원)으로 시뮬레이션에 적용합니다.`);
-                return;
-            }
-
-            // Supabase Edge Function 호출
-            const { data, error } = await supabaseClient.functions.invoke('crawl-price', {
-                body: { productId: productId, platform: 'Naver', url: targetUrl }
-            });
-
-            if (error) throw error;
-            
-            if (data && data.success && data.numericPrice) {
-                alert(`네이버 스마트스토어에서 가격을 성공적으로 불러왔습니다: ${formatNum(data.numericPrice)}원`);
-                applyNewPrice(productId, data.numericPrice, 'Naver');
-            } else {
-                throw new Error("가격을 파싱하지 못했습니다.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("크롤링 실패: " + err.message + "\n\n(참고: 네이버의 봇 차단 시스템에 의해 막혔을 확률이 높습니다.)");
-        } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
-    }
-
-    // 크롤링한 새 가격을 UI와 계산식에 적용하는 함수
-    function applyNewPrice(productId, newPrice, source) {
-        const prod = productsData.find(p => p.id === productId);
-        if(prod) {
-            prod.price = newPrice; // 가격 정보 갱신
-            
-            // UI 텍스트 업데이트
-            const priceEl = document.getElementById(`price-${productId}`);
-            if(priceEl) {
-                priceEl.innerHTML = `<span style="color:#03c75a;">[${source} 연동가]</span> ${formatNum(newPrice)}원`;
-            }
-            
-            // 변동비 비율 및 시뮬레이션 결과 즉시 재계산
-            updateAutoSupplyRatio();
-            calculate();
-        }
     }
 
     window.onload = fetchProducts;
