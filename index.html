@@ -1,723 +1,855 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Calculator, 
-  ShoppingBag, 
-  Settings, 
-  CheckCircle2, 
-  Image as ImageIcon,
-  AlertCircle,
-  TrendingUp,
-  DollarSign,
-  ChevronUp,
-  ChevronDown,
-  Database
-} from 'lucide-react';
-
-// Supabase 환경 변수
-const supabaseUrl = 'https://rayhgqcpupwmwpymtkwg.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheWhncWNwdXB3bXdweW10a3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjc2MTEsImV4cCI6MjA4NDg0MzYxMX0.Ng4K86amltnarVwbQ8FVfw1rTJK03NTE5g3QDoLMFTc';
-
-// Supabase REST API 호출을 위한 Fetch 헬퍼 함수 (최대 5000건까지 강제 호출)
-const fetchSupabase = async (table) => {
-  const response = await fetch(`${supabaseUrl}/rest/v1/${table}?select=*&limit=5000`, {
-    headers: {
-      'apikey': supabaseAnonKey,
-      'Authorization': `Bearer ${supabaseAnonKey}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
-    }
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${table}`);
-  }
-  return await response.json();
-};
-
-export default function App() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState(null);
-  
-  // 데이터 로드 상태 디버깅용
-  const [dbStatus, setDbStatus] = useState({ products: 0, prices: 0, costs: 0 });
-
-  // 제품 목록 접기/펼치기 상태
-  const [isProductsExpanded, setIsProductsExpanded] = useState(false);
-
-  // 선택된 제품 ID 목록
-  const [selectedIds, setSelectedIds] = useState(new Set());
-  
-  // 탭 상태 (ALL, 스킨케어, 디바이스, 기타)
-  const [activeTab, setActiveTab] = useState('ALL');
-
-  // 시뮬레이션 설정 변수
-  const [settings, setSettings] = useState({
-    salesQty: 1000,         
-    shippingRate: 7,        
-    platformRate: 0,        
-    cardRate: 2,            
-    groupBuyRate: 35,       
-    incentiveRate: 5,       
-    referralRate: 5,        
-    laborCostPerPerson: 1000000, 
-    laborCount: 1,          
-    rentCost: 500000,       
-    marketingCost: 300000,  
-    sampleCost: 100000,     
-    commonExecutiveCost: 50000, 
-    commonManagementCost: 30000, 
-    commonRndCost: 20000,        
-    packagingCost: 50000,   
-    serverCost: 50000,      
-    officeCost: 50000,      
-    otherMiscCost: 50000    
-  });
-
-  useEffect(() => {
-    fetchProductsData();
-  }, []);
-
-  const fetchProductsData = async () => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      // 1. 제품 기본 정보 조회 (조건 없이 전체 호출)
-      let baseProducts = [];
-      try {
-        const fetchedProducts = await fetchSupabase('products');
-        if (fetchedProducts && fetchedProducts.length > 0) {
-          baseProducts = fetchedProducts; // 누락 방지를 위해 필터 제거
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동구매 시뮬레이터</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gift: #ec4899;
         }
-      } catch (err) {
-        console.warn('products 테이블 조회 실패');
-      }
 
-      // 2. 제품 가격 조회 (product_prices)
-      let pricesData = [];
-      try {
-        const allPrices = await fetchSupabase('product_prices');
-        if (Array.isArray(allPrices)) pricesData = allPrices;
-      } catch (err) {
-        console.warn('product_prices 테이블 조회 실패');
-      }
-      
-      // 3. 제품 매출원가 조회 (product_costs)
-      let costsData = [];
-      try {
-        const allCosts = await fetchSupabase('product_costs');
-        if (Array.isArray(allCosts)) costsData = allCosts;
-      } catch (err) {
-        console.warn('product_costs 테이블 조회 실패');
-      }
-
-      // 상태 업데이트
-      setDbStatus({
-        products: baseProducts.length,
-        prices: pricesData.length,
-        costs: costsData.length
-      });
-
-      // 4. 데이터 병합 (요청사항: product_costs의 ID를 기준으로 products 테이블에서 clean_name 추출)
-      const validProducts = [];
-
-      if (costsData && costsData.length > 0) {
-        costsData.forEach(costItem => {
-          // KRW 데이터만 취급
-          if (costItem.currency && String(costItem.currency).toUpperCase() !== 'KRW') return;
-
-          const pId = String(costItem.product_id || '').trim().toLowerCase();
-          
-          // products 테이블에서 해당 원가 정보와 일치하는 제품 찾기
-          const matchedProduct = baseProducts.find(p => String(p.id || '').trim().toLowerCase() === pId);
-
-          if (matchedProduct) {
-            // product_prices 테이블에서 가격 정보 찾기
-            const matchedPrice = pricesData.find(pr => 
-              String(pr.product_id || '').trim().toLowerCase() === pId && 
-              (!pr.currency || String(pr.currency).toUpperCase() === 'KRW')
-            );
-
-            // 카테고리 판별
-            const catStr = String(matchedProduct.main_category || matchedProduct.sub_category || '').toLowerCase();
-            const nameStr = String(matchedProduct.clean_name || matchedProduct.name || '').toLowerCase();
-            let displayCategory = '기타';
-            
-            if (catStr.includes('skin') || catStr.includes('스킨케어') || catStr.includes('cosmetic') || 
-                nameStr.includes('스킨') || nameStr.includes('세럼') || nameStr.includes('앰플') || 
-                nameStr.includes('마스크') || nameStr.includes('크림') || nameStr.includes('부스터')) {
-               displayCategory = '스킨케어';
-            } else if (catStr.includes('device') || catStr.includes('디바이스') || catStr.includes('medical aesthetic') || 
-                       nameStr.includes('device') || nameStr.includes('디바이스') || nameStr.includes('기기')) {
-               displayCategory = '디바이스';
-            }
-
-            const costValue = Number(costItem.production_cost || 0);
-            const priceValue = matchedPrice ? Number(matchedPrice.b2c_msrp || 0) : 0;
-
-            // 중복 방지 로직 (product_costs에 여러 행이 있을 경우 대비)
-            const existingIdx = validProducts.findIndex(v => v.id === matchedProduct.id);
-            if (existingIdx === -1) {
-              validProducts.push({
-                id: matchedProduct.id,
-                name: matchedProduct.clean_name || matchedProduct.name || '제품명 미상',
-                category: displayCategory,
-                description: `${matchedProduct.main_category || ''} ${matchedProduct.volume || matchedProduct.qty ? `(${matchedProduct.volume || matchedProduct.qty})` : ''}`,
-                imageUrl: null, 
-                price: priceValue, 
-                cost: costValue 
-              });
-            } else {
-              // 중복건의 경우, 원가가 0이었는데 새 값이 들어온 경우 업데이트
-              if (validProducts[existingIdx].cost === 0 && costValue > 0) {
-                validProducts[existingIdx].cost = costValue;
-              }
-            }
-          }
-        });
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 20px; 
+            line-height: 1.5;
+        }
         
-        setProducts(validProducts);
-        if (validProducts.length === 0) {
-          setErrorMsg("매출원가(product_costs) 테이블과 매칭되는 제품이 없습니다.");
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 20px; 
         }
-      } else {
-        setProducts([]);
-        setErrorMsg("매출원가(product_costs) 테이블의 데이터를 불러오지 못했습니다. (RLS 권한 또는 데이터 확인 필요)");
-      }
-    } catch (err) {
-      console.error("Fetch Error:", err);
-      setProducts([]);
-      setErrorMsg("데이터베이스 통신 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        
+        @media (min-width: 768px) {
+            .container { grid-template-columns: 1fr 1fr; }
+        }
 
-  const toggleSelection = (id) => {
-    const newSelection = new Set(selectedIds);
-    if (newSelection.has(id)) {
-      newSelection.delete(id);
-    } else {
-      newSelection.add(id);
-    }
-    setSelectedIds(newSelection);
-  };
+        .panel { 
+            background: var(--card-bg); 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+        }
+        
+        .full-width { grid-column: 1 / -1; }
+        
+        h1 { font-size: 1.5rem; color: var(--text-main); margin-top: 0; margin-bottom: 24px; text-align: center; }
+        h2 { font-size: 1.25rem; color: var(--text-main); margin-top: 0; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+        h3 { font-size: 1.05rem; color: var(--text-muted); margin-top: 24px; margin-bottom: 8px; }
+        
+        /* Product Grid */
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 16px; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            padding-right: 8px;
+        }
+        
+        .product-card { 
+            border: 2px solid var(--border); 
+            border-radius: 12px; 
+            padding: 16px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .product-card:hover { border-color: #93c5fd; transform: translateY(-2px); }
+        .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 12px; background: #fafafa;}
+        .product-card.selected { border-color: var(--primary); background-color: #eff6ff; }
+        .product-card .price { font-weight: 600; color: var(--primary); margin-top: auto; }
+        .product-card .cost-badge { font-size: 0.8rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+        
+        /* Package Visualizer */
+        .package-visualizer {
+            display: flex; align-items: center; gap: 12px; padding: 16px; background-color: #eff6ff; 
+            border-radius: 8px; border: 1px dashed var(--primary); overflow-x: auto; margin-bottom: 16px;
+        }
+        .pkg-item { 
+            display: flex; flex-direction: column; align-items: center; text-align: center; width: 90px; flex-shrink: 0; 
+        }
+        .pkg-item img { 
+            width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid var(--primary); 
+            margin-bottom: 6px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pkg-item span { 
+            font-size: 0.75rem; line-height: 1.2; word-break: keep-all; color: #374151; font-weight: 600; 
+        }
+        .pkg-plus { font-weight: bold; color: #9ca3af; font-size: 1.5rem; flex-shrink: 0; }
 
-  const handleSettingChange = (e) => {
-    const { name, value } = e.target;
-    setSettings(prev => ({
-      ...prev,
-      [name]: typeof value === 'number' ? value : (parseFloat(value) || 0)
-    }));
-  };
+        /* Tables & Inputs */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
+        th, td { border: 1px solid var(--border); padding: 12px; }
+        th { background-color: #f9fafb; text-align: center; font-weight: 600; }
+        td { text-align: right; }
+        td:first-child { text-align: left; }
+        
+        input[type="number"] { 
+            width: 100px; 
+            padding: 6px 8px; 
+            text-align: right; 
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
 
-  const filteredProducts = useMemo(() => {
-    if (activeTab === 'ALL') return products;
-    return products.filter(p => p.category === activeTab);
-  }, [products, activeTab]);
+        /* Result Table specific styles */
+        #resultTable th, #resultTable td { text-align: right; padding: 12px 8px; }
+        #resultTable td:first-child { text-align: center; font-weight: 600; }
+        
+        .result-highlight { font-weight: bold; color: var(--danger); font-size: 1.05em; }
+        .success-highlight { font-weight: bold; color: var(--success); font-size: 1.05em; }
+        .bep-row { background-color: #fef2f2; }
+        .target-row { background-color: #f0fdf4; }
+        
+        .summary-text { text-align: right; margin-top: 12px; color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* Status Bar */
+        #db-status {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .status-loading { background-color: #fef3c7; color: #b45309; }
+        .status-success { background-color: #d1fae5; color: #065f46; }
+        .status-mock { background-color: #e0e7ff; color: #3730a3; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body>
 
-  const calculations = useMemo(() => {
-    const selectedProducts = products.filter(p => selectedIds.has(p.id));
-    
-    let totalSales = 0;
-    let totalCogs = 0; 
-    let totalVariableCost = 0;
+<h1>공동구매 시뮬레이터</h1>
 
-    const totalFeeRate = (
-      settings.shippingRate + 
-      settings.platformRate + 
-      settings.cardRate + 
-      settings.groupBuyRate + 
-      settings.incentiveRate + 
-      settings.referralRate
-    ) / 100;
+<div id="db-status" class="status-loading">데이터베이스 연결 및 데이터를 불러오는 중입니다...</div>
 
-    selectedProducts.forEach(p => {
-      const salesForProduct = p.price * settings.salesQty;
-      const cogsForProduct = p.cost * settings.salesQty;
-      const feesForProduct = salesForProduct * totalFeeRate;
+<div class="container">
+    <!-- 제품 선택 패널 -->
+    <div class="panel full-width">
+        <h2>1. 제품 선택 (다중 선택 가능)</h2>
+        <div id="product-list" class="product-grid">
+            <!-- Products will be injected here -->
+        </div>
+    </div>
 
-      totalSales += salesForProduct;
-      totalCogs += cogsForProduct;
-      totalVariableCost += (cogsForProduct + feesForProduct);
-    });
+    <!-- 변수 입력 패널 (변동비) -->
+    <div class="panel">
+        <h2>2. 시뮬레이션 설정 (목표 및 비율)</h2>
+        <table>
+            <tr>
+                <td>목표 판매 수량 (개)</td>
+                <td><input type="number" id="targetQty" value="300" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <th colspan="2">변동비 비율 설정 (%)</th>
+            </tr>
+            <tr>
+                <td>제품공급가 비율 <span style="font-size:0.8em; color:var(--primary);">(자동계산)</span></td>
+                <td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()"> %</td>
+            </tr>
+            <tr>
+                <td>배송비 비율</td>
+                <td><input type="number" id="ratioShipping" value="7" step="1" oninput="calculate()"> %</td>
+            </tr>
+            <tr>
+                <td>플랫폼 수수료 비율</td>
+                <td><input type="number" id="ratioPlatform" value="0" step="1" oninput="calculate()"> %</td>
+            </tr>
+            <tr>
+                <td>카드 수수료 비율</td>
+                <td><input type="number" id="ratioCard" value="2" step="1" oninput="calculate()"> %</td>
+            </tr>
+            <tr>
+                <td>공구 수수료 비율</td>
+                <td><input type="number" id="ratioGonggu" value="35" step="1" oninput="calculate()"> %</td>
+            </tr>
+            <tr>
+                <td>인센티브 비율</td>
+                <td><input type="number" id="ratioIncentive" value="5" step="1" oninput="calculate()"> %</td>
+            </tr>
+            <tr>
+                <td>소개비 비율</td>
+                <td><input type="number" id="ratioReferral" value="5" step="1" oninput="calculate()"> %</td>
+            </tr>
+        </table>
+    </div>
 
-    const totalLaborCost = settings.laborCostPerPerson * settings.laborCount;
-    const totalCommonCost = settings.commonExecutiveCost + settings.commonManagementCost + settings.commonRndCost;
-    const totalMiscCost = settings.packagingCost + settings.serverCost + settings.officeCost + settings.otherMiscCost;
-    const totalFixedCost = totalLaborCost + settings.rentCost + settings.marketingCost + settings.sampleCost + totalCommonCost + totalMiscCost;
-    
-    const contributionMargin = totalSales - totalVariableCost;
-    const operatingProfit = contributionMargin - totalFixedCost;
+    <!-- 고정비 & 공통비 설정 패널 -->
+    <div class="panel">
+        <h2 style="margin-bottom: 0; border-bottom: none;">3. 고정비 / 4. 공통비 설정 (원)</h2>
+        
+        <h3>▶ 3. 고정비 설정</h3>
 
-    return {
-      selectedCount: selectedProducts.length,
-      totalSales,
-      totalCogs,
-      totalVariableCost,
-      contributionMargin,
-      contributionMarginRatio: totalSales > 0 ? (contributionMargin / totalSales) * 100 : 0,
-      fixedCost: totalFixedCost,
-      totalCommonCost: totalCommonCost,
-      operatingProfit,
-      operatingProfitRatio: totalSales > 0 ? (operatingProfit / totalSales) * 100 : 0
+        <!-- 샘플 자동계산 위젯 -->
+        <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
+            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                🧪 샘플 원가 자동계산 (고정비 반영)
+            </h4>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <select id="sampleSelect" onchange="updateSampleCost()" style="flex: 1; min-width: 180px; padding: 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 0.95rem;">
+                    <option value="">샘플 선택 안함</option>
+                </select>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="number" id="sampleQty" value="0" oninput="updateSampleCost()" style="width: 80px; padding: 8px;"> 
+                    <span>개</span>
+                </div>
+                <span id="sampleCostDisplay" style="color: var(--success); font-weight: bold; font-size: 1.1rem; min-width: 120px;">= 0 원</span>
+            </div>
+            <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">* 공동구매자 샘플용으로 설정 시 원가 총합이 하단 고정비의 <strong>'샘플비'</strong> 항목에 자동 반영됩니다.</p>
+        </div>
+
+        <!-- 사은품 자동계산 위젯 -->
+        <div style="background: #fdf2f8; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border);">
+            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                🎁 사은품 원가 자동계산 (고정비 반영)
+            </h4>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <select id="giftSelect" onchange="updateGiftCost()" style="flex: 1; min-width: 180px; padding: 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 0.95rem;">
+                    <option value="">사은품 선택 안함</option>
+                </select>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="number" id="giftQty" value="300" oninput="updateGiftCost()" style="width: 80px; padding: 8px;"> 
+                    <span>개</span>
+                </div>
+                <span id="giftCostDisplay" style="color: var(--danger); font-weight: bold; font-size: 1.1rem; min-width: 120px;">= 0 원</span>
+            </div>
+            <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">* 설정 시 원가 총합이 하단 고정비의 <strong>'사은품'</strong> 항목에 자동 반영됩니다.</p>
+        </div>
+
+        <table style="margin-top: 0;">
+            <tr>
+                <th colspan="2">항목 및 설정값</th>
+            </tr>
+            <tr style="background-color: #eef2ff;">
+                <td><strong>참여 인원 (명)</strong></td>
+                <td>
+                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
+                        <input type="number" id="fcPeople" value="1" min="1" oninput="updateFixedCostsByPeople()" style="font-weight:bold; color:var(--primary);">
+                        <span>명</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>인건비 <span style="font-size:0.8em; color:var(--text-muted);">(인당 15만)</span></td>
+                <td><input type="number" id="fcLabor" value="150000" step="10000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>여비교통비 <span style="font-size:0.8em; color:var(--text-muted);">(인당 5만)</span></td>
+                <td><input type="number" id="fcTravel" value="50000" step="10000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>식대 <span style="font-size:0.8em; color:var(--text-muted);">(인당 3만)</span></td>
+                <td><input type="number" id="fcFood" value="30000" step="1000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>장소대여비</td>
+                <td><input type="number" id="fcRent" value="200000" step="10000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>소품비</td>
+                <td><input type="number" id="fcProps" value="200000" step="10000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>기타 프린터비 등</td>
+                <td><input type="number" id="fcOther" value="30000" step="1000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>샘플비 <span style="font-size:0.8em; color:var(--success);">(자동연동)</span></td>
+                <td><input type="number" id="fcSamples" value="0" step="10000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>사은품 <span style="font-size:0.8em; color:var(--gift);">(자동연동)</span></td>
+                <td><input type="number" id="fcGifts" value="0" step="10000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <th style="text-align: left; background-color: #f3f4f6;">고정비 총계</th>
+                <th style="text-align: right; background-color: #f3f4f6;" id="totalFcDisplay">880,000 원</th>
+            </tr>
+        </table>
+
+        <h3 style="margin-top: 32px;">▶ 4. 공통비 설정</h3>
+        <table style="margin-top: 0;">
+            <tr>
+                <th colspan="2">기초 공통비 (원)</th>
+            </tr>
+            <tr>
+                <td>임원 인건비</td>
+                <td><input type="number" id="ccExecutive" value="50000000" step="1000000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>경영관리유닛</td>
+                <td><input type="number" id="ccManagement" value="50000000" step="1000000" oninput="calculate()"></td>
+            </tr>
+            <tr>
+                <td>연구소</td>
+                <td><input type="number" id="ccResearch" value="50000000" step="1000000" oninput="calculate()"></td>
+            </tr>
+            <tr style="background-color: #eef2ff;">
+                <td><strong>프로젝트 배부율 (%)</strong></td>
+                <td>
+                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
+                        <input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--primary);">
+                        <span>%</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th style="text-align: left; background-color: #f3f4f6;">적용 공통비 (배부액)</th>
+                <th style="text-align: right; background-color: #f3f4f6;" id="totalCcDisplay">1,500,000 원</th>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 결과 출력 패널 -->
+    <div class="panel full-width">
+        <h2>5. 수익구조 산출 결과</h2>
+        
+        <!-- 패키지 구성 직관적 시각화 영역 -->
+        <div id="selected-package-info" class="package-visualizer" style="margin-bottom: 8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-7.1-7.1c-1.4-1.4-3.6-1.4-5 0l-7.1 7.1"/><path d="m21 8-7.1 7.1c-1.4 1.4-3.6 1.4-5 0L1.8 8"/><path d="M12 2v20"/></svg>
+                <span><strong>현재 패키지 구성:</strong> 선택된 제품이 없습니다.</span>
+            </div>
+        </div>
+
+        <!-- 샘플 구성 직관적 시각화 영역 -->
+        <div id="selected-sample-info" class="package-visualizer" style="display: none; background-color: #f0fdf4; border-color: var(--success); margin-bottom: 8px;">
+            <!-- Sample Info will be injected here -->
+        </div>
+
+        <!-- 사은품 구성 직관적 시각화 영역 -->
+        <div id="selected-gift-info" class="package-visualizer" style="display: none; background-color: #fdf2f8; border-color: var(--gift); margin-bottom: 16px;">
+            <!-- Gift Info will be injected here -->
+        </div>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th style="width: 16%;">구분</th>
+                    <th style="width: 14%;">매출액 (원)</th>
+                    <th style="width: 14%;">변동비 (원)</th>
+                    <th style="width: 14%;">공헌이익 (원)</th>
+                    <th style="width: 14%;">고정비 (원)</th>
+                    <th style="width: 14%;">적용 공통비 (원)</th>
+                    <th style="width: 14%;">영업이익 (원)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>단위당 (1패키지 기준)</td>
+                    <td id="resUnitRev">0</td>
+                    <td id="resUnitVc">0</td>
+                    <td id="resUnitCm">0</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr class="bep-row">
+                    <td>손익분기점 (BEP)</td>
+                    <td id="resBepRev">0</td>
+                    <td id="resBepVc">0</td>
+                    <td id="resBepCm">0</td>
+                    <td id="resBepFc">0</td>
+                    <td id="resBepCc">0</td>
+                    <td class="result-highlight" id="resBepOp">0</td>
+                </tr>
+                <tr class="target-row">
+                    <td>목표 달성 시</td>
+                    <td class="result-highlight" id="resTargetRev">0</td>
+                    <td id="resTargetVc">0</td>
+                    <td class="result-highlight" id="resTargetCm">0</td>
+                    <td id="resTargetFc">0</td>
+                    <td id="resTargetCc">0</td>
+                    <td class="success-highlight" id="resTargetOp">0</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="summary-text">
+            <p>손익분기점(BEP) 도달 필요 수량: <strong id="resBepQtyText" style="color:var(--danger)">0</strong> 개</p>
+            <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--success)">0</strong> 개</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Supabase 정보
+    var SUPABASE_URL = 'https://rayhgqcpupwmwpymtkwg.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheWhncWNwdXB3bXdweW10a3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjc2MTEsImV4cCI6MjA4NDg0MzYxMX0.Ng4K86amltnarVwbQ8FVfw1rTJK03NTE5g3QDoLMFTc';
+    var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    var productsData = [];
+    var selectedProducts = [];
+
+    // 제품 이미지 맵 (제공된 URL 하드코딩 + 추가된 4개 제품)
+    var productImageMap = {
+        'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
+        'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9icjMwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUxMDUsImV4cCI6MjA5NjgwNTEwNX0.utXjZK_UPv63dRtfqhBF5jnLrz3jSZ6LFdkwRN-U_WQ',
+        'Root Vitality Volume Shampoo': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/shampoo300ml.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9zaGFtcG9vMzAwbWwuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTEyNSwiZXhwIjoyMDk2ODA1MTI1fQ.uXQQA3Oz4iNR0FNjGENab_jLzuufF55X76dzQreclQQ',
+        'Phyto Protein Volumizing Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Vol30.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9Wb2wzMC53ZWJwIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTE2OSwiZXhwIjoxNzgyMzA5MTY5fQ.K2luZj-pScS59iA9qH8WSHOJb7L3LK8XlY-xXHxFNv0',
+        'Plan Tox Lifting Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/plan30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9wbGFuMzAuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTIwMywiZXhwIjoyMDk2ODA1MjAzfQ.QB5TfAmdnnVnRxEK9YeYtwjF_q4-gXiMfXiq0FbJjPo',
+        'Expert Shot Scalp Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/scalp3ea.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9zY2FscDNlYS5qcGciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgxNDQ1MjQ3LCJleHAiOjIwOTY4MDUyNDd9.UIq0sncXY7R0BisI_QO9vtGdiqhGEQ-nT09HFfwLrbA',
+        'Ev Shot Skin Boosting Mask': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/mask.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9tYXNrLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUyNzMsImV4cCI6MTc4MjMwOTI3M30.BCm0J8Rd3BpTw7UmuwyorhPvQWkH0uIljKN59dRQbwg',
+        'Active Barrier Hydrating Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/250707000867784.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS8yNTA3MDcwMDA4Njc3ODQuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTM2NywiZXhwIjoxNzgyMzA5MzY3fQ.hUKjhpuPoRD0a0Cvl5JShJzxznAavwPISbgOT2_ixQ8',
+        'Blue Crystal Hydrating Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Blue%20crystal%20hydrating%20ampoule.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9CbHVlIGNyeXN0YWwgaHlkcmF0aW5nIGFtcG91bGUuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2ODAsImV4cCI6MjA5NjgwNTY4MH0._ylMPkY3ip37yFfO9uJr8FLxThqJR-eV17UDEvHbNSU',
+        'Hyper Shot': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/hypershot.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9oeXBlcnNob3Qud2VicCIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU3MzgsImV4cCI6MjA5NjgwNTczOH0.EDNePKM0zrR_sOfSaLf3FIhF4cXuELce8AouWytiCVI',
+        'Cellular Water Ampoule Booster': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/ampoulbooster120.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9hbXBvdWxib29zdGVyMTIwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2MDAsImV4cCI6MjA5NjgwNTYwMH0.MOp7XSTZ4T2GrDdpSIQkZzE4fgYZs5G0Z6huTCd8hG4',
+        'Core Impact': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/coreimpact.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9jb3JlaW1wYWN0LmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2NTIsImV4cCI6MjA5NjgwNTY1Mn0.-i_vLHYLF0vRVYlz-OQ-XmBt3Xi48gtOcsbwBBIfqco'
     };
-  }, [products, selectedIds, settings]);
 
-  const formatKRW = (num) => new Intl.NumberFormat('ko-KR').format(num) + '원';
+    // 샘플 데이터 (DB 조회 완전 실패 대비용)
+    var mockProducts = [
+        { id: '05574dbc-bffb-4201-b46b-9f76f7e9b194', name: 'Plan Tox Lifting Ampoule', description: 'Skincare Product / 120ml', imageUrl: productImageMap['Plan Tox Lifting Ampoule'], price: 21000, cost: 6930 },
+        { id: '1112aac9-ec13-4f85-a5fd-43a1bba0ff00', name: 'Lift-Toning Sun Protector Cream', description: 'Skincare Product', imageUrl: productImageMap['Lift-Toning Sun Protector Cream'], price: 32000, cost: 10500 },
+        { id: '2222aac9-ec13-4f85-a5fd-43a1bba0ff00', name: 'Root Vitality Volume Shampoo', description: 'Haircare Product', imageUrl: productImageMap['Root Vitality Volume Shampoo'], price: 28000, cost: 8400 }
+    ];
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 p-4 md:p-8 font-sans">
-      
-      <header className="mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-600 rounded-lg text-white">
-              <Calculator size={24} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">공동구매 수익 시뮬레이션 시스템</h1>
-              <p className="text-sm text-slate-500">제품별 원가(production_cost) 및 수수료율을 기반으로 공헌/영업이익을 산출합니다.</p>
-            </div>
-          </div>
-          
-          {/* DB 로딩 상태 뱃지 */}
-          <div className="flex items-center gap-2 text-xs font-medium px-3 py-2 bg-white border border-slate-200 rounded-lg shadow-sm">
-            <Database size={14} className="text-slate-500" />
-            <span className="text-slate-500 mr-2">DB 데이터 수신:</span>
-            <span className={dbStatus.products > 0 ? "text-emerald-600" : "text-rose-500"}>제품({dbStatus.products})</span>
-            <span className={dbStatus.prices > 0 ? "text-emerald-600" : "text-rose-500"}>가격({dbStatus.prices})</span>
-            <span className={dbStatus.costs > 0 ? "text-emerald-600" : "text-rose-500"}>원가({dbStatus.costs})</span>
-          </div>
-        </div>
-        
-        {errorMsg && (
-          <div className="mt-4 flex items-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-200">
-            <AlertCircle size={18} />
-            <span className="text-sm">{errorMsg}</span>
-          </div>
-        )}
-      </header>
+    // 숫자 포맷팅 함수
+    var formatNum = (num) => {
+        if(!isFinite(num)) return '0';
+        return Math.round(num).toLocaleString('ko-KR');
+    };
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        
-        <div className="xl:col-span-7 flex flex-col gap-4">
-          <div 
-            className="flex items-center justify-between cursor-pointer hover:bg-slate-100 p-2 -mx-2 rounded-lg transition-colors"
-            onClick={() => setIsProductsExpanded(!isProductsExpanded)}
-          >
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <ShoppingBag size={20} className="text-indigo-600"/>
-              공동구매 진행 제품 선택
-            </h2>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-500">
-                선택됨: <strong className="text-indigo-600">{selectedIds.size}</strong>건
-              </span>
-              {isProductsExpanded ? (
-                <ChevronUp size={20} className="text-slate-400" />
-              ) : (
-                <ChevronDown size={20} className="text-slate-400" />
-              )}
-            </div>
-          </div>
+    var statusEl = document.getElementById('db-status');
 
-          {isProductsExpanded && (
-            loading ? (
-              <div className="flex justify-center items-center h-64 bg-white rounded-xl border border-slate-200 shadow-sm">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-2 mb-2">
-                  <button 
-                    onClick={() => setActiveTab('ALL')}
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                      activeTab === 'ALL' ? 'bg-slate-800 text-white' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-                    }`}
-                  >
-                    전체보기
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('스킨케어')}
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                      activeTab === '스킨케어' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                    }`}
-                  >
-                    스킨케어
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('디바이스')}
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                      activeTab === '디바이스' ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                    }`}
-                  >
-                    디바이스
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('기타')}
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                      activeTab === '기타' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                    }`}
-                  >
-                    기타 제품
-                  </button>
-                </div>
+    // 데이터 불러오기
+    async function fetchProducts() {
+        try {
+            const { data: products, error: prodErr } = await supabaseClient
+                .from('products')
+                .select('id, clean_name, main_category, sub_category, volume, color_option, qty')
+                .in('main_category', ['Skincare Product', 'Device Product']) 
+                .limit(200); // 용량별 다양한 제품을 모두 불러오기 위해 제한을 늘림
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {filteredProducts.map(product => {
-                    const isSelected = selectedIds.has(product.id);
-                    
-                    let badgeClass = 'bg-slate-100 text-slate-600';
-                    if (product.category === '스킨케어') badgeClass = 'bg-emerald-100 text-emerald-700';
-                    if (product.category === '디바이스') badgeClass = 'bg-blue-100 text-blue-700';
-                    if (product.category === '기타') badgeClass = 'bg-amber-100 text-amber-700';
+            if (prodErr) throw prodErr;
+            if (!products || products.length === 0) throw new Error("제품 데이터가 비어있습니다.");
 
-                    return (
-                      <div 
-                        key={product.id} 
-                        onClick={() => toggleSelection(product.id)}
-                        className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 bg-white shadow-sm hover:shadow-md ${
-                          isSelected ? 'border-indigo-600 bg-indigo-50/30' : 'border-slate-200 hover:border-indigo-300'
-                        }`}
-                      >
-                        {isSelected && (
-                          <div className="absolute top-3 right-3 text-indigo-600 bg-white rounded-full z-10">
-                            <CheckCircle2 size={24} className="fill-indigo-100" />
-                          </div>
-                        )}
-                        
-                        <div className="absolute top-3 left-3 z-10">
-                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}`}>
-                             {product.category}
-                           </span>
-                        </div>
-                        
-                        <div className="aspect-video bg-slate-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden border border-slate-100">
-                          {product.imageUrl ? (
-                            <img src={product.imageUrl} alt={product.name} className="object-cover w-full h-full" />
-                          ) : (
-                            <ImageIcon size={32} className="text-slate-300" />
-                          )}
-                        </div>
-                        
-                        <h3 className="font-bold text-slate-900 mb-1 line-clamp-1">{product.name}</h3>
-                        <p className="text-xs text-slate-500 mb-3 line-clamp-2 h-8">{product.description}</p>
-                        
-                        <div className="flex justify-between items-end mt-auto pt-3 border-t border-slate-100">
-                          <div>
-                            <div className="text-xs text-slate-400">판매가 (MSRP)</div>
-                            <div className={`font-semibold ${product.price === 0 ? 'text-amber-500' : 'text-slate-800'}`}>
-                              {product.price === 0 ? 'KRW 없음' : formatKRW(product.price)}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-xs text-slate-400">원가 (production_cost)</div>
-                            <div className={`font-semibold ${product.cost === 0 ? 'text-amber-500' : 'text-red-500'}`}>
-                              {product.cost === 0 ? 'KRW 없음' : formatKRW(product.cost)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  
-                  {filteredProducts.length === 0 && (
-                     <div className="col-span-1 sm:col-span-2 text-center py-10 text-slate-500">
-                       해당 카테고리에 표시할 제품이 없습니다.
-                     </div>
-                  )}
-                </div>
-              </div>
-            )
-          )}
-        </div>
+            const productIds = products.map(p => p.id);
 
-        <div className="xl:col-span-5 flex flex-col gap-6">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-4">
-            <h2 className="text-lg font-semibold flex items-center gap-2 mb-4 border-b pb-3 border-slate-100">
-              <Settings size={20} className="text-slate-600"/>
-              시뮬레이션 변수 설정
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1">예상 판매 수량(건)</label>
-                <FormattedNumberInput 
-                  name="salesQty"
-                  value={settings.salesQty}
-                  onChange={handleSettingChange}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="pt-2">
-                <label className="block text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wider">변동비 (수수료율 %)</label>
-                <div className="grid grid-cols-3 gap-3">
-                  <FeeInput label="배송비" name="shippingRate" value={settings.shippingRate} onChange={handleSettingChange} />
-                  <FeeInput label="플랫폼" name="platformRate" value={settings.platformRate} onChange={handleSettingChange} />
-                  <FeeInput label="카드수수료" name="cardRate" value={settings.cardRate} onChange={handleSettingChange} />
-                  <FeeInput label="공구수수료" name="groupBuyRate" value={settings.groupBuyRate} onChange={handleSettingChange} />
-                  <FeeInput label="인센티브" name="incentiveRate" value={settings.incentiveRate} onChange={handleSettingChange} />
-                  <FeeInput label="소개비" name="referralRate" value={settings.referralRate} onChange={handleSettingChange} />
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100">
-                <div className="flex justify-between items-center mb-3">
-                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">월 고정비 (원)</label>
-                   <span className="text-xs font-bold text-indigo-600">합계: {formatKRW(calculations.fixedCost)}</span>
-                </div>
+            const { data: prices, error: priceErr } = await supabaseClient
+                .from('product_prices')
+                .select('product_id, b2c_msrp, currency')
+                .eq('currency', 'KRW')
+                .in('product_id', productIds);
                 
-                <div className="space-y-3">
-                  <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] text-slate-500 mb-1">인건비 (1인당)</label>
-                      <div className="flex items-center">
-                        <FormattedNumberInput 
-                          name="laborCostPerPerson"
-                          value={settings.laborCostPerPerson}
-                          onChange={handleSettingChange}
-                          className="w-full bg-transparent text-sm font-semibold text-slate-800 focus:outline-none"
-                        />
-                        <span className="text-xs text-slate-400">원</span>
-                      </div>
-                    </div>
-                    <div className="border-l border-slate-200 pl-3">
-                      <label className="block text-[10px] text-slate-500 mb-1">근무 인원</label>
-                      <div className="flex items-center">
-                        <FormattedNumberInput 
-                          name="laborCount"
-                          value={settings.laborCount}
-                          onChange={handleSettingChange}
-                          className="w-full bg-transparent text-sm font-semibold text-slate-800 focus:outline-none"
-                        />
-                        <span className="text-xs text-slate-400">명</span>
-                      </div>
-                    </div>
-                  </div>
+            if (priceErr) console.warn("가격 정보 조회 에러:", priceErr.message);
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <CostInput label="임대료" name="rentCost" value={settings.rentCost} onChange={handleSettingChange} />
-                    <CostInput label="마케팅비" name="marketingCost" value={settings.marketingCost} onChange={handleSettingChange} />
-                    <CostInput label="샘플비" name="sampleCost" value={settings.sampleCost} onChange={handleSettingChange} />
-                  </div>
-                  
-                  <div className="pt-2">
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="block text-[10px] font-semibold text-slate-500">공통비 배부 (프로젝트별)</label>
-                      <span className="text-[10px] font-semibold text-slate-400">소계: {formatKRW(calculations.totalCommonCost)}</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <CostInput label="임원" name="commonExecutiveCost" value={settings.commonExecutiveCost} onChange={handleSettingChange} />
-                      <CostInput label="경영관리" name="commonManagementCost" value={settings.commonManagementCost} onChange={handleSettingChange} />
-                      <CostInput label="연구소" name="commonRndCost" value={settings.commonRndCost} onChange={handleSettingChange} />
-                    </div>
-                  </div>
+            const { data: costs, error: costErr } = await supabaseClient
+                .from('product_costs')
+                .select('product_id, production_cost, currency')
+                .in('product_id', productIds);
+                
+            if (costErr) console.warn("원가 정보 조회 에러:", costErr.message);
 
-                  <div className="pt-2">
-                    <label className="block text-[10px] font-semibold text-slate-500 mb-2">기타 세부 비용</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <CostInput label="포장/부자재비" name="packagingCost" value={settings.packagingCost} onChange={handleSettingChange} />
-                      <CostInput label="서버/유지비" name="serverCost" value={settings.serverCost} onChange={handleSettingChange} />
-                      <CostInput label="사무/소모품비" name="officeCost" value={settings.officeCost} onChange={handleSettingChange} />
-                      <CostInput label="기타 예비비" name="otherMiscCost" value={settings.otherMiscCost} onChange={handleSettingChange} />
-                    </div>
-                  </div>
+            productsData = products.map(p => {
+                const priceObj = prices?.find(pr => pr.product_id === p.id);
+                const costObj = costs?.find(c => c.product_id === p.id && (c.currency === 'KRW' || !c.currency)) 
+                             || costs?.find(c => c.product_id === p.id);
+                
+                // 용량, 색상, 수량 등 옵션 표기 병합
+                let displayName = p.clean_name || '제품명 없음';
+                let options = [];
+                if (p.volume && p.volume.trim() !== '') options.push(p.volume.trim());
+                if (p.color_option && p.color_option.trim() !== '') options.push(p.color_option.trim());
+                if (p.qty && p.qty.trim() !== '') options.push(p.qty.trim());
+                
+                if (options.length > 0) {
+                    displayName += ` (${options.join(', ')})`;
+                }
+                
+                const fallbackImg = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=300&q=80';
+                
+                return {
+                    id: p.id,
+                    name: displayName, 
+                    cleanName: p.clean_name, // 이미지 매핑용 원본 이름 보존
+                    mainCategory: p.main_category || '', 
+                    imageUrl: productImageMap[p.clean_name?.trim()] || fallbackImg,
+                    price: priceObj?.b2c_msrp || 0, 
+                    cost: costObj?.production_cost || 0 
+                };
+            });
+
+            const excludedKeywords = ['스칼프 md', 'echrever', '크리스탈'];
+            
+            productsData = productsData.filter(prod => {
+                const lowerName = prod.name.toLowerCase();
+                const isExcludedName = excludedKeywords.some(keyword => lowerName.includes(keyword));
+                return !isExcludedName;
+            });
+            
+            statusEl.className = 'status-success';
+            statusEl.innerText = 'Supabase 데이터베이스 연동 및 데이터 매핑 성공!';
+            
+        } catch (error) {
+            console.error("데이터 로드 실패:", error.message);
+            productsData = mockProducts;
+            statusEl.className = 'status-mock';
+            statusEl.innerText = 'DB 연결 불가. 샘플 데이터로 시뮬레이션 합니다.';
+        } finally {
+            if(productsData.length > 0) {
+                // 특정 상품들 기본 선택 로직 (Plan Tox, Lift-Toning, Root Vitality가 있다면 선택)
+                const preselectedNames = ['Plan Tox Lifting Ampoule', 'Lift-Toning Sun Protector Cream', 'Root Vitality Volume Shampoo'];
+                productsData.forEach(p => {
+                    if(preselectedNames.includes(p.name)) {
+                        selectedProducts.push(p.id);
+                    }
+                });
+                
+                // 매칭되는게 하나도 없다면 첫번째만 선택
+                if(selectedProducts.length === 0) {
+                    selectedProducts.push(productsData[0].id);
+                }
+            }
+            populateSelects(); 
+            renderProducts();
+            updateAutoSupplyRatio();
+            updateFixedCostsByPeople(); // 인원수 기반 초기 세팅
+        }
+    }
+
+    // 샘플 및 사은품 드롭다운 초기화
+    function populateSelects() {
+        const giftSelect = document.getElementById('giftSelect');
+        const sampleSelect = document.getElementById('sampleSelect');
+        
+        giftSelect.innerHTML = '<option value="">사은품 선택 안함</option>';
+        sampleSelect.innerHTML = '<option value="">샘플 선택 안함</option>';
+        
+        productsData.forEach(p => {
+            const shortName = p.name.length > 25 ? p.name.substring(0, 25) + '...' : p.name;
+            const optionHtml = `<option value="${p.id}">${shortName} (원가: ${formatNum(p.cost)}원)</option>`;
+            
+            giftSelect.innerHTML += optionHtml;
+            sampleSelect.innerHTML += optionHtml;
+        });
+    }
+
+    // 고정비 인원 연동 산출
+    function updateFixedCostsByPeople() {
+        const people = Number(document.getElementById('fcPeople').value) || 0;
+        
+        document.getElementById('fcLabor').value = people * 150000;
+        document.getElementById('fcTravel').value = people * 50000;
+        document.getElementById('fcFood').value = people * 30000;
+        
+        calculate();
+    }
+
+    // 샘플 비용 계산 및 고정비 반영
+    function updateSampleCost() {
+        const sampleId = document.getElementById('sampleSelect').value;
+        const qty = Number(document.getElementById('sampleQty').value) || 0;
+        let sampleCost = 0;
+
+        if (sampleId) {
+            const p = productsData.find(x => x.id === sampleId);
+            if (p) {
+                sampleCost = p.cost * qty;
+            }
+        }
+
+        document.getElementById('sampleCostDisplay').innerText = `= ${formatNum(sampleCost)} 원`;
+        document.getElementById('fcSamples').value = sampleCost;
+        calculate(); 
+    }
+
+    // 사은품 비용 계산 및 고정비 반영
+    function updateGiftCost() {
+        const giftId = document.getElementById('giftSelect').value;
+        const qty = Number(document.getElementById('giftQty').value) || 0;
+        let giftCost = 0;
+
+        if (giftId) {
+            const p = productsData.find(x => x.id === giftId);
+            if (p) {
+                giftCost = p.cost * qty;
+            }
+        }
+
+        document.getElementById('giftCostDisplay').innerText = `= ${formatNum(giftCost)} 원`;
+        document.getElementById('fcGifts').value = giftCost;
+        calculate(); 
+    }
+
+    // 제품공급가 비율 자동 계산 로직
+    function updateAutoSupplyRatio() {
+        if (selectedProducts.length === 0) {
+            document.getElementById('ratioSupply').value = 0;
+            return;
+        }
+
+        let totalCost = 0;
+        let totalPrice = 0;
+
+        selectedProducts.forEach(id => {
+            const p = productsData.find(x => x.id === id);
+            if (p) {
+                totalCost += p.cost;
+                totalPrice += p.price;
+            }
+        });
+
+        if (totalPrice > 0) {
+            const ratio = (totalCost / totalPrice) * 100;
+            document.getElementById('ratioSupply').value = ratio.toFixed(2); 
+        } else {
+            document.getElementById('ratioSupply').value = 0;
+        }
+    }
+
+    // 제품 UI 렌더링
+    function renderProducts() {
+        const container = document.getElementById('product-list');
+        container.innerHTML = '';
+        
+        productsData.forEach(prod => {
+            const card = document.createElement('div');
+            card.className = `product-card ${selectedProducts.includes(prod.id) ? 'selected' : ''}`;
+            card.id = `prod-${prod.id}`;
+            card.onclick = () => toggleProduct(prod.id);
+            
+            // 실제 이미지 URL을 그대로 사용 (랜덤 로직 제거)
+            prod.displayImgUrl = prod.imageUrl;
+
+            // 회색 텍스트(카테고리/용량 설명) 부분 삭제됨
+            card.innerHTML = `
+                <img src="${prod.displayImgUrl}" alt="${prod.name}" onerror="this.src='https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=300&q=80'">
+                <div style="font-weight:600; font-size:1.05rem; margin-bottom:12px;">${prod.name}</div>
+                <div class="price">소비자가: ${formatNum(prod.price)}원</div>
+                <div class="cost-badge">원가 참고: ${formatNum(prod.cost)}원</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // 제품 선택/해제 토글
+    function toggleProduct(id) {
+        const index = selectedProducts.indexOf(id);
+        const cardElement = document.getElementById(`prod-${id}`);
+        
+        if (index > -1) {
+            if (selectedProducts.length > 1) {
+                selectedProducts.splice(index, 1);
+                cardElement.classList.remove('selected');
+            }
+        } else {
+            selectedProducts.push(id);
+            cardElement.classList.add('selected');
+        }
+
+        updateAutoSupplyRatio();
+        calculate();
+    }
+
+    // 수익구조 계산 로직
+    function calculate() {
+        const packageInfoEl = document.getElementById('selected-package-info');
+        const sampleInfoEl = document.getElementById('selected-sample-info');
+        const giftInfoEl = document.getElementById('selected-gift-info');
+
+        // 선택된 제품이 없을 때
+        if (selectedProducts.length === 0) {
+            packageInfoEl.innerHTML = `
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-7.1-7.1c-1.4-1.4-3.6-1.4-5 0l-7.1 7.1"/><path d="m21 8-7.1 7.1c-1.4 1.4-3.6 1.4-5 0L1.8 8"/><path d="M12 2v20"/></svg>
+                    <span><strong>현재 패키지 구성:</strong> 선택된 제품이 없습니다.</span>
                 </div>
-              </div>
+            `;
+            sampleInfoEl.style.display = 'none';
+            giftInfoEl.style.display = 'none';
+            resetTable();
+            return;
+        }
+
+        // 선택된 패키지 정보
+        let packagePrice = 0;
+        let itemsHtml = [];
+        
+        selectedProducts.forEach(id => {
+            const p = productsData.find(x => x.id === id);
+            if(p) {
+                packagePrice += p.price;
+                itemsHtml.push(`
+                    <div class="pkg-item">
+                        <img src="${p.displayImgUrl || p.imageUrl}" alt="${p.name}">
+                        <span>${p.name}</span>
+                    </div>
+                `);
+            }
+        });
+
+        packageInfoEl.innerHTML = `
+            <div style="display:flex; align-items:center; margin-right:16px; flex-shrink:0; color: #1e3a8a;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <span><strong>현재 패키지 구성 (${selectedProducts.length}종):</strong></span>
             </div>
-          </div>
+            ${itemsHtml.join('<div class="pkg-plus">+</div>')}
+        `;
 
-          <div className="bg-indigo-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-white opacity-5"></div>
-            <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
-
-            <h2 className="text-lg font-semibold flex items-center gap-2 mb-6 relative z-10">
-              <TrendingUp size={20} className="text-indigo-300"/>
-              예상 수익 결과
-            </h2>
-
-            {calculations.selectedCount === 0 ? (
-              <div className="text-center py-8 opacity-70 relative z-10">
-                <AlertCircle size={32} className="mx-auto mb-2 opacity-50" />
-                <p>수익을 계산할 제품을 왼쪽에서 선택해주세요.</p>
-              </div>
-            ) : (
-              <div className="space-y-5 relative z-10">
-                <div className="flex justify-between items-end border-b border-indigo-700 pb-3">
-                  <div className="text-indigo-200 text-sm">예상 총 매출액</div>
-                  <div className="text-2xl font-bold">{formatKRW(calculations.totalSales)}</div>
-                </div>
-
-                <div className="space-y-2 py-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-indigo-300">- 총 변동비</span>
-                    <span className="text-rose-300">{formatKRW(calculations.totalVariableCost)}</span>
-                  </div>
-                  <div className="flex justify-between text-xs pl-3 opacity-60">
-                    <span>(제품공급가 포함)</span>
-                    <span>{formatKRW(calculations.totalCogs)}</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center bg-white/10 p-3 rounded-lg">
-                  <div>
-                    <div className="text-sm font-medium text-indigo-100">공헌이익 (이익률)</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-emerald-400">{formatKRW(calculations.contributionMargin)}</div>
-                    <div className="text-xs text-emerald-200 bg-emerald-900/40 inline-block px-2 py-0.5 rounded-full mt-1">
-                      {calculations.contributionMarginRatio.toFixed(1)}%
+        // 샘플 정보
+        const sampleId = document.getElementById('sampleSelect').value;
+        const sampleQty = Number(document.getElementById('sampleQty').value) || 0;
+        if (sampleId && sampleQty > 0) {
+            const sampleProd = productsData.find(x => x.id === sampleId);
+            if (sampleProd) {
+                sampleInfoEl.style.display = 'flex';
+                sampleInfoEl.innerHTML = `
+                    <div style="display:flex; align-items:center; margin-right:16px; flex-shrink:0; color: var(--success);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><line x1="5.52" x2="18.48" y1="16" y2="16"/></svg>
+                        <span><strong>제공 샘플:</strong></span>
                     </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-between text-sm pt-2">
-                  <span className="text-indigo-300">- 고정비</span>
-                  <span className="text-rose-300">{formatKRW(calculations.fixedCost)}</span>
-                </div>
-
-                <div className="pt-4 border-t border-indigo-700/50 mt-2">
-                  <div className="flex justify-between items-end">
-                    <div className="text-indigo-200">
-                      <div className="text-sm mb-1">최종 영업이익</div>
-                      <div className="text-xs bg-indigo-800 px-2 py-1 rounded text-indigo-200 inline-block">
-                        이익률: {calculations.operatingProfitRatio.toFixed(1)}%
-                      </div>
+                    <div class="pkg-item">
+                        <img src="${sampleProd.displayImgUrl || sampleProd.imageUrl}" alt="${sampleProd.name}" style="border-color: var(--success);">
+                        <span>${sampleProd.name}<br><span style="color:var(--success);">(${sampleQty}개 제공)</span></span>
                     </div>
-                    <div className="text-3xl font-extrabold text-white flex items-center gap-1">
-                      <DollarSign size={24} className="text-indigo-300" />
-                      {formatKRW(calculations.operatingProfit)}
+                `;
+            } else { sampleInfoEl.style.display = 'none'; }
+        } else { sampleInfoEl.style.display = 'none'; }
+
+        // 사은품 정보
+        const giftId = document.getElementById('giftSelect').value;
+        const giftQty = Number(document.getElementById('giftQty').value) || 0;
+        if (giftId && giftQty > 0) {
+            const giftProd = productsData.find(x => x.id === giftId);
+            if (giftProd) {
+                giftInfoEl.style.display = 'flex';
+                giftInfoEl.innerHTML = `
+                    <div style="display:flex; align-items:center; margin-right:16px; flex-shrink:0; color: var(--gift);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><polyline points="20 12 20 22 4 22 4 12"/><rect width="20" height="5" x="2" y="7"/><line x1="12" x2="12" y1="22" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                        <span><strong>제공 사은품:</strong></span>
                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+                    <div class="pkg-item">
+                        <img src="${giftProd.displayImgUrl || giftProd.imageUrl}" alt="${giftProd.name}" style="border-color: var(--gift);">
+                        <span>${giftProd.name}<br><span style="color:var(--gift);">(${giftQty}개 제공)</span></span>
+                    </div>
+                `;
+            } else { giftInfoEl.style.display = 'none'; }
+        } else { giftInfoEl.style.display = 'none'; }
 
-function FormattedNumberInput({ name, value, onChange, isDecimal = false, className }) {
-  const [inputValue, setInputValue] = useState(() => {
-    if (value === 0) return '0';
-    return isDecimal ? value.toString() : value.toLocaleString('en-US');
-  });
+        // 수량 및 비율 
+        const targetQty = Number(document.getElementById('targetQty').value) || 0;
+        const rSupply = Number(document.getElementById('ratioSupply').value) / 100;
+        const rShipping = Number(document.getElementById('ratioShipping').value) / 100;
+        const rPlatform = Number(document.getElementById('ratioPlatform').value) / 100;
+        const rCard = Number(document.getElementById('ratioCard').value) / 100;
+        const rGonggu = Number(document.getElementById('ratioGonggu').value) / 100;
+        const rIncentive = Number(document.getElementById('ratioIncentive').value) / 100;
+        const rReferral = Number(document.getElementById('ratioReferral').value) / 100;
 
-  useEffect(() => {
-    const numericInput = parseFloat(inputValue.replace(/,/g, ''));
-    if (isNaN(numericInput) || numericInput !== value) {
-      setInputValue(value === 0 ? '0' : value.toLocaleString('en-US', { maximumFractionDigits: 10 }));
+        const totalVcRatio = rSupply + rShipping + rPlatform + rCard + rGonggu + rIncentive + rReferral; 
+        const cmRatio = 1 - totalVcRatio;
+
+        const unitRev = packagePrice;
+        const unitVc = packagePrice * totalVcRatio;
+        const unitCm = packagePrice * cmRatio;
+
+        // 고정비 산출
+        const fcLabor = Number(document.getElementById('fcLabor').value) || 0;
+        const fcRent = Number(document.getElementById('fcRent').value) || 0;
+        const fcTravel = Number(document.getElementById('fcTravel').value) || 0;
+        const fcFood = Number(document.getElementById('fcFood').value) || 0;
+        const fcProps = Number(document.getElementById('fcProps').value) || 0;
+        const fcSamples = Number(document.getElementById('fcSamples').value) || 0;
+        const fcGifts = Number(document.getElementById('fcGifts').value) || 0;
+        const fcOther = Number(document.getElementById('fcOther').value) || 0;
+        
+        const totalFc = fcLabor + fcRent + fcTravel + fcFood + fcProps + fcSamples + fcGifts + fcOther;
+        
+        // 공통비 (배부율 반영) 산출
+        const ccExecutive = Number(document.getElementById('ccExecutive').value) || 0;
+        const ccManagement = Number(document.getElementById('ccManagement').value) || 0;
+        const ccResearch = Number(document.getElementById('ccResearch').value) || 0;
+        const ccAllocationRate = Number(document.getElementById('ccAllocationRate').value) || 0;
+        
+        const baseTotalCc = ccExecutive + ccManagement + ccResearch;
+        const totalCc = baseTotalCc * (ccAllocationRate / 100);
+        
+        document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
+        document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
+
+        // BEP 계산
+        const totalFixedAndCommon = totalFc + totalCc;
+        const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
+        const bepRev = bepQty * unitRev;
+        const bepVc = bepQty * unitVc;
+        const bepCm = bepRev - bepVc;
+        const bepOp = bepCm - totalFc - totalCc;
+
+        // 목표 달성 시 계산
+        const targetRev = targetQty * unitRev;
+        const targetVc = targetQty * unitVc;
+        const targetCm = targetRev - targetVc;
+        const targetOp = targetCm - totalFc - totalCc;
+
+        // 결과 테이블 렌더링
+        document.getElementById('resUnitRev').innerText = formatNum(unitRev);
+        document.getElementById('resUnitVc').innerText = formatNum(unitVc);
+        document.getElementById('resUnitCm').innerText = formatNum(unitCm);
+
+        document.getElementById('resBepRev').innerText = formatNum(bepRev);
+        document.getElementById('resBepVc').innerText = formatNum(bepVc);
+        document.getElementById('resBepCm').innerText = formatNum(bepCm);
+        document.getElementById('resBepFc').innerText = formatNum(totalFc);
+        document.getElementById('resBepCc').innerText = formatNum(totalCc);
+        document.getElementById('resBepOp').innerText = formatNum(Math.abs(bepOp) < 1 ? 0 : bepOp); 
+
+        document.getElementById('resTargetRev').innerText = formatNum(targetRev);
+        document.getElementById('resTargetVc').innerText = formatNum(targetVc);
+        document.getElementById('resTargetCm').innerText = formatNum(targetCm);
+        document.getElementById('resTargetFc').innerText = formatNum(totalFc);
+        document.getElementById('resTargetCc').innerText = formatNum(totalCc);
+        
+        const targetOpEl = document.getElementById('resTargetOp');
+        targetOpEl.innerText = formatNum(targetOp);
+        targetOpEl.style.color = targetOp >= 0 ? 'var(--success)' : 'var(--danger)';
+
+        document.getElementById('resTargetQtyText').innerText = formatNum(targetQty);
+        document.getElementById('resBepQtyText').innerText = formatNum(Math.ceil(bepQty)); 
     }
-  }, [value]);
 
-  const handleChange = (e) => {
-    let raw = e.target.value.replace(/,/g, '');
-    
-    if (isDecimal) {
-      raw = raw.replace(/[^0-9.]/g, '');
-      const parts = raw.split('.');
-      if (parts.length > 2) {
-        raw = parts[0] + '.' + parts.slice(1).join('');
-      }
-    } else {
-      raw = raw.replace(/[^0-9]/g, '');
+    function resetTable() {
+        const zeros = ['resUnitRev', 'resUnitVc', 'resUnitCm', 'resBepRev', 'resBepVc', 'resBepCm', 'resBepFc', 'resBepCc', 'resBepOp', 'resTargetRev', 'resTargetVc', 'resTargetCm', 'resTargetFc', 'resTargetCc', 'resTargetOp', 'resTargetQtyText', 'resBepQtyText'];
+        zeros.forEach(id => document.getElementById(id).innerText = '0');
+        document.getElementById('totalFcDisplay').innerText = '0 원';
+        document.getElementById('totalCcDisplay').innerText = '0 원';
     }
 
-    if (raw.length > 1 && raw.startsWith('0') && !raw.startsWith('0.')) {
-      raw = raw.replace(/^0+/, '');
-      if (raw === '') raw = '0';
-    }
-
-    let formatted = '';
-    if (raw !== '') {
-      const parts = raw.split('.');
-      if (parts[0] !== '') {
-        parts[0] = parseInt(parts[0], 10).toLocaleString('en-US');
-      }
-      formatted = parts.join('.');
-    }
-
-    if (e.target.value === '') {
-      formatted = '';
-      raw = '0';
-    }
-
-    setInputValue(formatted);
-
-    const numValue = parseFloat(raw);
-    onChange({
-      target: {
-        name,
-        value: isNaN(numValue) ? 0 : numValue
-      }
-    });
-  };
-
-  const handleFocus = () => {
-    if (inputValue === '0') {
-      setInputValue('');
-    }
-  };
-
-  const handleBlur = () => {
-    if (inputValue === '' || inputValue === '.') {
-      setInputValue('0');
-      onChange({ target: { name, value: 0 } });
-    } else if (inputValue.endsWith('.')) {
-      const noDot = inputValue.slice(0, -1);
-      setInputValue(noDot);
-    }
-  };
-
-  return (
-    <input 
-      type="text" 
-      name={name}
-      value={inputValue}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      className={className}
-    />
-  );
-}
-
-function FeeInput({ label, name, value, onChange }) {
-  return (
-    <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
-      <label className="block text-[10px] text-slate-500 mb-1">{label}</label>
-      <div className="flex items-center">
-        <FormattedNumberInput 
-          name={name}
-          value={value}
-          onChange={onChange}
-          isDecimal={true}
-          className="w-full bg-transparent text-sm font-semibold text-slate-800 focus:outline-none"
-        />
-        <span className="text-xs text-slate-400">%</span>
-      </div>
-    </div>
-  );
-}
-
-function CostInput({ label, name, value, onChange }) {
-  return (
-    <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
-      <label className="block text-[10px] text-slate-500 mb-1">{label}</label>
-      <div className="flex items-center">
-        <FormattedNumberInput 
-          name={name}
-          value={value}
-          onChange={onChange}
-          isDecimal={false}
-          className="w-full bg-transparent text-sm font-semibold text-slate-800 focus:outline-none"
-        />
-        <span className="text-xs text-slate-400">원</span>
-      </div>
-    </div>
-  );
-}
+    window.onload = fetchProducts;
+</script>
+</body>
+</html>
