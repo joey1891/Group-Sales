@@ -3,122 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공동구매 시뮬레이터</title>
+    <title>Group Buying Profit Simulator</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --gift: #ec4899;
+            --bg-page: #0f172a;        /* 전체 배경: Slate 900 */
+            --card-bg: #ffffff;        /* 패널 배경: 순백색 */
+            --primary: #1e293b;        /* 버튼 및 짙은 강조: Slate 800 */
+            --primary-hover: #334155;
+            --accent: #3b82f6;         /* 포인트 블루 */
+            --accent-hover: #2563eb;
+            --bg-light: #f8fafc;       /* 카드 내부의 밝은 회색 배경: Slate 50 */
+            --text-main: #334155;      /* Slate 700 */
+            --text-bold: #0f172a;      /* Slate 900 */
+            --text-muted: #64748b;     /* Slate 500 */
+            --text-inverse: #ffffff;   /* 짙은 배경 위의 흰 글씨 */
+            --border: #e2e8f0;         /* Slate 200 */
+            --success: #059669;        
+            --danger: #e11d48;         
+            --gift: #7c3aed;           
         }
 
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color); 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-page); 
             color: var(--text-main); 
             margin: 0; 
-            padding: 20px; 
-            line-height: 1.5;
+            padding: 40px 20px; 
+            line-height: 1.6;
+            letter-spacing: -0.015em;
         }
         
-        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 768px) { .container { grid-template-columns: 1fr 1fr; } }
-        .panel { background: var(--card-bg); padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 24px; }
+        @media (min-width: 900px) { .container { grid-template-columns: 1fr 1fr; } }
+        .panel { background: var(--card-bg); padding: 32px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1); border: none; }
         .full-width { grid-column: 1 / -1; }
         
-        h1 { font-size: 1.5rem; color: var(--text-main); margin-top: 0; margin-bottom: 24px; text-align: center; }
-        h2 { font-size: 1.25rem; color: var(--text-main); margin-top: 0; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
-        h3 { font-size: 1.05rem; color: var(--text-muted); margin-top: 24px; margin-bottom: 8px; }
+        .page-title-container { text-align: center; margin-bottom: 40px; }
+        .page-title { font-size: 2.25rem; font-weight: 800; color: var(--text-inverse); margin: 0 0 8px 0; letter-spacing: -0.03em; }
+        .page-subtitle { font-size: 1rem; font-weight: 500; color: #94a3b8; margin: 0; letter-spacing: -0.01em; }
 
-        .category-header { font-size: 1.2rem; color: var(--text-main); margin: 24px 0 12px 0; padding-bottom: 6px; border-bottom: 2px solid var(--border); font-weight: bold; }
-        .subcategory-header { font-size: 1.05rem; color: var(--primary); margin: 16px 0 12px 0; font-weight: 600; padding-left: 8px; border-left: 4px solid var(--primary); }
+        h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-bold); margin-top: 0; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px; display: inline-block; width: 100%;}
+        h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-top: 28px; margin-bottom: 12px; }
 
-        .product-grid-inner { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .product-card { border: 2px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s ease; background: #fff; display: flex; flex-direction: column; align-items: center; }
-        .product-card:hover { border-color: #93c5fd; transform: translateY(-2px); }
-        .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 12px; background: #fafafa;}
-        .product-card.selected { border-color: var(--primary); background-color: #eff6ff; }
-        .product-card .price { font-weight: 600; color: var(--primary); margin-top: auto; }
-        .product-card .cost-badge { font-size: 0.8rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+        .category-header { font-size: 1.15rem; color: var(--text-bold); margin: 28px 0 16px 0; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-weight: 700; }
+        .subcategory-header { font-size: 1rem; color: var(--accent); margin: 16px 0 12px 0; font-weight: 600; padding-left: 10px; border-left: 3px solid var(--accent); }
+
+        .product-grid-inner { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .product-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s ease-in-out; background: #fff; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .product-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(59, 130, 246, 0.15); }
+        .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 16px; background: var(--bg-light); padding: 8px; box-sizing: border-box; mix-blend-mode: multiply;}
+        .product-card.selected { border-color: var(--accent); background-color: #eff6ff; box-shadow: 0 0 0 2px var(--accent); }
+        .product-card .price { font-weight: 700; color: var(--text-bold); margin-top: auto; font-size: 1.05rem; }
+        .product-card .cost-badge { font-size: 0.8rem; background: var(--bg-light); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; margin-top: 6px; font-weight: 500; border: 1px solid var(--border); }
         
-        .btn-crawl { background-color: #03c75a; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-top: 8px; width: 100%; transition: background-color 0.2s; }
-        .btn-crawl:hover { background-color: #02a348; }
-        .btn-crawl:disabled { background-color: #a7f3d0; cursor: not-allowed; }
+        .btn-crawl { background-color: #fff; color: var(--text-bold); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 12px; width: 100%; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .btn-crawl:hover { background-color: var(--bg-light); border-color: #cbd5e1; color: var(--accent); }
+        .btn-crawl:disabled { background-color: var(--bg-light); color: #94a3b8; cursor: not-allowed; border-color: var(--border); }
 
-        .added-item-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-        .added-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; }
-        .added-item-del { color: var(--danger); cursor: pointer; font-weight: bold; padding: 4px; }
+        .btn-print { background-color: #fff; color: var(--text-main); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .btn-print:hover { background-color: var(--bg-light); border-color: var(--text-muted); }
+        .btn-print.primary { background-color: var(--primary); color: #fff; border-color: var(--primary); }
+        .btn-print.primary:hover { background-color: var(--primary-hover); }
+
+        .added-item-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+        .added-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-light); padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; font-weight: 500; color: var(--text-bold); }
+        .added-item-del { color: var(--danger); cursor: pointer; font-weight: bold; padding: 4px; background: #fff; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background-color 0.2s; }
+        .added-item-del:hover { background-color: #ffe4e6; }
         
-        .package-visualizer { display: flex; align-items: center; gap: 12px; padding: 16px; background-color: #eff6ff; border-radius: 8px; border: 1px dashed var(--primary); overflow-x: auto; margin-bottom: 16px; }
+        .package-visualizer { display: flex; align-items: center; gap: 16px; padding: 20px; background-color: var(--bg-light); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 20px; }
         .pkg-item { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100px; flex-shrink: 0; }
-        .pkg-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 6px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .pkg-item span { font-size: 0.75rem; line-height: 1.2; word-break: keep-all; color: #374151; font-weight: 600; }
-        .pkg-plus { font-weight: bold; color: #9ca3af; font-size: 1.5rem; flex-shrink: 0; }
+        .pkg-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); padding: 2px; }
+        .pkg-item span { font-size: 0.8rem; line-height: 1.3; word-break: keep-all; color: var(--text-bold); font-weight: 600; }
+        .pkg-plus { font-weight: bold; color: #cbd5e1; font-size: 1.5rem; flex-shrink: 0; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
-        th, td { border: 1px solid var(--border); padding: 12px; }
-        th { background-color: #f9fafb; text-align: center; font-weight: 600; }
-        td { text-align: right; }
-        td:first-child { text-align: left; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; font-size: 0.95rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        th, td { border-bottom: 1px solid var(--border); padding: 14px 16px; border-right: none; border-left: none; }
+        th { background-color: var(--bg-light); text-align: center; font-weight: 600; color: var(--text-muted); }
+        td { text-align: right; background: #fff; }
+        td:first-child { text-align: left; font-weight: 500; background: var(--bg-light); border-right: 1px solid var(--border); width: 40%; color: var(--text-bold); }
+        tr:last-child th, tr:last-child td { border-bottom: none; }
         
-        input[type="number"], input[type="text"] { width: 100px; padding: 6px 8px; text-align: right; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
-        select { padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border); }
-        button { background-color: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        input[type="number"], input[type="text"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
+        input[readonly] { color: var(--text-muted); background: var(--bg-light); border-color: transparent; }
+        input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        select { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); font-family: inherit; font-size: 0.95rem; outline: none; background: #fff; font-weight: 500; color: var(--text-bold); }
+        select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        button { background-color: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit; transition: background-color 0.2s; }
+        button:hover { background-color: var(--primary-hover); }
         
-        #resultTable th, #resultTable td { text-align: right; padding: 12px 8px; }
-        #resultTable td:first-child { text-align: center; font-weight: 600; }
-        .result-highlight { font-weight: bold; color: var(--danger); font-size: 1.05em; }
-        .success-highlight { font-weight: bold; color: var(--success); font-size: 1.05em; }
-        .bep-row { background-color: #fef2f2; }
-        .target-row { background-color: #f0fdf4; }
+        /* Dashboard Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
         
-        .summary-text { text-align: right; margin-top: 12px; color: var(--text-muted); font-size: 0.9rem; }
+        /* Partner Card (Blue Accent) */
+        .partner-summary-card { background: #ffffff; border: 1px solid var(--border); border-top: 4px solid var(--accent); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+        .partner-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .partner-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
+        .partner-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
+        .partner-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: var(--bg-light); border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
+
+        /* HQ Card (Slate Accent) */
+        .hq-summary-card { background: var(--bg-light); border: 1px solid var(--border); border-top: 4px solid var(--text-bold); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .hq-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .hq-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--text-bold); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
+        .hq-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
+        .hq-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: #fff; border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
+
+        /* 결과 테이블 디자인 개선 */
+        #resultTable { table-layout: fixed; }
+        #resultTable th { background: var(--bg-light); color: var(--text-bold); text-align: center; border-right: 1px solid var(--border); border-bottom: 2px solid var(--border); font-weight: 700; word-break: keep-all; }
+        #resultTable th:last-child { border-right: none; }
+        #resultTable td { text-align: right; padding: 16px 12px; border-right: 1px solid var(--border); word-break: keep-all; }
+        #resultTable td:last-child { border-right: none; }
+        #resultTable td:first-child { text-align: center; font-weight: 600; background: #fff; width: auto; }
+        #resultTable tr.bep-row td { background-color: var(--bg-light); color: var(--text-muted); }
+        #resultTable tr.bep-row td:first-child { background-color: var(--bg-light); }
+        #resultTable tr.target-row td { background-color: #eff6ff; }
+        #resultTable tr.target-row td:first-child { background-color: #eff6ff; color: var(--accent); }
+        .result-highlight { font-weight: 800; color: var(--text-bold); font-size: 1.1em; }
+        .success-highlight { font-weight: 800; color: var(--accent); font-size: 1.1em; }
         
-        #db-status { padding: 10px; margin-bottom: 20px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.9rem; }
-        .status-loading { background-color: #fef3c7; color: #b45309; }
-        .status-success { background-color: #d1fae5; color: #065f46; }
-        .status-mock { background-color: #e0e7ff; color: #3730a3; }
+        .summary-text { text-align: right; margin-top: 20px; color: var(--text-muted); font-size: 1rem; }
+        .summary-text p { margin: 8px 0; }
+        
+        #db-status { padding: 12px 20px; margin-bottom: 32px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: var(--text-bold); border: 1px solid var(--border); }
         
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Custom Modal Styles */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 9999; }
+        .modal-box { background: #fff; padding: 32px; border-radius: 16px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid var(--border); }
+        .modal-title { margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; font-weight: 700; color: var(--text-bold); }
+        .modal-msg { margin-bottom: 24px; color: var(--text-muted); font-size: 1rem; word-break: keep-all; line-height: 1.5; }
+        .modal-input { width: 100%; display: none; padding: 12px; margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; text-align: left; box-sizing: border-box; font-family: inherit; color: var(--text-bold); }
+        .modal-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .modal-actions { text-align: right; display: flex; gap: 8px; justify-content: flex-end; }
+        .modal-btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; transition: all 0.2s; font-family: inherit; }
+        .modal-btn-cancel { background: var(--bg-light); color: var(--text-bold); border: 1px solid var(--border); }
+        .modal-btn-cancel:hover { background: #e2e8f0; }
+        .modal-btn-ok { background: var(--primary); color: #fff; }
+        .modal-btn-ok:hover { background: var(--primary-hover); }
+
+        /* Print (PDF 저장) 전용 스타일 */
+        @media print {
+            body { background: #fff; padding: 0; margin: 0; color: #000; }
+            .container { display: block; gap: 0; max-width: 100%; }
+            .panel { display: none; box-shadow: none; border: none; padding: 0; margin: 0; }
+            #hq-panel { display: block !important; width: 100%; }
+            .btn-print, .btn-crawl { display: none !important; }
+            .page-title-container, #db-status { display: none; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
 
-<h1>공동구매 시뮬레이터</h1>
-<div id="db-status" class="status-loading">데이터베이스 연결 및 가격 데이터 연동 중입니다...</div>
+<div class="page-title-container">
+    <h1 class="page-title">Group Buying Profit Simulator</h1>
+    <p class="page-subtitle">메디팹 글로벌 공동구매 정산 시뮬레이터</p>
+</div>
+
+<div id="db-status" class="status-loading">시스템 데이터를 불러오는 중입니다...</div>
 
 <div class="container">
     <div class="panel full-width">
-        <h2>1. 제품 선택 (다중 선택 가능)</h2>
+        <h2>제품 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
         <div id="product-list" style="max-height: 600px; overflow-y: auto; padding-right: 8px;"></div>
     </div>
 
     <div class="panel">
-        <h2>2. 시뮬레이션 설정</h2>
+        <h2>시뮬레이션 설정</h2>
         <table>
             <tr><td>목표 판매 수량 (개)</td><td><input type="text" inputmode="numeric" id="targetQty" value="300" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><th colspan="2">변동비 비율 설정 (%)</th></tr>
-            <tr><td>제품공급가 비율 <span style="font-size:0.8em; color:var(--primary);">(자동계산)</span></td><td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()"> %</td></tr>
+            <tr><th colspan="2" style="background-color: var(--bg-color); color: var(--text-bold);">변동비 비율 설정 (%)</th></tr>
+            <tr style="background-color: #fff;">
+                <td><strong>총 제품 공급가</strong><br><span style="font-size:0.8em; color:var(--text-muted);">(선택 패키지 1세트 원가 합계)</span></td>
+                <td id="displayTotalCost" style="font-weight: 800; color: var(--text-bold); font-size: 1.1em;">0 원</td>
+            </tr>
+            <tr><td>제품공급가 비율 <span style="font-size:0.8em; color:var(--text-muted);">(자동계산)</span></td><td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()" readonly> %</td></tr>
             <tr><td>배송비 비율</td><td><input type="number" id="ratioShipping" value="7" step="1" oninput="calculate()"> %</td></tr>
             <tr><td>플랫폼 수수료 비율</td><td><input type="number" id="ratioPlatform" value="5" step="0.1" oninput="calculate()"> %</td></tr>
             <tr><td>카드 수수료 비율</td><td><input type="number" id="ratioCard" value="2" step="1" oninput="calculate()"> %</td></tr>
             <tr>
-                <td>공구 수수료율 설정</td>
-                <td>
-                    <select id="ratioGonggu" style="width:80px; padding:4px;" onchange="calculate()">
-                        <option value="25">25</option><option value="30">30</option>
-                        <option value="35" selected>35</option><option value="40">40</option>
-                        <option value="45">45</option><option value="50">50</option>
-                    </select> %
+                <td style="color: var(--accent); font-weight: 700;">공구 파트너 정산 설정</td>
+                <td style="text-align: right;">
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">변동비율</span>
+                            <input type="number" id="ratioGonggu" value="35" step="1" oninput="calculate()" style="width: 70px; font-weight:bold; color:var(--accent); border-color: var(--accent);"> %
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">특약비(고정)</span>
+                            <input type="text" inputmode="numeric" id="fcContract" value="0" oninput="formatInput(this); calculate()" style="width: 100px; font-weight:bold; color:var(--accent); border-color: var(--accent);"> 원
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr><td>인센티브 비율</td><td><input type="number" id="ratioIncentive" value="5" step="1" oninput="calculate()"> %</td></tr>
@@ -127,39 +212,39 @@
     </div>
 
     <div class="panel">
-        <h2 style="margin-bottom: 0; border-bottom: none;">3. 고정비 / 4. 공통비 설정 (원)</h2>
-        <h3>▶ 3. 고정비 설정</h3>
+        <h2 style="margin-bottom: 0; border-bottom: none;">고정비 / 공통비 설정</h2>
+        <h3>▶ 고정비 설정</h3>
 
-        <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
-            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main);">🧪 샘플 추가 (고정비 연동)</h4>
+        <div style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
+            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-bold);">🧪 샘플 추가 (고정비 연동)</h4>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <select id="sampleSelect" style="flex: 1; min-width: 140px; font-size: 0.9rem;"></select>
+                <select id="sampleSelect" style="flex: 1; min-width: 140px;"></select>
                 <input type="text" inputmode="numeric" id="sampleQty" value="10" oninput="formatInput(this)" style="width: 60px;"> 개
-                <button type="button" onclick="addSample()">+ 추가</button>
+                <button type="button" onclick="addSample()" style="background-color: var(--text-bold);">+ 추가</button>
             </div>
             <div id="sampleAddedList" class="added-item-list"></div>
-            <div style="text-align: right; margin-top: 8px; font-weight: bold; color: var(--success);">
+            <div style="text-align: right; margin-top: 12px; font-weight: bold; color: var(--text-bold);">
                 총 샘플 원가: <span id="sampleCostDisplay">0</span> 원
             </div>
         </div>
 
-        <div style="background: #fdf2f8; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border);">
-            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-main);">🎁 사은품 추가 (고정비 연동)</h4>
+        <div style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border);">
+            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-bold);">🎁 사은품 추가 (고정비 연동)</h4>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <select id="giftSelect" style="flex: 1; min-width: 140px; font-size: 0.9rem;"></select>
+                <select id="giftSelect" style="flex: 1; min-width: 140px;"></select>
                 <input type="text" inputmode="numeric" id="giftQty" value="300" oninput="formatInput(this)" style="width: 60px;"> 개
-                <button type="button" onclick="addGift()" style="background-color: var(--gift);">+ 추가</button>
+                <button type="button" onclick="addGift()" style="background-color: var(--accent);">+ 추가</button>
             </div>
             <div id="giftAddedList" class="added-item-list"></div>
-            <div style="text-align: right; margin-top: 8px; font-weight: bold; color: var(--danger);">
+            <div style="text-align: right; margin-top: 12px; font-weight: bold; color: var(--text-bold);">
                 총 사은품 원가: <span id="giftCostDisplay">0</span> 원
             </div>
         </div>
 
         <table style="margin-top: 0;">
-            <tr style="background-color: #eef2ff;">
+            <tr style="background-color: #fff;">
                 <td><strong>참여 인원 (명)</strong></td>
-                <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--primary);"> 명</td>
+                <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--accent);"> 명</td>
             </tr>
             <tr><td>인건비</td><td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()"></td></tr>
             <tr><td>여비교통비</td><td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()"></td></tr>
@@ -167,32 +252,66 @@
             <tr><td>장소대여비</td><td><input type="text" inputmode="numeric" id="fcRent" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
             <tr><td>소품비</td><td><input type="text" inputmode="numeric" id="fcProps" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
             <tr><td>기타 프린터비 등</td><td><input type="text" inputmode="numeric" id="fcOther" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>샘플비 <span style="font-size:0.8em; color:var(--success);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td></tr>
-            <tr><td>사은품 <span style="font-size:0.8em; color:var(--gift);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly style="background:#f9fafb; border-color:transparent;"></td></tr>
-            <tr><th style="text-align: left; background-color: #f3f4f6;">고정비 총계</th><th style="text-align: right; background-color: #f3f4f6;" id="totalFcDisplay">0 원</th></tr>
+            <tr><td>샘플비 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly></td></tr>
+            <tr><td>사은품 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly></td></tr>
+            <tr><td>특약비 <span style="font-size:0.8em; color:var(--accent);">(수수료 연동)</span></td><td><input type="text" inputmode="numeric" id="fcContractDisplay" value="0" readonly style="color:var(--accent); font-weight:bold;"></td></tr>
+            <tr><th style="text-align: left; background-color: var(--bg-color); color: var(--text-bold);">고정비 총계</th><th style="text-align: right; background-color: var(--bg-color); color: var(--text-bold);" id="totalFcDisplay">0 원</th></tr>
         </table>
 
-        <h3 style="margin-top: 32px;">▶ 4. 공통비 설정</h3>
+        <h3 style="margin-top: 32px;">▶ 공통비 설정</h3>
         <table style="margin-top: 0;">
             <tr><td>임원/경영/연구소 총합</td><td><input type="text" inputmode="numeric" id="ccTotal" value="150,000,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr style="background-color: #eef2ff;">
+            <tr style="background-color: #fff;">
                 <td><strong>프로젝트 배부율 (%)</strong></td>
-                <td><input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--primary);"> %</td>
+                <td><input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--accent);"> %</td>
             </tr>
-            <tr><th style="text-align: left; background-color: #f3f4f6;">적용 공통비 (배부액)</th><th style="text-align: right; background-color: #f3f4f6;" id="totalCcDisplay">0 원</th></tr>
+            <tr><th style="text-align: left; background-color: var(--bg-light); color: var(--text-bold);">적용 공통비 (배부액)</th><th style="text-align: right; background-color: var(--bg-light); color: var(--text-bold);" id="totalCcDisplay">0 원</th></tr>
         </table>
     </div>
 
-    <div class="panel full-width">
-        <h2>5. 수익구조 산출 결과</h2>
-        
-        <div id="selected-package-info" class="package-visualizer" style="margin-bottom: 8px;"></div>
-        <div id="selected-sample-info" class="package-visualizer" style="display: none; background-color: #f0fdf4; border-color: var(--success); margin-bottom: 8px;"></div>
-        <div id="selected-gift-info" class="package-visualizer" style="display: none; background-color: #fdf2f8; border-color: var(--gift); margin-bottom: 16px;"></div>
+    <!-- 공유용 정산 대시보드 (이미지 복사 타겟) -->
+    <div class="panel full-width" id="partner-panel" style="position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
+            <h2 style="margin: 0; border: none; padding: 0; width: auto;">예상 정산 대시보드</h2>
+            <button class="btn-print" onclick="captureImage()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                이미지 클립보드 복사
+            </button>
+        </div>
 
+        <div class="dashboard-grid">
+            <div class="partner-summary-card">
+                <div class="summary-label">공동구매 파트너 예상 정산액</div>
+                <div class="summary-value"><span class="partnerProfitAmount">0</span><span class="unit">원</span></div>
+                <div class="summary-desc">판매수수료 <span class="partnerProfitRate" style="color: var(--accent); font-weight:700;">35</span>% + 특약비 <span class="partnerProfitContract" style="font-weight:700;">0</span>원 기준</div>
+            </div>
+            
+            <div class="hq-summary-card">
+                <div class="summary-label">본사 예상 영업이익</div>
+                <div class="summary-value"><span class="hqProfitAmount">0</span><span class="unit">원</span></div>
+                <div class="summary-desc">목표 <span class="partnerProfitQty" style="font-weight:700;">0</span>개 판매 달성 시</div>
+            </div>
+        </div>
+
+        <div id="selected-package-info" class="package-visualizer" style="margin-bottom: 8px;"></div>
+        <div id="selected-sample-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 8px;"></div>
+        <div id="selected-gift-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 16px;"></div>
+    </div>
+
+    <!-- 본사 전용 상세 내역 표 (인쇄/PDF 대상) -->
+    <div class="panel full-width" id="hq-panel">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
+            <h2 style="margin: 0; border: none; padding: 0; width: auto;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(본사 대외비 / 부가세 제외)</span></h2>
+            <button class="btn-print primary" onclick="window.print()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                PDF/인쇄
+            </button>
+        </div>
+        
+        <div style="text-align: right; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">[단위: 원]</div>
         <table id="resultTable">
             <thead>
-                <tr><th style="width: 16%;">구분</th><th>매출액 (원)</th><th>변동비 (원)</th><th>공헌이익 (원)</th><th>고정비 (원)</th><th>적용 공통비</th><th>영업이익 (원)</th></tr>
+                <tr><th>구분</th><th>매출액</th><th>변동비</th><th>공헌이익</th><th>고정비</th><th>적용 공통비</th><th>본사 영업이익</th></tr>
             </thead>
             <tbody>
                 <tr><td>단위당 (1패키지)</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
@@ -205,8 +324,21 @@
             </tbody>
         </table>
         <div class="summary-text">
-            <p>손익분기점(BEP) 도달 필요 수량: <strong id="resBepQtyText" style="color:var(--danger)">0</strong> 개</p>
-            <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--success)">0</strong> 개</p>
+            <p>손익분기점(BEP) 도달 필요 수량: <strong id="resBepQtyText" style="color:var(--text-bold)">0</strong> 개</p>
+            <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--accent)">0</strong> 개</p>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Modal UI Container -->
+<div id="customModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle" class="modal-title">알림</h3>
+        <p id="modalMessage" class="modal-msg">메시지 내용</p>
+        <input type="text" id="modalInput" class="modal-input" placeholder="여기에 입력하세요">
+        <div class="modal-actions">
+            <button id="modalCancelBtn" class="modal-btn modal-btn-cancel">취소</button>
+            <button id="modalOkBtn" class="modal-btn modal-btn-ok">확인</button>
         </div>
     </div>
 </div>
@@ -221,7 +353,6 @@
     var addedSamples = [];
     var addedGifts = [];
 
-    // 제품 이미지 맵핑 복구
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
         'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9icjMwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUxMDUsImV4cCI6MjA5NjgwNTEwNX0.utXjZK_UPv63dRtfqhBF5jnLrz3jSZ6LFdkwRN-U_WQ',
@@ -242,6 +373,90 @@
     function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
     function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
 
+    function customAlert(msg, title="알림") {
+        return new Promise(resolve => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('modalInput').style.display = 'none';
+            document.getElementById('modalCancelBtn').style.display = 'none';
+            const okBtn = document.getElementById('modalOkBtn');
+            
+            modal.style.display = 'flex';
+            
+            okBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve();
+            };
+        });
+    }
+
+    function customPrompt(title, msg, placeholder="URL을 입력하세요") {
+        return new Promise(resolve => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            
+            const input = document.getElementById('modalInput');
+            input.style.display = 'block';
+            input.value = '';
+            input.placeholder = placeholder;
+            
+            document.getElementById('modalCancelBtn').style.display = 'inline-block';
+            
+            const okBtn = document.getElementById('modalOkBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+            
+            modal.style.display = 'flex';
+            
+            okBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve(input.value);
+            };
+            cancelBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve(null);
+            };
+        });
+    }
+
+    function captureImage() {
+        const target = document.getElementById('partner-panel');
+        const btns = target.querySelectorAll('.btn-print');
+        
+        btns.forEach(btn => btn.style.display = 'none');
+        
+        html2canvas(target, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
+            canvas.toBlob(blob => {
+                try {
+                    navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]).then(() => {
+                        customAlert("클립보드에 정산 대시보드 이미지가 복사되었습니다.\n메신저 등에 붙여넣기(Ctrl+V) 하세요.", "복사 완료");
+                    }).catch(err => {
+                        fallbackDownload(canvas);
+                    });
+                } catch (err) {
+                    fallbackDownload(canvas);
+                }
+            }, 'image/png');
+            
+            btns.forEach(btn => btn.style.display = 'inline-flex');
+        }).catch(err => {
+            console.error(err);
+            btns.forEach(btn => btn.style.display = 'inline-flex');
+            customAlert("이미지 생성 중 오류가 발생했습니다.");
+        });
+    }
+
+    function fallbackDownload(canvas) {
+        const link = document.createElement('a');
+        link.download = '공동구매_정산안내.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        customAlert("브라우저 환경 제한(보안 정책)으로 클립보드 복사 대신 이미지 파일로 자동 저장되었습니다.", "파일 저장 완료");
+    }
+
     async function fetchProducts() {
         try {
             const { data: products, error: prodErr } = await supabaseClient.from('products').select('id, clean_name, main_category, sub_category').limit(100);
@@ -249,7 +464,6 @@
             const { data: prices } = await supabaseClient.from('product_prices').select('*').eq('currency', 'KRW').in('product_id', productIds);
             const { data: costs } = await supabaseClient.from('product_costs').select('product_id, production_cost').in('product_id', productIds);
             
-            // 새벽에 크롤링 봇이 수집해둔 최신 외부 가격 데이터 가져오기
             const { data: extPrices } = await supabaseClient.from('external_product_prices').select('*');
 
             productsData = products.map(p => {
@@ -258,8 +472,8 @@
                 const extPriceObj = extPrices?.find(ep => ep.product_id === p.id && ep.platform === 'Naver'); 
                 
                 const msrp = priceObj?.b2c_msrp || 0;
+                const prodCost = costObj?.production_cost || 0;
                 
-                // 크롤링된 가격이 있으면 그것을 쓰고, 없으면 정가의 70% 계산
                 const promoPrice = (extPriceObj && extPriceObj.scraped_price) ? extPriceObj.scraped_price : (msrp * 0.7);
                 const source = (extPriceObj && extPriceObj.scraped_price) ? 'Naver 자동' : '기본할인';
 
@@ -267,15 +481,23 @@
                     id: p.id, name: p.clean_name || '제품', cleanName: p.clean_name || '', 
                     mainCategory: p.main_category || '스킨케어', 
                     imageUrl: productImageMap[p.clean_name?.trim()] || fallbackImg,
-                    msrp: msrp, price: promoPrice, cost: costObj?.production_cost || 0, source: source
+                    msrp: msrp, price: promoPrice, cost: prodCost, source: source
                 };
+            }).filter(p => {
+                if (p.cost <= 0) return false;
+                const lowerName = p.name.toLowerCase();
+                if (lowerName.includes('scalp md') || p.name.includes('스칼프 MD')) return false;
+                return true;
             });
 
-            document.getElementById('db-status').className = 'status-success';
-            document.getElementById('db-status').innerText = 'DB 연동 완료 (자동 수집된 가격이 있으면 바로 반영됩니다!)';
+            document.getElementById('db-status').style.display = 'none';
             
         } catch (error) {
             console.error(error);
+            document.getElementById('db-status').style.backgroundColor = '#fef2f2';
+            document.getElementById('db-status').style.color = '#991b1b';
+            document.getElementById('db-status').style.borderColor = '#fca5a5';
+            document.getElementById('db-status').innerText = '데이터베이스 연동 중 오류가 발생했습니다.';
         } finally {
             if(productsData.length > 0) selectedProducts.push(productsData[0].id);
             populateSelects(); renderProducts(); updateAutoSupplyRatio();
@@ -345,23 +567,31 @@
     }
 
     function updateAutoSupplyRatio() {
-        if (selectedProducts.length === 0) { document.getElementById('ratioSupply').value = 0; return; }
-        let tc = 0, tp = 0;
+        if (selectedProducts.length === 0) { 
+            document.getElementById('ratioSupply').value = 0; 
+            document.getElementById('displayTotalCost').innerText = '0 원';
+            return; 
+        }
+        let tc = 0, tpVatInc = 0;
         selectedProducts.forEach(id => {
             const p = productsData.find(x => x.id === id);
-            if (p) { tc += p.cost; tp += p.price; }
+            if (p) { tc += p.cost; tpVatInc += p.price; }
         });
-        document.getElementById('ratioSupply').value = tp > 0 ? ((tc / tp) * 100).toFixed(2) : 0;
+        
+        // 공급가 비율 계산 시에도 부가세 제외 금액을 기준으로 함
+        const tpNet = tpVatInc / 1.1;
+
+        document.getElementById('displayTotalCost').innerText = formatNum(tc) + ' 원';
+        document.getElementById('ratioSupply').value = tpNet > 0 ? ((tc / tpNet) * 100).toFixed(2) : 0;
     }
 
     function renderProducts() {
         const container = document.getElementById('product-list');
         container.innerHTML = '';
         
-        // 카테고리 분류 로직 복구 (기타 카테고리 제거)
         const grouped = {
             '스킨케어': { '부스터': [], '앰플': [], '크림': [], '마스크': [], '기기': [] },
-            '헤어케어': { '기본': [] }
+            '헤어케어': { '기본': [], '기기': [] }
         };
 
         productsData.forEach(prod => {
@@ -370,9 +600,12 @@
             
             let mainGroup = null, subGroup = null;
 
-            if (mainCat.includes('hair') || name.includes('shampoo') || name.includes('scalp')) {
+            if (name.includes('hyper shot') || name.includes('하이퍼샷')) {
+                mainGroup = '헤어케어'; subGroup = '기기';
+            } 
+            else if (mainCat.includes('hair') || name.includes('shampoo') || name.includes('scalp')) {
                 mainGroup = '헤어케어'; subGroup = '기본';
-            } else if (mainCat.includes('device') || name.includes('core impact') || name.includes('hyper shot')) {
+            } else if (mainCat.includes('device') || name.includes('core impact')) {
                 mainGroup = '스킨케어'; subGroup = '기기';
             } else if (name.includes('booster') && !name.includes('mask')) {
                 mainGroup = '스킨케어'; subGroup = '부스터';
@@ -384,20 +617,18 @@
                 mainGroup = '스킨케어'; subGroup = '마스크';
             }
 
-            // '기타'에 해당하는 제품은 렌더링 그룹에 추가하지 않음
             if (mainGroup && subGroup && grouped[mainGroup] && grouped[mainGroup][subGroup]) {
                 grouped[mainGroup][subGroup].push(prod);
             }
         });
 
-        // 렌더링
         for (const [mainName, subGroups] of Object.entries(grouped)) {
             const hasProducts = Object.values(subGroups).some(arr => arr.length > 0);
             if (!hasProducts) continue;
 
             const mainTitle = document.createElement('div');
             mainTitle.className = 'category-header';
-            mainTitle.innerText = `■ ${mainName}`;
+            mainTitle.innerText = mainName;
             container.appendChild(mainTitle);
 
             for (const [subName, prods] of Object.entries(subGroups)) {
@@ -418,12 +649,11 @@
                     card.id = `prod-${prod.id}`;
                     card.onclick = () => toggleProduct(prod.id);
                     
-                    // 출처(source)가 Naver 자동이면 초록색 배지로 표시
-                    const priceLabel = prod.source.includes('Naver') ? `<span style="color:#03c75a;">[${prod.source}]</span> ` : '';
+                    const priceLabel = prod.source.includes('Naver') ? `<span style="color:var(--accent); font-weight:800;">[${prod.source}]</span> ` : '';
 
                     card.innerHTML = `
                         <img src="${prod.imageUrl}" alt="${prod.name}">
-                        <div style="font-weight:600; font-size:1.05rem; margin-bottom:12px; margin-top:10px;">${prod.name}</div>
+                        <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:10px;">${prod.name}</div>
                         <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
                         <div class="price" id="price-${prod.id}" style="margin-bottom:4px;">${priceLabel}프로모션가: ${formatNum(prod.price)}원</div>
                         <div class="cost-badge">원가: ${formatNum(prod.cost)}원</div>
@@ -446,9 +676,12 @@
         updateAutoSupplyRatio(); calculate();
     }
 
-    // 수동 크롤링 로직 (URL을 입력받아 Edge Function 호출)
     async function fetchNaverPrice(productId) {
-        const targetUrl = prompt("네이버 상품 URL을 입력하시면 크롤링을 시도하며, 이후부터 매일 새벽 자동으로 갱신됩니다.");
+        const targetUrl = await customPrompt(
+            "상품 수동 크롤링",
+            "네이버 상품 URL을 입력하시면 크롤링을 시도하며, 성공 시 이후부터 매일 새벽 스케줄러에 의해 자동으로 갱신됩니다."
+        );
+        
         if (!targetUrl || targetUrl.trim() === '') return;
 
         const btn = document.querySelector(`#prod-${productId} .btn-crawl`);
@@ -462,11 +695,19 @@
 
             if (error) throw error;
             if (data && data.success) {
-                alert(`성공! 새 가격: ${formatNum(data.numericPrice)}원\n(이제 이 제품은 매일 새벽 스케줄러에 의해 자동 수집됩니다.)`);
+                await customAlert(
+                    `성공적으로 가격을 수집했습니다.\n새 가격: ${formatNum(data.numericPrice)}원\n\n(이제 이 제품은 매일 새벽 자동 수집 대상에 포함됩니다.)`, 
+                    "크롤링 성공"
+                );
                 applyNewPrice(productId, data.numericPrice, 'Naver 수동갱신');
+            } else {
+                throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
             }
-        } catch (err) { alert("크롤링 실패: " + err.message); } 
-        finally { btn.innerText = originalText; btn.disabled = false; }
+        } catch (err) { 
+            await customAlert("크롤링 실패: " + err.message + "\n\n1. URL이 정확한지 확인해주세요.\n2. 대상 사이트의 봇 차단(Anti-bot)으로 인해 실패했을 수 있습니다.", "크롤링 실패"); 
+        } finally { 
+            btn.innerText = originalText; btn.disabled = false; 
+        }
     }
 
     function applyNewPrice(productId, newPrice, source) {
@@ -474,7 +715,7 @@
         if(prod) {
             prod.price = newPrice;
             const priceEl = document.getElementById(`price-${productId}`);
-            if(priceEl) priceEl.innerHTML = `<span style="color:#03c75a;">[${source}]</span> 프로모션가: ${formatNum(newPrice)}원`;
+            if(priceEl) priceEl.innerHTML = `<span style="color:var(--accent); font-weight:800;">[${source}]</span> 프로모션가: ${formatNum(newPrice)}원`;
             updateAutoSupplyRatio(); calculate();
         }
     }
@@ -486,47 +727,77 @@
 
         if (selectedProducts.length === 0) return;
 
-        let packagePrice = 0; let itemsHtml = [];
+        let packagePriceVatInc = 0; let itemsHtml = [];
         selectedProducts.forEach(id => {
             const p = productsData.find(x => x.id === id);
-            if(p) { packagePrice += p.price; itemsHtml.push(`<div class="pkg-item"><img src="${p.imageUrl}"><span>${p.name}</span></div>`); }
+            if(p) { 
+                packagePriceVatInc += p.price; 
+                itemsHtml.push(`<div class="pkg-item"><img src="${p.imageUrl}"><span>${p.name}</span></div>`); 
+            }
         });
-        pkgEl.innerHTML = `<div style="color: #1e3a8a; margin-right:16px;"><strong>패키지 구성 (${selectedProducts.length}종)</strong></div>${itemsHtml.join('<div class="pkg-plus">+</div>')}`;
+        pkgEl.innerHTML = `<div style="color: var(--text-bold); margin-right:16px;"><strong>패키지 구성 (${selectedProducts.length}종)</strong></div>${itemsHtml.join('<div class="pkg-plus">+</div>')}`;
 
-        // 샘플/사은품 렌더
         if (addedSamples.length > 0) {
             samEl.style.display = 'flex';
-            let samHtml = addedSamples.map(s => `<div class="pkg-item"><img src="${s.img}" style="border-color:var(--success);"><span>${s.name}<br><span style="color:var(--success);">(${formatNum(s.qty)}개)</span></span></div>`).join('');
-            samEl.innerHTML = `<div style="color:var(--success); margin-right:16px;"><strong>제공 샘플:</strong></div>${samHtml}`;
+            let samHtml = addedSamples.map(s => `<div class="pkg-item"><img src="${s.img}" style="border-color:var(--border);"><span>${s.name}<br><span style="color:var(--text-bold);">(${formatNum(s.qty)}개)</span></span></div>`).join('');
+            samEl.innerHTML = `<div style="color:var(--text-bold); margin-right:16px;"><strong>제공 샘플:</strong></div>${samHtml}`;
         } else { samEl.style.display = 'none'; }
 
         if (addedGifts.length > 0) {
             gifEl.style.display = 'flex';
-            let gifHtml = addedGifts.map(g => `<div class="pkg-item"><img src="${g.img}" style="border-color:var(--gift);"><span>${g.name}<br><span style="color:var(--gift);">(${formatNum(g.qty)}개)</span></span></div>`).join('');
-            gifEl.innerHTML = `<div style="color:var(--gift); margin-right:16px;"><strong>제공 사은품:</strong></div>${gifHtml}`;
+            let gifHtml = addedGifts.map(g => `<div class="pkg-item"><img src="${g.img}" style="border-color:var(--border);"><span>${g.name}<br><span style="color:var(--text-muted);">(${formatNum(g.qty)}개)</span></span></div>`).join('');
+            gifEl.innerHTML = `<div style="color:var(--text-muted); margin-right:16px;"><strong>제공 사은품:</strong></div>${gifHtml}`;
         } else { gifEl.style.display = 'none'; }
 
-        const targetQty = getNum('targetQty');
-        const totalVcRatio = (Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + Number(document.getElementById('ratioGonggu').value) + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)) / 100; 
-        
-        const unitRev = packagePrice;
-        const unitVc = packagePrice * totalVcRatio;
-        const unitCm = packagePrice * (1 - totalVcRatio);
+        const packagePriceNet = packagePriceVatInc / 1.1;
+        const unitRev = packagePriceNet;
 
-        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther');
+        const targetQty = getNum('targetQty');
+        const gongguRate = Number(document.getElementById('ratioGonggu').value);
+        const contractFee = getNum('fcContract'); // 특약비 (새로 추가)
+        
+        const totalVcRatio = (
+            Number(document.getElementById('ratioSupply').value) + 
+            Number(document.getElementById('ratioShipping').value) + 
+            Number(document.getElementById('ratioPlatform').value) + 
+            Number(document.getElementById('ratioCard').value) + 
+            gongguRate + 
+            Number(document.getElementById('ratioIncentive').value) + 
+            Number(document.getElementById('ratioReferral').value)
+        ) / 100; 
+        
+        const unitVc = unitRev * totalVcRatio;
+        const unitCm = unitRev * (1 - totalVcRatio);
+
+        // 고정비 총계에 특약비 포함
+        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
         const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
         
+        // 디스플레이에 특약비 반영
+        document.getElementById('fcContractDisplay').value = formatNum(contractFee);
         document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
         document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
 
         const totalFixedAndCommon = totalFc + totalCc;
         const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
 
+        // 사업자 수익금 정산 (변동비율 + 고정 특약비)
+        const partnerProfit = ((targetQty * unitRev) * (gongguRate / 100)) + contractFee;
+        
+        document.querySelectorAll('.partnerProfitAmount').forEach(el => el.innerText = formatNum(partnerProfit));
+        document.querySelectorAll('.partnerProfitRate').forEach(el => el.innerText = gongguRate);
+        document.querySelectorAll('.partnerProfitContract').forEach(el => el.innerText = formatNum(contractFee));
+        
+        const hqTargetOp = (targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc;
+        document.querySelectorAll('.hqProfitAmount').forEach(el => el.innerText = formatNum(hqTargetOp));
+        
+        document.querySelectorAll('.partnerProfitQty').forEach(el => el.innerText = formatNum(targetQty));
+
         document.getElementById('resUnitRev').innerText = formatNum(unitRev);
         document.getElementById('resUnitVc').innerText = formatNum(unitVc);
         document.getElementById('resUnitCm').innerText = formatNum(unitCm);
 
-        document.getElementById('resBepRev').innerHTML = `${formatNum(bepQty * unitRev)}<br><span style="font-size:0.85em; color:var(--danger);">(${formatNum(Math.ceil(bepQty))}개)</span>`;
+        document.getElementById('resBepRev').innerHTML = `${formatNum(bepQty * unitRev)}<br><span style="font-size:0.85em; color:var(--text-muted);">(${formatNum(Math.ceil(bepQty))}개)</span>`;
         document.getElementById('resBepVc').innerText = formatNum(bepQty * unitVc);
         document.getElementById('resBepCm').innerText = formatNum((bepQty * unitRev) - (bepQty * unitVc));
         document.getElementById('resBepFc').innerText = formatNum(totalFc);
@@ -538,7 +809,7 @@
         document.getElementById('resTargetCm').innerText = formatNum((targetQty * unitRev) - (targetQty * unitVc));
         document.getElementById('resTargetFc').innerText = formatNum(totalFc);
         document.getElementById('resTargetCc').innerText = formatNum(totalCc);
-        document.getElementById('resTargetOp').innerText = formatNum((targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc);
+        document.getElementById('resTargetOp').innerText = formatNum(hqTargetOp);
 
         document.getElementById('resTargetQtyText').innerText = formatNum(targetQty);
         document.getElementById('resBepQtyText').innerText = formatNum(Math.ceil(bepQty)); 
