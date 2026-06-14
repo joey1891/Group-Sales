@@ -157,6 +157,23 @@
         .status-success { background-color: #d1fae5; color: #065f46; }
         .status-mock { background-color: #e0e7ff; color: #3730a3; }
         
+        /* 네이버 크롤링 버튼 스타일 */
+        .btn-crawl {
+            background-color: #03c75a; 
+            color: white; 
+            border: none; 
+            padding: 6px 10px; 
+            border-radius: 6px; 
+            font-size: 0.8rem; 
+            font-weight: bold;
+            cursor: pointer; 
+            margin-top: 8px;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        .btn-crawl:hover { background-color: #02a348; }
+        .btn-crawl:disabled { background-color: #a7f3d0; cursor: not-allowed; }
+        
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
@@ -778,13 +795,14 @@
                     card.id = `prod-${prod.id}`;
                     card.onclick = () => toggleProduct(prod.id);
                     
-                    // 소비자정가와 프로모션가 병기 UI 추가
+                    // 소비자정가와 프로모션가 병기 UI 추가 (크롤링 버튼 포함)
                     card.innerHTML = `
                         <img src="${prod.imageUrl}" alt="${prod.name}">
                         <div style="font-weight:600; font-size:1.05rem; margin-bottom:12px;">${prod.name}</div>
                         <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
-                        <div class="price" style="margin-bottom:4px;">프로모션가: ${formatNum(prod.price)}원</div>
+                        <div class="price" id="price-${prod.id}" style="margin-bottom:4px;">프로모션가: ${formatNum(prod.price)}원</div>
                         <div class="cost-badge">원가 참고: ${formatNum(prod.cost)}원</div>
+                        <button class="btn-crawl" onclick="event.stopPropagation(); fetchNaverPrice('${prod.id}')">네이버 최저가 불러오기</button>
                     `;
                     grid.appendChild(card);
                 });
@@ -919,6 +937,66 @@
         document.getElementById('resBepRev').innerHTML = '0<br><span style="font-size:0.85em; color:var(--danger);">(0개)</span>';
         document.getElementById('totalFcDisplay').innerText = '0 원';
         document.getElementById('totalCcDisplay').innerText = '0 원';
+    }
+
+    // 네이버 가격 크롤링 연동 함수
+    async function fetchNaverPrice(productId) {
+        const targetUrl = prompt("크롤링할 상품의 네이버 스마트스토어 URL을 입력해주세요.\n(URL을 비워두고 확인을 누르면 테스트용 가격으로 연동됩니다.)");
+        if (targetUrl === null) return; // 취소 버튼 클릭 시 종료
+
+        const btn = document.querySelector(`#prod-${productId} .btn-crawl`);
+        const originalText = btn.innerText;
+        btn.innerText = "불러오는 중... ⏳";
+        btn.disabled = true;
+
+        try {
+            if (targetUrl.trim() === '') {
+                // URL 미입력시 테스트용 더미 가격(소비자정가의 50% 등)을 적용
+                const prod = productsData.find(p => p.id === productId);
+                const mockPrice = Math.floor(prod.msrp * 0.5 / 100) * 100; // 50% 할인된 가격 (100원 단위)
+                applyNewPrice(productId, mockPrice, '테스트');
+                alert(`URL이 입력되지 않아 테스트용 가격(${formatNum(mockPrice)}원)으로 시뮬레이션에 적용합니다.`);
+                return;
+            }
+
+            // Supabase Edge Function 호출
+            const { data, error } = await supabaseClient.functions.invoke('crawl-price', {
+                body: { productId: productId, platform: 'Naver', url: targetUrl }
+            });
+
+            if (error) throw error;
+            
+            if (data && data.success && data.numericPrice) {
+                alert(`네이버 스마트스토어에서 가격을 성공적으로 불러왔습니다: ${formatNum(data.numericPrice)}원`);
+                applyNewPrice(productId, data.numericPrice, 'Naver');
+            } else {
+                throw new Error("가격을 파싱하지 못했습니다.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("크롤링 실패: " + err.message + "\n\n(참고: 네이버의 봇 차단 시스템에 의해 막혔을 확률이 높습니다.)");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // 크롤링한 새 가격을 UI와 계산식에 적용하는 함수
+    function applyNewPrice(productId, newPrice, source) {
+        const prod = productsData.find(p => p.id === productId);
+        if(prod) {
+            prod.price = newPrice; // 가격 정보 갱신
+            
+            // UI 텍스트 업데이트
+            const priceEl = document.getElementById(`price-${productId}`);
+            if(priceEl) {
+                priceEl.innerHTML = `<span style="color:#03c75a;">[${source} 연동가]</span> ${formatNum(newPrice)}원`;
+            }
+            
+            // 변동비 비율 및 시뮬레이션 결과 즉시 재계산
+            updateAutoSupplyRatio();
+            calculate();
+        }
     }
 
     window.onload = fetchProducts;
