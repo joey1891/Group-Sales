@@ -10,18 +10,18 @@
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
         :root {
-            --bg-page: #0f172a;        /* 전체 배경: Slate 900 */
-            --card-bg: #ffffff;        /* 패널 배경: 순백색 */
-            --primary: #1e293b;        /* 버튼 및 짙은 강조: Slate 800 */
+            --bg-page: #0f172a;        
+            --card-bg: #ffffff;        
+            --primary: #1e293b;        
             --primary-hover: #334155;
-            --accent: #3b82f6;         /* 포인트 블루 */
+            --accent: #3b82f6;         
             --accent-hover: #2563eb;
-            --bg-light: #f8fafc;       /* 카드 내부의 밝은 회색 배경: Slate 50 */
-            --text-main: #334155;      /* Slate 700 */
-            --text-bold: #0f172a;      /* Slate 900 */
-            --text-muted: #64748b;     /* Slate 500 */
-            --text-inverse: #ffffff;   /* 짙은 배경 위의 흰 글씨 */
-            --border: #e2e8f0;         /* Slate 200 */
+            --bg-light: #f8fafc;       
+            --text-main: #334155;      
+            --text-bold: #0f172a;      
+            --text-muted: #64748b;     
+            --text-inverse: #ffffff;   
+            --border: #e2e8f0;         
             --success: #059669;        
             --danger: #e11d48;         
             --gift: #7c3aed;           
@@ -42,12 +42,28 @@
         .panel { background: var(--card-bg); padding: 32px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1); border: none; }
         .full-width { grid-column: 1 / -1; }
         
-        .page-title-container { text-align: center; margin-bottom: 40px; }
+        /* 모드 토글 스위치 디자인 */
+        .mode-toggle-wrapper { position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 6px; display: flex; gap: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .mode-btn { padding: 8px 16px; border: none; background: transparent; border-radius: 8px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem; }
+        .mode-btn.active { background: var(--text-bold); color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        
+        /* 모드에 따른 숨김 처리 */
+        body.mode-influencer .admin-only { display: none !important; }
+        body.mode-admin .influencer-only { display: none !important; }
+        body.mode-influencer .dashboard-grid { grid-template-columns: 1fr; }
+
+        .page-title-container { text-align: center; margin-bottom: 40px; margin-top: 10px; }
         .page-title { font-size: 2.25rem; font-weight: 800; color: var(--text-inverse); margin: 0 0 8px 0; letter-spacing: -0.03em; }
         .page-subtitle { font-size: 1rem; font-weight: 500; color: #94a3b8; margin: 0; letter-spacing: -0.01em; }
 
         h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-bold); margin-top: 0; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px; display: inline-block; width: 100%;}
         h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-top: 28px; margin-bottom: 12px; }
+
+        /* 제품 채널 탭 스타일 */
+        .channel-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; overflow-x: auto; }
+        .channel-tab { padding: 8px 20px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--text-muted); font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-size: 0.95rem; }
+        .channel-tab.active { background: var(--text-bold); color: #fff; border-color: var(--text-bold); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .channel-tab:hover:not(.active) { background: var(--bg-light); border-color: #cbd5e1; color: var(--text-main); }
 
         .category-header { font-size: 1.15rem; color: var(--text-bold); margin: 28px 0 16px 0; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-weight: 700; }
         .subcategory-header { font-size: 1rem; color: var(--accent); margin: 16px 0 12px 0; font-weight: 600; padding-left: 10px; border-left: 3px solid var(--accent); }
@@ -58,7 +74,7 @@
         .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 16px; background: var(--bg-light); padding: 8px; box-sizing: border-box; mix-blend-mode: multiply;}
         .product-card.selected { border-color: var(--accent); background-color: #eff6ff; box-shadow: 0 0 0 2px var(--accent); }
         .product-card .price { font-weight: 700; color: var(--text-bold); margin-top: auto; font-size: 1.05rem; }
-        .product-card .cost-badge { font-size: 0.8rem; background: var(--bg-light); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; margin-top: 6px; font-weight: 500; border: 1px solid var(--border); }
+        .product-card .cost-badge { font-size: 0.8rem; background: #fee2e2; color: var(--danger); padding: 4px 8px; border-radius: 6px; margin-top: 6px; font-weight: 600; border: 1px solid #fecaca; }
         
         .btn-crawl { background-color: #fff; color: var(--text-bold); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 12px; width: 100%; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .btn-crawl:hover { background-color: var(--bg-light); border-color: #cbd5e1; color: var(--accent); }
@@ -87,33 +103,44 @@
         td:first-child { text-align: left; font-weight: 500; background: var(--bg-light); border-right: 1px solid var(--border); width: 40%; color: var(--text-bold); }
         tr:last-child th, tr:last-child td { border-bottom: none; }
         
-        input[type="number"], input[type="text"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
+        input[type="number"], input[type="text"], input[type="date"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
+        input[type="date"] { text-align: left; width: auto; }
+        /* 텍스트(문자) 전용 넓은 입력창 */
+        input[type="text"].text-input { text-align: left; width: 160px; }
+        
         input[readonly] { color: var(--text-muted); background: var(--bg-light); border-color: transparent; }
         input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         select { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); font-family: inherit; font-size: 0.95rem; outline: none; background: #fff; font-weight: 500; color: var(--text-bold); }
         select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        button { background-color: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit; transition: background-color 0.2s; }
-        button:hover { background-color: var(--primary-hover); }
         
-        /* Dashboard Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        .btn-confirm { background-color: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3); }
+        .btn-confirm:hover { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(59, 130, 246, 0.4); }
+        .btn-confirm.pending { background-color: #f59e0b !important; color: white !important; cursor: not-allowed !important; transform: none !important; box-shadow: none !important; }
+        .btn-confirm.approved { background-color: #10b981 !important; color: white !important; cursor: not-allowed !important; transform: none !important; box-shadow: none !important; }
+
+        .btn-approve-admin { background-color: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 6px;}
+        .btn-approve-admin:hover { background-color: var(--accent-hover); }
+
+        .badge-pending { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
+        .badge-approved { background: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; transition: all 0.3s; }
+        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr !important; } }
         
-        /* Partner Card (Blue Accent) */
+        /* Dashboard Cards */
         .partner-summary-card { background: #ffffff; border: 1px solid var(--border); border-top: 4px solid var(--accent); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
         .partner-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
         .partner-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
         .partner-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
         .partner-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: var(--bg-light); border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
 
-        /* HQ Card (Slate Accent) */
         .hq-summary-card { background: var(--bg-light); border: 1px solid var(--border); border-top: 4px solid var(--text-bold); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
         .hq-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
         .hq-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--text-bold); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
         .hq-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
         .hq-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: #fff; border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
 
-        /* 결과 테이블 디자인 개선 */
+        /* 결과 테이블 고정 레이아웃 */
         #resultTable { table-layout: fixed; }
         #resultTable th { background: var(--bg-light); color: var(--text-bold); text-align: center; border-right: 1px solid var(--border); border-bottom: 2px solid var(--border); font-weight: 700; word-break: keep-all; }
         #resultTable th:last-child { border-right: none; }
@@ -126,9 +153,6 @@
         #resultTable tr.target-row td:first-child { background-color: #eff6ff; color: var(--accent); }
         .result-highlight { font-weight: 800; color: var(--text-bold); font-size: 1.1em; }
         .success-highlight { font-weight: 800; color: var(--accent); font-size: 1.1em; }
-        
-        .summary-text { text-align: right; margin-top: 20px; color: var(--text-muted); font-size: 1rem; }
-        .summary-text p { margin: 8px 0; }
         
         #db-status { padding: 12px 20px; margin-bottom: 32px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: var(--text-bold); border: 1px solid var(--border); }
         
@@ -151,41 +175,94 @@
         .modal-btn-ok { background: var(--primary); color: #fff; }
         .modal-btn-ok:hover { background: var(--primary-hover); }
 
-        /* Print (PDF 저장) 전용 스타일 */
         @media print {
             body { background: #fff; padding: 0; margin: 0; color: #000; }
             .container { display: block; gap: 0; max-width: 100%; }
             .panel { display: none; box-shadow: none; border: none; padding: 0; margin: 0; }
             #hq-panel { display: block !important; width: 100%; }
-            .btn-print, .btn-crawl { display: none !important; }
+            .btn-print, .btn-crawl, .mode-toggle-wrapper { display: none !important; }
             .page-title-container, #db-status { display: none; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
-<body>
+<body class="mode-admin"> <!-- 기본은 관리자 모드로 시작 -->
+
+<div class="mode-toggle-wrapper">
+    <button id="btn-mode-influencer" class="mode-btn" onclick="setMode('influencer')">인플루언서 뷰</button>
+    <button id="btn-mode-admin" class="mode-btn active" onclick="setMode('admin')">관리자 뷰</button>
+</div>
 
 <div class="page-title-container">
     <h1 class="page-title">Group Buying Profit Simulator</h1>
-    <p class="page-subtitle">메디팹 글로벌 공동구매 정산 시뮬레이터</p>
+    <p class="page-subtitle">메디팹 글로벌 공동구매 파트너링 및 정산 시뮬레이터</p>
 </div>
 
 <div id="db-status" class="status-loading">시스템 데이터를 불러오는 중입니다...</div>
 
 <div class="container">
-    <div class="panel full-width">
-        <h2>제품 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
+    
+    <!-- 패널 1: 제품 선택 (공용) -->
+    <div class="panel full-width" id="panel-products">
+        <h2>제품 구성 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
+        
+        <!-- 제품 채널 분류 탭 -->
+        <div class="channel-tabs">
+            <div class="channel-tab active" onclick="setChannelTab('일반', this)">일반</div>
+            <div class="channel-tab" onclick="setChannelTab('약국용', this)">약국용</div>
+            <div class="channel-tab" onclick="setChannelTab('병의원용', this)">병의원용</div>
+        </div>
+
         <div id="product-list" style="max-height: 600px; overflow-y: auto; padding-right: 8px;"></div>
     </div>
 
-    <div class="panel">
-        <h2>시뮬레이션 설정</h2>
+    <!-- 패널 2: 샘플 및 사은품 요청 (공용) -->
+    <div class="panel full-width" id="panel-samples">
+        <h2>샘플 및 사은품 요청 <span class="admin-only" style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(원가 발생 -> 고정비 자동반영)</span></h2>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:-16px; margin-bottom: 16px;">테스트용 샘플 및 고객 제공용 사은품을 구성해보세요.</p>
+        
+        <div class="dashboard-grid">
+            <!-- 샘플 추가 -->
+            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <h4 style="margin: 0 0 16px 0; font-size: 1.05rem; color: var(--text-bold);">🧪 리뷰/테스트용 샘플 추가</h4>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+                    <select id="sampleSelect" style="flex: 1; min-width: 140px;"></select>
+                    <input type="text" inputmode="numeric" id="sampleQty" value="1" oninput="formatInput(this)" style="width: 60px;"> 개
+                    <button type="button" onclick="addSample()" style="background-color: var(--text-bold); color: #fff; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">+ 추가</button>
+                </div>
+                <div id="sampleAddedList" class="added-item-list"></div>
+                
+                <div class="admin-only" style="text-align: right; margin-top: 16px; font-weight: bold; color: var(--danger); font-size:1.05rem;">
+                    총 신청 샘플 원가: <span id="sampleCostDisplay">0</span> 원
+                </div>
+            </div>
+
+            <!-- 사은품 추가 -->
+            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <h4 style="margin: 0 0 16px 0; font-size: 1.05rem; color: var(--text-bold);">🎁 고객 제공용 사은품 추가</h4>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+                    <select id="giftSelect" style="flex: 1; min-width: 140px;"></select>
+                    <input type="text" inputmode="numeric" id="giftQty" value="300" oninput="formatInput(this)" style="width: 60px;"> 개
+                    <button type="button" onclick="addGift()" style="background-color: var(--accent); color: #fff; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">+ 추가</button>
+                </div>
+                <div id="giftAddedList" class="added-item-list"></div>
+                
+                <div class="admin-only" style="text-align: right; margin-top: 16px; font-weight: bold; color: var(--danger); font-size:1.05rem;">
+                    총 사은품 원가: <span id="giftCostDisplay">0</span> 원
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 패널 3: 시뮬레이션 상세 설정 (관리자 전용) -->
+    <div class="panel admin-only" id="panel-admin-settings">
+        <h2>시뮬레이션 상세 설정 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비)</span></h2>
         <table>
-            <tr><td>목표 판매 수량 (개)</td><td><input type="text" inputmode="numeric" id="targetQty" value="300" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><th colspan="2" style="background-color: var(--bg-color); color: var(--text-bold);">변동비 비율 설정 (%)</th></tr>
+            <tr><td>목표 판매 수량 (개)</td><td><input type="text" inputmode="numeric" id="targetQtyAdmin" value="300" oninput="formatInput(this); syncTargetQty(this.value); calculate()"></td></tr>
+            <tr><th colspan="2" style="background-color: var(--bg-light); color: var(--text-bold);">변동비 비율 설정 (%)</th></tr>
             <tr style="background-color: #fff;">
                 <td><strong>총 제품 공급가</strong><br><span style="font-size:0.8em; color:var(--text-muted);">(선택 패키지 1세트 원가 합계)</span></td>
-                <td id="displayTotalCost" style="font-weight: 800; color: var(--text-bold); font-size: 1.1em;">0 원</td>
+                <td id="displayTotalCost" style="font-weight: 800; color: var(--danger); font-size: 1.1em;">0 원</td>
             </tr>
             <tr><td>제품공급가 비율 <span style="font-size:0.8em; color:var(--text-muted);">(자동계산)</span></td><td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()" readonly> %</td></tr>
             <tr><td>배송비 비율</td><td><input type="number" id="ratioShipping" value="7" step="1" oninput="calculate()"> %</td></tr>
@@ -211,72 +288,76 @@
         </table>
     </div>
 
-    <div class="panel">
-        <h2 style="margin-bottom: 0; border-bottom: none;">고정비 / 공통비 설정</h2>
-        <h3>▶ 고정비 설정</h3>
-
-        <div style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
-            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-bold);">🧪 샘플 추가 (고정비 연동)</h4>
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <select id="sampleSelect" style="flex: 1; min-width: 140px;"></select>
-                <input type="text" inputmode="numeric" id="sampleQty" value="10" oninput="formatInput(this)" style="width: 60px;"> 개
-                <button type="button" onclick="addSample()" style="background-color: var(--text-bold);">+ 추가</button>
+    <!-- 패널 4: 고정비 / 공통비 / 사은품 설정 (관리자 전용) -->
+    <div class="panel full-width admin-only" id="panel-admin-costs">
+        <h2 style="margin-bottom: 0; border-bottom: none;">고정비 및 공통비 배부 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비)</span></h2>
+        
+        <div class="dashboard-grid" style="margin-top:24px;">
+            <div>
+                <h3 style="margin-top: 0;">▶ 공통비 설정</h3>
+                <table style="margin-top: 0;">
+                    <tr><td>임원/경영/연구소 총합</td><td><input type="text" inputmode="numeric" id="ccTotal" value="150,000,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr style="background-color: #fff;">
+                        <td><strong>프로젝트 배부율 (%)</strong></td>
+                        <td><input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--accent);"> %</td>
+                    </tr>
+                    <tr><th style="text-align: left; background-color: var(--bg-light); color: var(--text-bold);">적용 공통비 (배부액)</th><th style="text-align: right; background-color: var(--bg-light); color: var(--text-bold);" id="totalCcDisplay">0 원</th></tr>
+                </table>
             </div>
-            <div id="sampleAddedList" class="added-item-list"></div>
-            <div style="text-align: right; margin-top: 12px; font-weight: bold; color: var(--text-bold);">
-                총 샘플 원가: <span id="sampleCostDisplay">0</span> 원
+
+            <div>
+                <h3 style="margin-top: 0;">▶ 고정비 설정</h3>
+                <table style="margin-top: 0;">
+                    <tr style="background-color: #fff;">
+                        <td><strong>참여 인원 (명)</strong></td>
+                        <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--accent);"> 명</td>
+                    </tr>
+                    <tr><td>인건비</td><td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr><td>여비교통비</td><td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr><td>식대</td><td><input type="text" inputmode="numeric" id="fcFood" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr><td>장소대여비</td><td><input type="text" inputmode="numeric" id="fcRent" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr><td>소품비</td><td><input type="text" inputmode="numeric" id="fcProps" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr><td>기타 프린터비 등</td><td><input type="text" inputmode="numeric" id="fcOther" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
+                    <tr><td>샘플비 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly></td></tr>
+                    <tr><td>사은품 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly></td></tr>
+                    <tr><td>특약비 <span style="font-size:0.8em; color:var(--accent);">(수수료 연동)</span></td><td><input type="text" inputmode="numeric" id="fcContractDisplay" value="0" readonly style="color:var(--accent); font-weight:bold;"></td></tr>
+                    <tr><th style="text-align: left; background-color: var(--bg-light); color: var(--danger);">고정비 총계</th><th style="text-align: right; background-color: var(--bg-light); color: var(--danger);" id="totalFcDisplay">0 원</th></tr>
+                </table>
             </div>
         </div>
-
-        <div style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border);">
-            <h4 style="margin: 0 0 12px 0; font-size: 1rem; color: var(--text-bold);">🎁 사은품 추가 (고정비 연동)</h4>
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <select id="giftSelect" style="flex: 1; min-width: 140px;"></select>
-                <input type="text" inputmode="numeric" id="giftQty" value="300" oninput="formatInput(this)" style="width: 60px;"> 개
-                <button type="button" onclick="addGift()" style="background-color: var(--accent);">+ 추가</button>
-            </div>
-            <div id="giftAddedList" class="added-item-list"></div>
-            <div style="text-align: right; margin-top: 12px; font-weight: bold; color: var(--text-bold);">
-                총 사은품 원가: <span id="giftCostDisplay">0</span> 원
-            </div>
-        </div>
-
-        <table style="margin-top: 0;">
-            <tr style="background-color: #fff;">
-                <td><strong>참여 인원 (명)</strong></td>
-                <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--accent);"> 명</td>
-            </tr>
-            <tr><td>인건비</td><td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>여비교통비</td><td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>식대</td><td><input type="text" inputmode="numeric" id="fcFood" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>장소대여비</td><td><input type="text" inputmode="numeric" id="fcRent" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>소품비</td><td><input type="text" inputmode="numeric" id="fcProps" value="200,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>기타 프린터비 등</td><td><input type="text" inputmode="numeric" id="fcOther" value="30,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr><td>샘플비 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly></td></tr>
-            <tr><td>사은품 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly></td></tr>
-            <tr><td>특약비 <span style="font-size:0.8em; color:var(--accent);">(수수료 연동)</span></td><td><input type="text" inputmode="numeric" id="fcContractDisplay" value="0" readonly style="color:var(--accent); font-weight:bold;"></td></tr>
-            <tr><th style="text-align: left; background-color: var(--bg-color); color: var(--text-bold);">고정비 총계</th><th style="text-align: right; background-color: var(--bg-color); color: var(--text-bold);" id="totalFcDisplay">0 원</th></tr>
-        </table>
-
-        <h3 style="margin-top: 32px;">▶ 공통비 설정</h3>
-        <table style="margin-top: 0;">
-            <tr><td>임원/경영/연구소 총합</td><td><input type="text" inputmode="numeric" id="ccTotal" value="150,000,000" oninput="formatInput(this); calculate()"></td></tr>
-            <tr style="background-color: #fff;">
-                <td><strong>프로젝트 배부율 (%)</strong></td>
-                <td><input type="number" id="ccAllocationRate" value="1" step="0.1" oninput="calculate()" style="font-weight:bold; color:var(--accent);"> %</td>
-            </tr>
-            <tr><th style="text-align: left; background-color: var(--bg-light); color: var(--text-bold);">적용 공통비 (배부액)</th><th style="text-align: right; background-color: var(--bg-light); color: var(--text-bold);" id="totalCcDisplay">0 원</th></tr>
-        </table>
     </div>
 
-    <!-- 공유용 정산 대시보드 (이미지 복사 타겟) -->
+    <!-- 패널 5: 공유용 정산 대시보드 -->
     <div class="panel full-width" id="partner-panel" style="position: relative;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
             <h2 style="margin: 0; border: none; padding: 0; width: auto;">예상 정산 대시보드</h2>
             <button class="btn-print" onclick="captureImage()">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                이미지 클립보드 복사
+                대시보드 이미지 복사
             </button>
+        </div>
+
+        <!-- 인플루언서가 직접 판매 수량을 조정하고 방송일자/채널을 선택하는 입력란 -->
+        <div style="background: #fff; border: 1px solid var(--accent); padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.05); flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span style="font-weight: 700; color: var(--text-bold); font-size: 1.1rem; display: block;">🎯 나의 예상 판매 수량 및 일정</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">채널, 방송(오픈) 예정일, 목표 판매 수량을 입력하여 정산액을 시뮬레이션 하세요.</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 600; font-size: 0.95rem;">방송채널:</span>
+                    <input type="text" class="text-input" id="broadcastChannel" placeholder="예: 인스타, 유튜브 등" style="border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 1rem; color: var(--text-bold); outline: none;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 600; font-size: 0.95rem;">방송예정일:</span>
+                    <input type="date" id="broadcastDate" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 1rem; color: var(--text-bold); outline: none;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 600; font-size: 0.95rem;">목표수량:</span>
+                    <input type="text" inputmode="numeric" id="targetQtyInfluencer" value="300" oninput="formatInput(this); syncTargetQty(this.value); calculate();" style="width: 100px; font-size: 1.1rem; color: var(--accent); border: 1px solid var(--accent); text-align: right; padding: 8px 12px; border-radius: 6px; font-weight: bold; outline: none;">
+                    <span style="font-weight: 700; color: var(--text-bold); font-size:1.1rem;">개</span>
+                </div>
+            </div>
         </div>
 
         <div class="dashboard-grid">
@@ -286,7 +367,7 @@
                 <div class="summary-desc">판매수수료 <span class="partnerProfitRate" style="color: var(--accent); font-weight:700;">35</span>% + 특약비 <span class="partnerProfitContract" style="font-weight:700;">0</span>원 기준</div>
             </div>
             
-            <div class="hq-summary-card">
+            <div class="hq-summary-card admin-only">
                 <div class="summary-label">본사 예상 영업이익</div>
                 <div class="summary-value"><span class="hqProfitAmount">0</span><span class="unit">원</span></div>
                 <div class="summary-desc">목표 <span class="partnerProfitQty" style="font-weight:700;">0</span>개 판매 달성 시</div>
@@ -294,14 +375,21 @@
         </div>
 
         <div id="selected-package-info" class="package-visualizer" style="margin-bottom: 8px;"></div>
+        <!-- 샘플 정보는 대시보드에 같이 출력됨 -->
         <div id="selected-sample-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 8px;"></div>
         <div id="selected-gift-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 16px;"></div>
+
+        <!-- 최종 확정 전송 버튼 (인플루언서 뷰에만 표시) -->
+        <div class="influencer-only" style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px dashed var(--border);">
+            <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="background-color: var(--text-bold); width: 100%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">최종 데이터 전송 및 확정</button>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">확정 시 본사 담당자에게 구성 내역 및 일정이 전달되며, 승인 대기 상태로 변경됩니다.</p>
+        </div>
     </div>
 
-    <!-- 본사 전용 상세 내역 표 (인쇄/PDF 대상) -->
-    <div class="panel full-width" id="hq-panel">
+    <!-- 패널 6: 본사 전용 상세 내역 표 (관리자 전용) -->
+    <div class="panel full-width admin-only" id="hq-panel">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
-            <h2 style="margin: 0; border: none; padding: 0; width: auto;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(본사 대외비 / 부가세 제외)</span></h2>
+            <h2 style="margin: 0; border: none; padding: 0; width: auto;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비 / 부가세 제외)</span></h2>
             <button class="btn-print primary" onclick="window.print()">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                 PDF/인쇄
@@ -328,6 +416,29 @@
             <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--accent)">0</strong> 개</p>
         </div>
     </div>
+
+    <!-- 패널 7: 인플루언서 확정 대시보드 (관리자 전용) -->
+    <div class="panel full-width admin-only" id="panel-admin-campaigns">
+        <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(수신된 결재 요청)</span></h2>
+        <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
+            <table id="campaignTable" style="margin-top: 0; min-width: 900px; border: none; border-radius: 0;">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">신청일자</th>
+                        <th style="width: 150px;">방송 예정일 및 채널</th>
+                        <th>패키지 구성 내역</th>
+                        <th style="width: 100px;">목표수량</th>
+                        <th style="width: 140px;">파트너 정산액</th>
+                        <th style="width: 120px;">상태 및 관리</th>
+                    </tr>
+                </thead>
+                <tbody id="campaignListBody">
+                    <tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 <!-- Custom Modal UI Container -->
@@ -352,6 +463,186 @@
     var selectedProducts = [];
     var addedSamples = [];
     var addedGifts = [];
+    
+    // 로컬 메모리에 캠페인 내역 임시 저장 (DB 테이블이 없을 경우를 대비한 Fallback)
+    var mockCampaigns = [];
+    var currentSessionCampaignId = null; // 현재 인플루언서 세션에서 전송한 캠페인의 ID
+
+    var currentChannelFilter = '일반'; // 기본 활성 채널 탭
+
+    // 역할(Role) 토글 로직
+    function setMode(mode) {
+        document.body.className = 'mode-' + mode;
+        
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('btn-mode-' + mode).classList.add('active');
+        
+        if (mode === 'influencer') {
+            customAlert("인플루언서 뷰로 전환되었습니다.\n생산 원가 및 본사 세부 설정은 숨김 처리됩니다.", "뷰 전환");
+        }
+    }
+
+    // 채널 탭 전환 로직
+    function setChannelTab(channel, element) {
+        document.querySelectorAll('.channel-tab').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        currentChannelFilter = channel;
+        
+        // 데이터가 아직 로드되지 않은 상태라면 리턴 (초기 로딩 시 오류 방지)
+        if(productsData.length > 0) {
+            renderProducts();
+        }
+    }
+
+    // 목표 수량 입력칸 2개(관리자용, 인플루언서 대시보드용)를 항상 동기화
+    function syncTargetQty(val) {
+        let cleanVal = val.replace(/[^0-9]/g, '');
+        if (cleanVal === '') cleanVal = '0';
+        const formatted = Number(cleanVal).toLocaleString('ko-KR');
+        
+        document.getElementById('targetQtyAdmin').value = formatted;
+        document.getElementById('targetQtyInfluencer').value = formatted;
+    }
+
+    // 인플루언서의 최종 데이터 DB 전송 로직 (승인 워크플로우 적용)
+    async function submitCampaign() {
+        const bDate = document.getElementById('broadcastDate').value;
+        const bChannel = document.getElementById('broadcastChannel').value;
+
+        if (!bDate) {
+            customAlert("방송(오픈) 예정일을 달력에서 선택해주세요.");
+            return;
+        }
+        if (selectedProducts.length === 0) {
+            customAlert("선택된 제품 구성 내역이 없습니다.");
+            return;
+        }
+
+        const targetQty = getNum('targetQtyInfluencer');
+        const partnerProfitText = document.querySelector('.partnerProfitAmount').innerText;
+        const hqProfitText = document.querySelector('.hqProfitAmount').innerText;
+
+        const payload = {
+            id: Date.now(), // 고유 ID 생성 (임시)
+            created_at: new Date().toISOString(),
+            broadcast_date: bDate,
+            broadcast_channel: bChannel || '미입력', // 채널 정보 추가
+            target_qty: targetQty,
+            partner_profit: parseInt(partnerProfitText.replace(/,/g, '')),
+            hq_profit: parseInt(hqProfitText.replace(/,/g, '')),
+            products: selectedProducts.map(id => productsData.find(p => p.id === id).name),
+            status: '승인 대기중'
+        };
+
+        // 현재 세션의 캠페인 ID 저장 (버튼 상태 연동을 위함)
+        currentSessionCampaignId = payload.id;
+
+        const btn = document.getElementById('btn-submit-campaign');
+        btn.innerText = "승인 대기중 ⏳";
+        btn.classList.add('pending');
+        btn.classList.remove('approved');
+        btn.disabled = true;
+
+        try {
+            // DB에 'campaign_simulations' 테이블이 존재한다면 저장 시도
+            const { error } = await supabaseClient.from('campaign_simulations').insert([payload]);
+            if (error) {
+                console.warn("Supabase 테이블 접근 실패 (Fallback 작동): ", error.message);
+            }
+        } catch (e) {
+            console.warn("DB 에러", e);
+        }
+
+        // DB 성공/실패 여부와 상관없이 관리자 뷰 확인을 위해 로컬 배열에 추가
+        mockCampaigns.unshift(payload);
+        renderAdminCampaigns();
+
+        customAlert(`성공적으로 데이터가 전송되었습니다.\n\n관리자(본사)의 승인 전까지 [승인 대기중]으로 표시됩니다.\n승인이 완료되면 버튼이 [승인 완료]로 변경됩니다.`, "전송 완료");
+    }
+
+    // 관리자가 [승인하기] 버튼을 누를 때 호출되는 함수
+    async function approveCampaign(id) {
+        const campaign = mockCampaigns.find(c => c.id === id);
+        if(campaign) {
+            // 상태 업데이트
+            campaign.status = '승인 완료';
+            
+            // 만약 현재 세션에서 방금 올린 신청건이라면, 인플루언서 뷰의 버튼도 실시간(로컬)으로 초록색 승인완료로 변경
+            if(id === currentSessionCampaignId) {
+                const btn = document.getElementById('btn-submit-campaign');
+                btn.innerText = "승인 완료 ✅";
+                btn.classList.remove('pending');
+                btn.classList.add('approved');
+            }
+            
+            // 관리자 테이블 다시 렌더링
+            renderAdminCampaigns();
+            
+            // 실제 DB가 있다면 DB도 업데이트
+            try {
+                await supabaseClient.from('campaign_simulations').update({ status: '승인 완료' }).eq('id', id);
+            } catch (e) {}
+
+            customAlert("해당 캠페인이 '승인 완료' 처리되었습니다.", "승인 완료");
+        }
+    }
+
+    // 관리자 뷰의 '인플루언서 확정 내역' 렌더링
+    function renderAdminCampaigns() {
+        const tbody = document.getElementById('campaignListBody');
+        if (mockCampaigns.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 결재 요청 내역이 없습니다.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        mockCampaigns.forEach(c => {
+            const reqDate = new Date(c.created_at).toLocaleDateString();
+            const bDateObj = new Date(c.broadcast_date);
+            const bDateStr = `${bDateObj.getFullYear()}.${String(bDateObj.getMonth()+1).padStart(2,'0')}.${String(bDateObj.getDate()).padStart(2,'0')}`;
+            const channelStr = c.broadcast_channel && c.broadcast_channel !== '미입력' ? `<br><span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">[${c.broadcast_channel}]</span>` : '';
+            const prods = c.products.join(', ');
+
+            // 상태에 따른 뱃지 및 승인 버튼 분기 처리
+            let statusHtml = '';
+            if (c.status === '승인 대기중') {
+                statusHtml = `
+                    <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+                        <span class="badge-pending">${c.status}</span>
+                        <button class="btn-approve-admin" onclick="approveCampaign(${c.id})">승인하기</button>
+                    </div>
+                `;
+            } else {
+                statusHtml = `<span class="badge-approved">${c.status}</span>`;
+            }
+
+            html += `
+                <tr style="background:#fff;">
+                    <td style="text-align:center;">${reqDate}</td>
+                    <td style="text-align:center; font-weight:700; color:var(--accent);">${bDateStr}${channelStr}</td>
+                    <td style="text-align:left; font-size:0.9rem;">${prods}</td>
+                    <td style="text-align:center; font-weight:600;">${formatNum(c.target_qty)}개</td>
+                    <td style="text-align:right; font-weight:700; color:var(--text-bold);">${formatNum(c.partner_profit)}원</td>
+                    <td style="text-align:center;">${statusHtml}</td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    // 초기 로딩 시 DB에서 확정 내역 리스트 불러오기 (테이블이 있을 경우)
+    async function fetchCampaigns() {
+        try {
+            const { data, error } = await supabaseClient.from('campaign_simulations').select('*').order('created_at', { ascending: false });
+            if (!error && data && data.length > 0) {
+                // DB에서 가져온 데이터로 초기화
+                mockCampaigns = data;
+            }
+        } catch(e) {
+            console.log("캠페인 내역 로드 무시됨 (초기설정)");
+        }
+        renderAdminCampaigns();
+    }
 
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
@@ -383,23 +674,19 @@
             const okBtn = document.getElementById('modalOkBtn');
             
             modal.style.display = 'flex';
-            
-            okBtn.onclick = () => {
-                modal.style.display = 'none';
-                resolve();
-            };
+            okBtn.onclick = () => { modal.style.display = 'none'; resolve(); };
         });
     }
 
-    function customPrompt(title, msg, placeholder="URL을 입력하세요") {
+    function customPrompt(title, msg, placeholder="URL을 입력하세요", defaultValue="") {
         return new Promise(resolve => {
             const modal = document.getElementById('customModal');
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalMessage').innerText = msg;
             
             const input = document.getElementById('modalInput');
-            input.style.display = 'block';
-            input.value = '';
+            input.style.display = 'block'; 
+            input.value = defaultValue; 
             input.placeholder = placeholder;
             
             document.getElementById('modalCancelBtn').style.display = 'inline-block';
@@ -408,53 +695,36 @@
             const cancelBtn = document.getElementById('modalCancelBtn');
             
             modal.style.display = 'flex';
-            
-            okBtn.onclick = () => {
-                modal.style.display = 'none';
-                resolve(input.value);
-            };
-            cancelBtn.onclick = () => {
-                modal.style.display = 'none';
-                resolve(null);
-            };
+            okBtn.onclick = () => { modal.style.display = 'none'; resolve(input.value); };
+            cancelBtn.onclick = () => { modal.style.display = 'none'; resolve(null); };
         });
     }
 
     function captureImage() {
         const target = document.getElementById('partner-panel');
-        const btns = target.querySelectorAll('.btn-print');
-        
-        btns.forEach(btn => btn.style.display = 'none');
+        const btns = target.querySelectorAll('.btn-print, .btn-confirm, p');
+        btns.forEach(btn => btn.style.display = 'none'); 
         
         html2canvas(target, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
             canvas.toBlob(blob => {
                 try {
-                    navigator.clipboard.write([
-                        new ClipboardItem({ 'image/png': blob })
-                    ]).then(() => {
-                        customAlert("클립보드에 정산 대시보드 이미지가 복사되었습니다.\n메신저 등에 붙여넣기(Ctrl+V) 하세요.", "복사 완료");
-                    }).catch(err => {
-                        fallbackDownload(canvas);
-                    });
-                } catch (err) {
-                    fallbackDownload(canvas);
-                }
+                    navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ]).then(() => {
+                        customAlert("클립보드에 대시보드 이미지가 복사되었습니다.\n메신저에 바로 붙여넣기(Ctrl+V) 하세요.", "복사 완료");
+                    }).catch(err => { fallbackDownload(canvas); });
+                } catch (err) { fallbackDownload(canvas); }
             }, 'image/png');
-            
-            btns.forEach(btn => btn.style.display = 'inline-flex');
+            btns.forEach(btn => btn.style.display = '');
         }).catch(err => {
             console.error(err);
-            btns.forEach(btn => btn.style.display = 'inline-flex');
+            btns.forEach(btn => btn.style.display = '');
             customAlert("이미지 생성 중 오류가 발생했습니다.");
         });
     }
 
     function fallbackDownload(canvas) {
         const link = document.createElement('a');
-        link.download = '공동구매_정산안내.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        customAlert("브라우저 환경 제한(보안 정책)으로 클립보드 복사 대신 이미지 파일로 자동 저장되었습니다.", "파일 저장 완료");
+        link.download = '공동구매_정산안내.png'; link.href = canvas.toDataURL('image/png'); link.click();
+        customAlert("보안 정책으로 인해 클립보드 복사 대신 파일로 저장되었습니다.", "저장 완료");
     }
 
     async function fetchProducts() {
@@ -463,7 +733,6 @@
             const productIds = products.map(p => p.id);
             const { data: prices } = await supabaseClient.from('product_prices').select('*').eq('currency', 'KRW').in('product_id', productIds);
             const { data: costs } = await supabaseClient.from('product_costs').select('product_id, production_cost').in('product_id', productIds);
-            
             const { data: extPrices } = await supabaseClient.from('external_product_prices').select('*');
 
             productsData = products.map(p => {
@@ -471,17 +740,18 @@
                 const costObj = costs?.find(c => c.product_id === p.id);
                 const extPriceObj = extPrices?.find(ep => ep.product_id === p.id && ep.platform === 'Naver'); 
                 
-                const msrp = priceObj?.b2c_msrp || 0;
+                const msrp = priceObj?.b2c_msrp || 50000;
                 const prodCost = costObj?.production_cost || 0;
                 
-                const promoPrice = (extPriceObj && extPriceObj.scraped_price) ? extPriceObj.scraped_price : (msrp * 0.7);
-                const source = (extPriceObj && extPriceObj.scraped_price) ? 'Naver 자동' : '기본할인';
+                const scrapedPrice = (extPriceObj && extPriceObj.scraped_price) ? extPriceObj.scraped_price : msrp * 0.8;
+                const promoPrice = msrp * 0.7; // 기본 프로모션가 세팅
+                const mallPriceVal = msrp * 0.9; // 기본 자사몰가 세팅
+                const source = (extPriceObj && extPriceObj.scraped_price) ? 'Naver 자동수집' : '기본할인';
 
                 return {
                     id: p.id, name: p.clean_name || '제품', cleanName: p.clean_name || '', 
-                    mainCategory: p.main_category || '스킨케어', 
-                    imageUrl: productImageMap[p.clean_name?.trim()] || fallbackImg,
-                    msrp: msrp, price: promoPrice, cost: prodCost, source: source
+                    mainCategory: p.main_category || '스킨케어', imageUrl: productImageMap[p.clean_name?.trim()] || fallbackImg,
+                    msrp: msrp, mallPrice: mallPriceVal, price: promoPrice, lowestPrice: scrapedPrice, source: source, cost: prodCost
                 };
             }).filter(p => {
                 if (p.cost <= 0) return false;
@@ -491,7 +761,6 @@
             });
 
             document.getElementById('db-status').style.display = 'none';
-            
         } catch (error) {
             console.error(error);
             document.getElementById('db-status').style.backgroundColor = '#fef2f2';
@@ -501,6 +770,7 @@
         } finally {
             if(productsData.length > 0) selectedProducts.push(productsData[0].id);
             populateSelects(); renderProducts(); updateAutoSupplyRatio();
+            fetchCampaigns(); // 저장된 캠페인 불러오기 연계
         }
     }
 
@@ -510,7 +780,7 @@
         sSel.innerHTML = '<option value="">선택</option>';
         gSel.innerHTML = '<option value="">선택</option>';
         productsData.forEach(p => {
-            const opt = `<option value="${p.id}">${p.name} (원가: ${formatNum(p.cost)})</option>`;
+            const opt = `<option value="${p.id}">${p.name}</option>`;
             sSel.innerHTML += opt;
             gSel.innerHTML += opt;
         });
@@ -521,7 +791,7 @@
         const qty = getNum('sampleQty');
         if(!id || qty <= 0) return;
         const p = productsData.find(x => x.id === id);
-        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, qty: qty, img: p.imageUrl });
+        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: p.imageUrl });
         updateSampleUI();
     }
     function removeSample(idx) { addedSamples.splice(idx, 1); updateSampleUI(); }
@@ -529,7 +799,7 @@
         let listHtml = '', totalCost = 0;
         addedSamples.forEach((s, idx) => {
             let lineCost = s.cost * s.qty; totalCost += lineCost;
-            listHtml += `<div class="added-item"><span>${s.name} x ${formatNum(s.qty)}개</span><div><span style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeSample(${idx})">X</span></div></div>`;
+            listHtml += `<div class="added-item"><span>${s.name} x ${formatNum(s.qty)}개</span><div><span class="admin-only" style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeSample(${idx})">X</span></div></div>`;
         });
         document.getElementById('sampleAddedList').innerHTML = listHtml;
         document.getElementById('sampleCostDisplay').innerText = formatNum(totalCost);
@@ -542,7 +812,7 @@
         const qty = getNum('giftQty');
         if(!id || qty <= 0) return;
         const p = productsData.find(x => x.id === id);
-        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, qty: qty, img: p.imageUrl });
+        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: p.imageUrl });
         updateGiftUI();
     }
     function removeGift(idx) { addedGifts.splice(idx, 1); updateGiftUI(); }
@@ -550,7 +820,7 @@
         let listHtml = '', totalCost = 0;
         addedGifts.forEach((g, idx) => {
             let lineCost = g.cost * g.qty; totalCost += lineCost;
-            listHtml += `<div class="added-item"><span>${g.name} x ${formatNum(g.qty)}개</span><div><span style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeGift(${idx})">X</span></div></div>`;
+            listHtml += `<div class="added-item"><span>${g.name} x ${formatNum(g.qty)}개</span><div><span class="admin-only" style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeGift(${idx})">X</span></div></div>`;
         });
         document.getElementById('giftAddedList').innerHTML = listHtml;
         document.getElementById('giftCostDisplay').innerText = formatNum(totalCost);
@@ -578,9 +848,7 @@
             if (p) { tc += p.cost; tpVatInc += p.price; }
         });
         
-        // 공급가 비율 계산 시에도 부가세 제외 금액을 기준으로 함
         const tpNet = tpVatInc / 1.1;
-
         document.getElementById('displayTotalCost').innerText = formatNum(tc) + ' 원';
         document.getElementById('ratioSupply').value = tpNet > 0 ? ((tc / tpNet) * 100).toFixed(2) : 0;
     }
@@ -589,6 +857,13 @@
         const container = document.getElementById('product-list');
         container.innerHTML = '';
         
+        // 현재 활성화된 채널 탭에 따라 제품 필터링
+        // (현재 DB에 약국/병의원용 구분이 없으므로, 시연을 위해 '일반' 탭일때만 전체 노출하도록 설정)
+        if (currentChannelFilter !== '일반') {
+            container.innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-muted); font-size:1.05rem;">해당 유통 채널(${currentChannelFilter})에 등록된 제품이 없습니다.</div>`;
+            return;
+        }
+
         const grouped = {
             '스킨케어': { '부스터': [], '앰플': [], '크림': [], '마스크': [], '기기': [] },
             '헤어케어': { '기본': [], '기기': [] }
@@ -600,22 +875,13 @@
             
             let mainGroup = null, subGroup = null;
 
-            if (name.includes('hyper shot') || name.includes('하이퍼샷')) {
-                mainGroup = '헤어케어'; subGroup = '기기';
-            } 
-            else if (mainCat.includes('hair') || name.includes('shampoo') || name.includes('scalp')) {
-                mainGroup = '헤어케어'; subGroup = '기본';
-            } else if (mainCat.includes('device') || name.includes('core impact')) {
-                mainGroup = '스킨케어'; subGroup = '기기';
-            } else if (name.includes('booster') && !name.includes('mask')) {
-                mainGroup = '스킨케어'; subGroup = '부스터';
-            } else if (name.includes('ampoule')) {
-                mainGroup = '스킨케어'; subGroup = '앰플';
-            } else if (name.includes('cream')) {
-                mainGroup = '스킨케어'; subGroup = '크림';
-            } else if (name.includes('mask')) {
-                mainGroup = '스킨케어'; subGroup = '마스크';
-            }
+            if (name.includes('hyper shot') || name.includes('하이퍼샷')) { mainGroup = '헤어케어'; subGroup = '기기'; } 
+            else if (mainCat.includes('hair') || name.includes('shampoo') || name.includes('scalp')) { mainGroup = '헤어케어'; subGroup = '기본'; } 
+            else if (mainCat.includes('device') || name.includes('core impact')) { mainGroup = '스킨케어'; subGroup = '기기'; } 
+            else if (name.includes('booster') && !name.includes('mask')) { mainGroup = '스킨케어'; subGroup = '부스터'; } 
+            else if (name.includes('ampoule')) { mainGroup = '스킨케어'; subGroup = '앰플'; } 
+            else if (name.includes('cream')) { mainGroup = '스킨케어'; subGroup = '크림'; } 
+            else if (name.includes('mask')) { mainGroup = '스킨케어'; subGroup = '마스크'; }
 
             if (mainGroup && subGroup && grouped[mainGroup] && grouped[mainGroup][subGroup]) {
                 grouped[mainGroup][subGroup].push(prod);
@@ -627,16 +893,14 @@
             if (!hasProducts) continue;
 
             const mainTitle = document.createElement('div');
-            mainTitle.className = 'category-header';
-            mainTitle.innerText = mainName;
+            mainTitle.className = 'category-header'; mainTitle.innerText = mainName;
             container.appendChild(mainTitle);
 
             for (const [subName, prods] of Object.entries(subGroups)) {
                 if (prods.length === 0) continue;
                 if (subName !== '기본') {
                     const subTitle = document.createElement('div');
-                    subTitle.className = 'subcategory-header';
-                    subTitle.innerText = subName;
+                    subTitle.className = 'subcategory-header'; subTitle.innerText = subName;
                     container.appendChild(subTitle);
                 }
 
@@ -649,15 +913,32 @@
                     card.id = `prod-${prod.id}`;
                     card.onclick = () => toggleProduct(prod.id);
                     
-                    const priceLabel = prod.source.includes('Naver') ? `<span style="color:var(--accent); font-weight:800;">[${prod.source}]</span> ` : '';
+                    const priceLabel = prod.source.includes('Naver') ? `<span class="admin-only" style="font-size:0.7rem; color:var(--accent); margin-left:2px;">[Naver]</span>` : '';
 
                     card.innerHTML = `
                         <img src="${prod.imageUrl}" alt="${prod.name}">
                         <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:10px;">${prod.name}</div>
+                        
                         <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
-                        <div class="price" id="price-${prod.id}" style="margin-bottom:4px;">${priceLabel}프로모션가: ${formatNum(prod.price)}원</div>
-                        <div class="cost-badge">원가: ${formatNum(prod.cost)}원</div>
-                        <button class="btn-crawl" onclick="event.stopPropagation(); fetchNaverPrice('${prod.id}')">URL 입력 & 수동 갱신</button>
+                        
+                        <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600;">
+                            자사몰가: <span id="mall-${prod.id}">${formatNum(prod.mallPrice)}원</span> 
+                            <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'mall')">수정</span>
+                        </div>
+                        
+                        <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600;">
+                            온라인 최저가: <span id="lowest-${prod.id}">${formatNum(prod.lowestPrice)}원</span> 
+                            <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'lowest')">수정</span>
+                            ${priceLabel}
+                        </div>
+                        
+                        <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold);">
+                            프로모션가: ${formatNum(prod.price)}원 
+                            <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'price')">수정</span>
+                        </div>
+                        
+                        <div class="cost-badge admin-only">원가: ${formatNum(prod.cost)}원</div>
+                        <button class="btn-crawl admin-only" onclick="event.stopPropagation(); fetchNaverPrice('${prod.id}')">최저가 자동 수집(URL)</button>
                     `;
                     grid.appendChild(card);
                 });
@@ -676,12 +957,37 @@
         updateAutoSupplyRatio(); calculate();
     }
 
+    async function editPrice(id, type) {
+        const prod = productsData.find(p => p.id === id);
+        if(!prod) return;
+        
+        const typeName = type === 'price' ? '공구 프로모션가' : (type === 'mall' ? '자사몰가' : '온라인 최저가');
+        const currentVal = type === 'price' ? prod.price : (type === 'mall' ? prod.mallPrice : prod.lowestPrice);
+        
+        const newValStr = await customPrompt(`${typeName} 변경`, `새로운 ${typeName}를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", currentVal.toString());
+        if(!newValStr) return;
+        
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal > 0) {
+            if(type === 'price') {
+                prod.price = newVal;
+            } else if (type === 'mall') {
+                prod.mallPrice = newVal;
+            } else {
+                prod.lowestPrice = newVal;
+                prod.source = '수동입력';
+            }
+            renderProducts();
+            updateAutoSupplyRatio();
+            calculate();
+        }
+    }
+
     async function fetchNaverPrice(productId) {
         const targetUrl = await customPrompt(
             "상품 수동 크롤링",
             "네이버 상품 URL을 입력하시면 크롤링을 시도하며, 성공 시 이후부터 매일 새벽 스케줄러에 의해 자동으로 갱신됩니다."
         );
-        
         if (!targetUrl || targetUrl.trim() === '') return;
 
         const btn = document.querySelector(`#prod-${productId} .btn-crawl`);
@@ -689,34 +995,21 @@
         btn.innerText = "수집 중... ⏳"; btn.disabled = true;
 
         try {
-            const { data, error } = await supabaseClient.functions.invoke('crawl-price', {
-                body: { productId: productId, platform: 'Naver', url: targetUrl }
-            });
-
+            const { data, error } = await supabaseClient.functions.invoke('crawl-price', { body: { productId: productId, platform: 'Naver', url: targetUrl } });
             if (error) throw error;
             if (data && data.success) {
-                await customAlert(
-                    `성공적으로 가격을 수집했습니다.\n새 가격: ${formatNum(data.numericPrice)}원\n\n(이제 이 제품은 매일 새벽 자동 수집 대상에 포함됩니다.)`, 
-                    "크롤링 성공"
-                );
-                applyNewPrice(productId, data.numericPrice, 'Naver 수동갱신');
-            } else {
-                throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
-            }
+                await customAlert(`성공적으로 가격을 수집했습니다.\n온라인 최저가: ${formatNum(data.numericPrice)}원\n\n(이제 이 제품은 매일 새벽 자동 수집 대상에 포함됩니다.)`, "크롤링 성공");
+                const prod = productsData.find(p => p.id === productId);
+                if(prod) {
+                    prod.lowestPrice = data.numericPrice;
+                    prod.source = 'Naver 자동수집';
+                    renderProducts();
+                }
+            } else { throw new Error("서버에서 유효한 응답을 받지 못했습니다."); }
         } catch (err) { 
             await customAlert("크롤링 실패: " + err.message + "\n\n1. URL이 정확한지 확인해주세요.\n2. 대상 사이트의 봇 차단(Anti-bot)으로 인해 실패했을 수 있습니다.", "크롤링 실패"); 
         } finally { 
             btn.innerText = originalText; btn.disabled = false; 
-        }
-    }
-
-    function applyNewPrice(productId, newPrice, source) {
-        const prod = productsData.find(p => p.id === productId);
-        if(prod) {
-            prod.price = newPrice;
-            const priceEl = document.getElementById(`price-${productId}`);
-            if(priceEl) priceEl.innerHTML = `<span style="color:var(--accent); font-weight:800;">[${source}]</span> 프로모션가: ${formatNum(newPrice)}원`;
-            updateAutoSupplyRatio(); calculate();
         }
     }
 
@@ -727,53 +1020,78 @@
 
         if (selectedProducts.length === 0) return;
 
-        let packagePriceVatInc = 0; let itemsHtml = [];
+        let totalPromo = 0;
+        let totalMsrp = 0;
+        let totalMall = 0;
+        let totalLowest = 0;
+        let itemsHtml = [];
+        
         selectedProducts.forEach(id => {
             const p = productsData.find(x => x.id === id);
             if(p) { 
-                packagePriceVatInc += p.price; 
+                totalPromo += p.price; 
+                totalMsrp += p.msrp;
+                totalMall += p.mallPrice || (p.msrp * 0.9);
+                totalLowest += p.lowestPrice || p.price; // 온라인 최저가가 없을 경우 프로모션가로 대체
                 itemsHtml.push(`<div class="pkg-item"><img src="${p.imageUrl}"><span>${p.name}</span></div>`); 
             }
         });
-        pkgEl.innerHTML = `<div style="color: var(--text-bold); margin-right:16px;"><strong>패키지 구성 (${selectedProducts.length}종)</strong></div>${itemsHtml.join('<div class="pkg-plus">+</div>')}`;
+        
+        let discountRate = totalLowest > 0 ? Math.round(((totalLowest - totalPromo) / totalLowest) * 100) : 0;
+        let discountBadge = discountRate > 0 ? `<span style="background: var(--danger); color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; margin-top: 6px; display: inline-block; font-weight: bold; letter-spacing: -0.02em; box-shadow: 0 2px 4px rgba(225,29,72,0.2);">최저가 대비 ${discountRate}% 저렴! ↓</span>` : '';
+
+        pkgEl.innerHTML = `<div style="color: var(--text-bold); margin-right:16px; min-width: 240px; flex-shrink: 0;">
+            <strong style="display:block; margin-bottom: 8px;">패키지 구성 (${selectedProducts.length}종)</strong>
+            <div style="background: #fff; padding: 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 0.9rem; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);">
+                <div style="display:flex; justify-content: space-between; color: var(--text-muted);">
+                    <span>소비자정가</span> <s style="margin-left: 16px;">${formatNum(totalMsrp)}원</s>
+                </div>
+                <div style="display:flex; justify-content: space-between; color: var(--text-main); font-weight: 500;">
+                    <span>자사몰가</span> <span style="margin-left: 16px;">${formatNum(totalMall)}원</span>
+                </div>
+                <div style="display:flex; justify-content: space-between; color: var(--text-main); font-weight: 600;">
+                    <span>온라인최저가</span> <span style="margin-left: 16px;">${formatNum(totalLowest)}원</span>
+                </div>
+                <div style="margin-top: 6px; padding-top: 10px; border-top: 1px dashed var(--border); display:flex; flex-direction:column; align-items: flex-end;">
+                    <div style="display:flex; justify-content: space-between; width: 100%; color: var(--accent); font-weight: 800; font-size: 1.1rem;">
+                        <span>프로모션가</span> <span>${formatNum(totalPromo)}원</span>
+                    </div>
+                    ${discountBadge}
+                </div>
+            </div>
+        </div>${itemsHtml.join('<div class="pkg-plus">+</div>')}`;
 
         if (addedSamples.length > 0) {
             samEl.style.display = 'flex';
             let samHtml = addedSamples.map(s => `<div class="pkg-item"><img src="${s.img}" style="border-color:var(--border);"><span>${s.name}<br><span style="color:var(--text-bold);">(${formatNum(s.qty)}개)</span></span></div>`).join('');
-            samEl.innerHTML = `<div style="color:var(--text-bold); margin-right:16px;"><strong>제공 샘플:</strong></div>${samHtml}`;
+            samEl.innerHTML = `<div style="color:var(--text-bold); margin-right:16px;"><strong>제공 신청 샘플:</strong></div>${samHtml}`;
         } else { samEl.style.display = 'none'; }
 
         if (addedGifts.length > 0) {
             gifEl.style.display = 'flex';
-            let gifHtml = addedGifts.map(g => `<div class="pkg-item"><img src="${g.img}" style="border-color:var(--border);"><span>${g.name}<br><span style="color:var(--text-muted);">(${formatNum(g.qty)}개)</span></span></div>`).join('');
-            gifEl.innerHTML = `<div style="color:var(--text-muted); margin-right:16px;"><strong>제공 사은품:</strong></div>${gifHtml}`;
+            let gifHtml = addedGifts.map(g => `<div class="pkg-item"><img src="${g.img}" style="border-color:var(--border);"><span>${g.name}<br><span style="color:var(--text-muted);">(${formatNum(g.qty)}개)</span><br><span style="color:var(--accent); font-size:0.75rem;">정가 ${formatNum(g.msrp)}원</span></span></div>`).join('');
+            gifEl.innerHTML = `<div style="color:var(--text-muted); margin-right:16px;"><strong>본사 제공 사은품:</strong></div>${gifHtml}`;
         } else { gifEl.style.display = 'none'; }
 
-        const packagePriceNet = packagePriceVatInc / 1.1;
+        const packagePriceNet = totalPromo / 1.1;
         const unitRev = packagePriceNet;
 
-        const targetQty = getNum('targetQty');
+        const targetQty = getNum('targetQtyAdmin'); 
         const gongguRate = Number(document.getElementById('ratioGonggu').value);
-        const contractFee = getNum('fcContract'); // 특약비 (새로 추가)
+        const contractFee = getNum('fcContract'); 
         
         const totalVcRatio = (
-            Number(document.getElementById('ratioSupply').value) + 
-            Number(document.getElementById('ratioShipping').value) + 
-            Number(document.getElementById('ratioPlatform').value) + 
-            Number(document.getElementById('ratioCard').value) + 
-            gongguRate + 
-            Number(document.getElementById('ratioIncentive').value) + 
-            Number(document.getElementById('ratioReferral').value)
+            Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + 
+            Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + 
+            gongguRate + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)
         ) / 100; 
         
         const unitVc = unitRev * totalVcRatio;
         const unitCm = unitRev * (1 - totalVcRatio);
 
-        // 고정비 총계에 특약비 포함
         const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
         const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
         
-        // 디스플레이에 특약비 반영
         document.getElementById('fcContractDisplay').value = formatNum(contractFee);
         document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
         document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
@@ -781,7 +1099,7 @@
         const totalFixedAndCommon = totalFc + totalCc;
         const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
 
-        // 사업자 수익금 정산 (변동비율 + 고정 특약비)
+        // 파트너(인플루언서) 정산액
         const partnerProfit = ((targetQty * unitRev) * (gongguRate / 100)) + contractFee;
         
         document.querySelectorAll('.partnerProfitAmount').forEach(el => el.innerText = formatNum(partnerProfit));
@@ -790,7 +1108,6 @@
         
         const hqTargetOp = (targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc;
         document.querySelectorAll('.hqProfitAmount').forEach(el => el.innerText = formatNum(hqTargetOp));
-        
         document.querySelectorAll('.partnerProfitQty').forEach(el => el.innerText = formatNum(targetQty));
 
         document.getElementById('resUnitRev').innerText = formatNum(unitRev);
