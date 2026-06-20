@@ -584,6 +584,10 @@
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
+                options: {
+                    // 현재 사용자가 접속 중인 도메인 주소로 이메일 인증 링크 리다이렉트 설정
+                    emailRedirectTo: window.location.origin
+                }
             });
 
             if (error) throw error;
