@@ -444,6 +444,27 @@
             <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="background-color: var(--text-bold); width: 100%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">최종 데이터 전송 및 확정</button>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">확정 시 본사 담당자에게 구성 내역 및 일정이 전달되며, 승인 대기 상태로 변경됩니다.</p>
         </div>
+
+        <!-- 인플루언서 전용: 나의 신청 내역 -->
+        <div class="influencer-only" style="margin-top: 40px; border-top: 2px solid var(--border); padding-top: 24px;">
+            <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--text-bold);">📝 나의 방송 신청 내역</h3>
+            <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
+                <table id="myCampaignTable" style="margin-top: 0; min-width: 800px; border: none; border-radius: 0;">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">신청일자</th>
+                            <th style="width: 150px;">방송 예정일 및 채널</th>
+                            <th>패키지 구성 내역</th>
+                            <th style="width: 100px;">목표수량</th>
+                            <th style="width: 120px;">상태 및 관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myCampaignListBody">
+                        <tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- 패널 6: 본사 전용 상세 내역 표 (관리자 전용) -->
@@ -657,6 +678,9 @@
             btnAdmin.style.display = 'none';
             setMode('influencer', false); // 강제 인플루언서 모드
         }
+        
+        // 권한 세팅 후 인플루언서 신청 내역 갱신
+        renderInfluencerCampaigns();
     }
 
     // 역할(Role) 토글 로직
@@ -694,10 +718,24 @@
         document.getElementById('targetQtyInfluencer').value = formatted;
     }
 
+    // 달력 최소 선택 가능 날짜 설정 (오늘 기준 +3일)
+    function setMinBroadcastDate() {
+        const dateInput = document.getElementById('broadcastDate');
+        if(dateInput) {
+            const today = new Date();
+            today.setDate(today.getDate() + 3);
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            dateInput.min = `${yyyy}-${mm}-${dd}`;
+        }
+    }
+
     // 인플루언서의 최종 데이터 DB 전송 로직 (승인 워크플로우 적용)
     async function submitCampaign() {
         const bDate = document.getElementById('broadcastDate').value;
         const bChannel = document.getElementById('broadcastChannel').value;
+        const userEmail = document.getElementById('userEmailDisplay').innerText;
 
         if (!bDate) {
             customAlert("방송(오픈) 예정일을 달력에서 선택해주세요.");
@@ -721,7 +759,8 @@
             partner_profit: parseInt(partnerProfitText.replace(/,/g, '')),
             hq_profit: parseInt(hqProfitText.replace(/,/g, '')),
             products: selectedProducts.map(id => productsData.find(p => p.id === id).name),
-            status: '승인 대기중'
+            status: '승인 대기중',
+            user_email: userEmail // 유저 식별 이메일 추가
         };
 
         const btn = document.getElementById('btn-submit-campaign');
@@ -734,29 +773,54 @@
             
             if (error) {
                 console.error("DB Error:", error);
-                customAlert("데이터베이스 저장 실패\nSupabase에 'campaign_simulations' 테이블이 생성되었는지 확인해주세요.\n\n" + error.message, "오류");
+                customAlert("데이터베이스 저장 실패\nSupabase 테이블에 'user_email' 컬럼이 생성되었는지 확인해주세요.\n\n" + error.message, "오류");
                 btn.innerText = "최종 데이터 전송 및 확정";
                 btn.disabled = false;
                 return;
             }
 
-            // DB 저장 성공 시 UI 변경
-            currentSessionCampaignId = payload.id;
-            btn.innerText = "승인 대기중 ⏳";
-            btn.classList.add('pending');
-            btn.classList.remove('approved');
-            
-            // 관리자 뷰 확인을 위해 로컬 배열에도 반영하고 다시 그리기
+            // 관리자 및 인플루언서 내역 확인을 위해 로컬 배열에도 반영하고 다시 그리기
             mockCampaigns.unshift(payload);
             renderAdminCampaigns();
+            renderInfluencerCampaigns();
 
-            customAlert(`성공적으로 데이터가 전송되었습니다.\n\n관리자(본사)의 승인 전까지 [승인 대기중]으로 표시됩니다.\n승인이 완료되면 버튼이 [승인 완료]로 변경됩니다.`, "전송 완료");
+            customAlert(`성공적으로 데이터가 전송되었습니다.\n\n방송 일정을 새롭게 선택하여 추가로 전송하실 수 있습니다.`, "전송 완료");
+            
+            // 성공 후 여러 방송 생성을 위해 입력 필드 초기화 및 버튼 복구
+            document.getElementById('broadcastDate').value = '';
+            document.getElementById('broadcastChannel').value = '';
+            btn.innerText = "최종 데이터 전송 및 확정";
+            btn.disabled = false;
 
         } catch (e) {
             console.error(e);
             customAlert("서버와의 통신 중 오류가 발생했습니다.", "오류");
             btn.innerText = "최종 데이터 전송 및 확정";
             btn.disabled = false;
+        }
+    }
+
+    // 인플루언서가 본인의 신청 내역을 취소하는 함수
+    async function cancelCampaign(id) {
+        const isConfirmed = await customConfirm("정말로 이 방송 승인 요청을 취소하시겠습니까?", "요청 취소 확인");
+        if (!isConfirmed) return;
+
+        try {
+            // DB에서 해당 레코드 삭제
+            const { error } = await supabaseClient.from('campaign_simulations').delete().eq('id', id);
+            
+            if (error) throw error;
+            
+            // 로컬 상태 업데이트 및 화면 갱신
+            mockCampaigns = mockCampaigns.filter(c => c.id !== id);
+            renderAdminCampaigns();
+            renderInfluencerCampaigns();
+            
+            customAlert("요청이 성공적으로 취소(삭제)되었습니다.", "취소 완료");
+            
+        } catch (e) {
+            console.error(e);
+            customAlert("취소 처리 중 오류가 발생했습니다.", "오류");
         }
     }
 
@@ -777,18 +841,10 @@
                 campaign.status = '승인 완료';
             }
             
-            // 만약 현재 세션에서 방금 올린 신청건이라면, 인플루언서 뷰의 버튼도 실시간으로 변경
-            if(id === currentSessionCampaignId) {
-                const btn = document.getElementById('btn-submit-campaign');
-                if(btn) {
-                    btn.innerText = "승인 완료 ✅";
-                    btn.classList.remove('pending');
-                    btn.classList.add('approved');
-                }
-            }
-            
-            // 관리자 테이블 다시 렌더링
+            // 관리자 및 인플루언서 테이블 다시 렌더링
             renderAdminCampaigns();
+            renderInfluencerCampaigns();
+            
             customAlert("해당 캠페인이 '승인 완료' 처리되었습니다.", "승인 완료");
             
         } catch (e) {
@@ -828,7 +884,7 @@
 
             html += `
                 <tr style="background:#fff;">
-                    <td style="text-align:center;">${reqDate}</td>
+                    <td style="text-align:center;">${reqDate}<br><span style="font-size:0.75rem; color:var(--text-muted);">${c.user_email || '알수없음'}</span></td>
                     <td style="text-align:center; font-weight:700; color:var(--accent);">${bDateStr}${channelStr}</td>
                     <td style="text-align:left; font-size:0.9rem;">${prods}</td>
                     <td style="text-align:center; font-weight:600;">${formatNum(c.target_qty)}개</td>
@@ -838,6 +894,69 @@
             `;
         });
         tbody.innerHTML = html;
+    }
+
+    // 인플루언서 뷰의 '나의 방송 신청 내역' 렌더링
+    function renderInfluencerCampaigns() {
+        const tbody = document.getElementById('myCampaignListBody');
+        if(!tbody) return;
+        
+        const myEmail = document.getElementById('userEmailDisplay').innerText;
+        
+        // 로그인한 이메일과 일치하는 본인의 내역만 필터링
+        const myCampaigns = mockCampaigns.filter(c => c.user_email === myEmail);
+
+        if (myCampaigns.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        myCampaigns.forEach(c => {
+            const reqDate = new Date(c.created_at).toLocaleDateString();
+            const bDateObj = new Date(c.broadcast_date);
+            const bDateStr = `${bDateObj.getFullYear()}.${String(bDateObj.getMonth()+1).padStart(2,'0')}.${String(bDateObj.getDate()).padStart(2,'0')}`;
+            const channelStr = c.broadcast_channel && c.broadcast_channel !== '미입력' ? `<br><span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">[${c.broadcast_channel}]</span>` : '';
+            const prods = c.products.join(', ');
+
+            let statusHtml = '';
+            if (c.status === '승인 대기중') {
+                statusHtml = `
+                    <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+                        <span class="badge-pending">${c.status}</span>
+                        <button onclick="cancelCampaign(${c.id})" style="background:#fff; border:1px solid var(--danger); color:var(--danger); padding:4px 10px; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.2s;">요청 취소</button>
+                    </div>
+                `;
+            } else {
+                statusHtml = `<span class="badge-approved">${c.status}</span>`;
+            }
+
+            html += `
+                <tr style="background:#fff;">
+                    <td style="text-align:center;">${reqDate}</td>
+                    <td style="text-align:center; font-weight:700; color:var(--accent);">${bDateStr}${channelStr}</td>
+                    <td style="text-align:left; font-size:0.9rem;">${prods}</td>
+                    <td style="text-align:center; font-weight:600;">${formatNum(c.target_qty)}개</td>
+                    <td style="text-align:center;">${statusHtml}</td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    // 초기 로딩 시 DB에서 확정 내역 리스트 불러오기 (테이블이 있을 경우)
+    async function fetchCampaigns() {
+        try {
+            const { data, error } = await supabaseClient.from('campaign_simulations').select('*').order('created_at', { ascending: false });
+            if (!error && data && data.length > 0) {
+                // DB에서 가져온 데이터로 초기화
+                mockCampaigns = data;
+            }
+        } catch(e) {
+            console.log("캠페인 내역 로드 무시됨 (초기설정)");
+        }
+        renderAdminCampaigns();
+        renderInfluencerCampaigns(); // 본인 내역도 함께 렌더링
     }
 
     // 초기 로딩 시 DB에서 확정 내역 리스트 불러오기 (테이블이 있을 경우)
@@ -880,11 +999,31 @@
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalMessage').innerText = msg;
             document.getElementById('modalInput').style.display = 'none';
-            document.getElementById('modalCancelBtn').style.display = 'none';
+            document.getElementById('modalCancelBtn').style.display = 'none'; // 취소 버튼 숨김 (confirm과 충돌 방지)
             const okBtn = document.getElementById('modalOkBtn');
             
             modal.style.display = 'flex';
             okBtn.onclick = () => { modal.style.display = 'none'; resolve(); };
+        });
+    }
+
+    // 취소 여부를 묻는 전용 Confirm 모달
+    function customConfirm(msg, title="확인") {
+        return new Promise(resolve => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('modalInput').style.display = 'none';
+            
+            const okBtn = document.getElementById('modalOkBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+            
+            cancelBtn.style.display = 'inline-block';
+            
+            modal.style.display = 'flex';
+            
+            okBtn.onclick = () => { modal.style.display = 'none'; resolve(true); };
+            cancelBtn.onclick = () => { modal.style.display = 'none'; resolve(false); };
         });
     }
 
@@ -981,6 +1120,7 @@
             if(productsData.length > 0) selectedProducts.push(productsData[0].id);
             populateSelects(); renderProducts(); updateAutoSupplyRatio();
             fetchCampaigns(); // 저장된 캠페인 불러오기 연계
+            setMinBroadcastDate(); // 날짜 최소 범위 지정
         }
     }
 
