@@ -103,9 +103,9 @@
         td:first-child { text-align: left; font-weight: 500; background: var(--bg-light); border-right: 1px solid var(--border); width: 40%; color: var(--text-bold); }
         tr:last-child th, tr:last-child td { border-bottom: none; }
         
-        input[type="number"], input[type="text"], input[type="date"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
+        input[type="number"], input[type="text"], input[type="date"], input[type="password"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
         input[type="date"] { text-align: left; width: auto; }
-        /* 텍스트(문자) 전용 넓은 입력창 */
+        input[type="password"] { text-align: left; width: 100%; }
         input[type="text"].text-input { text-align: left; width: 160px; }
         
         input[readonly] { color: var(--text-muted); background: var(--bg-light); border-color: transparent; }
@@ -127,7 +127,6 @@
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; transition: all 0.3s; }
         @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr !important; } }
         
-        /* Dashboard Cards */
         .partner-summary-card { background: #ffffff; border: 1px solid var(--border); border-top: 4px solid var(--accent); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
         .partner-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
         .partner-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
@@ -140,7 +139,6 @@
         .hq-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
         .hq-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: #fff; border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
 
-        /* 결과 테이블 고정 레이아웃 */
         #resultTable { table-layout: fixed; }
         #resultTable th { background: var(--bg-light); color: var(--text-bold); text-align: center; border-right: 1px solid var(--border); border-bottom: 2px solid var(--border); font-weight: 700; word-break: keep-all; }
         #resultTable th:last-child { border-right: none; }
@@ -175,6 +173,25 @@
         .modal-btn-ok { background: var(--primary); color: #fff; }
         .modal-btn-ok:hover { background: var(--primary-hover); }
 
+        /* Auth Overlay Styles */
+        .auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: var(--bg-page); z-index: 100000; 
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            transition: opacity 0.4s ease;
+        }
+        .auth-box {
+            background: #ffffff; padding: 48px 40px; border-radius: 20px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
+            max-width: 400px; width: 90%; text-align: center;
+        }
+        .auth-logo {
+            width: 64px; height: 64px; background: var(--accent); color: white; 
+            border-radius: 16px; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; margin-bottom: 24px;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
         @media print {
             body { background: #fff; padding: 0; margin: 0; color: #000; }
             .container { display: block; gap: 0; max-width: 100%; }
@@ -187,6 +204,25 @@
     </style>
 </head>
 <body class="mode-admin"> <!-- 기본은 관리자 모드로 시작 -->
+
+<!-- 자금번호 (비밀번호) 인증 오버레이 -->
+<div id="fundAuthOverlay" class="auth-overlay">
+    <div class="auth-box">
+        <div class="auth-logo">
+            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </div>
+        <h2 style="margin: 0 0 12px 0; font-size: 1.5rem; color: var(--text-bold);">자금번호 인증</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; word-break: keep-all;">
+            시뮬레이터에 접근하려면 자금번호(비밀번호)를 입력해주세요.
+        </p>
+        <div style="margin-bottom: 24px;">
+            <input type="password" id="authPasswordInput" placeholder="자금번호 입력" style="font-size: 1.1rem; padding: 14px; text-align: center; letter-spacing: 2px;">
+        </div>
+        <button onclick="verifyFundCode()" style="width: 100%; background: var(--text-bold); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.2s;">
+            접속하기
+        </button>
+    </div>
+</div>
 
 <div class="mode-toggle-wrapper">
     <button id="btn-mode-influencer" class="mode-btn" onclick="setMode('influencer')">인플루언서 뷰</button>
@@ -469,6 +505,31 @@
     var currentSessionCampaignId = null; // 현재 인플루언서 세션에서 전송한 캠페인의 ID
 
     var currentChannelFilter = '일반'; // 기본 활성 채널 탭
+
+    // 자금번호 인증 로직
+    function verifyFundCode() {
+        const inputField = document.getElementById('authPasswordInput');
+        const overlay = document.getElementById('fundAuthOverlay');
+        const code = inputField.value;
+
+        if (code === 'global2026') {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 400); // fade out 애니메이션 대기
+        } else {
+            customAlert("자금번호가 일치하지 않습니다. 다시 확인해주세요.", "인증 실패");
+            inputField.value = '';
+            inputField.focus();
+        }
+    }
+
+    // 엔터키로 인증하기 지원
+    document.getElementById('authPasswordInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            verifyFundCode();
+        }
+    });
 
     // 역할(Role) 토글 로직
     function setMode(mode) {
@@ -1132,7 +1193,10 @@
         document.getElementById('resBepQtyText').innerText = formatNum(Math.ceil(bepQty)); 
     }
 
-    window.onload = fetchProducts;
+    window.onload = function() {
+        document.getElementById('authPasswordInput').focus();
+        fetchProducts();
+    };
 </script>
 </body>
 </html>
