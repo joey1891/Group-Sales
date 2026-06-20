@@ -387,6 +387,37 @@
         </div>
     </div>
 
+    <!-- 패널 6: 본사 전용 상세 내역 표 (관리자 전용) -->
+    <div class="panel full-width admin-only" id="hq-panel">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
+            <h2 style="margin: 0; border: none; padding: 0; width: auto;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비 / 부가세 제외)</span></h2>
+            <button class="btn-print primary" onclick="window.print()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                PDF/인쇄
+            </button>
+        </div>
+        
+        <div style="text-align: right; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">[단위: 원]</div>
+        <table id="resultTable">
+            <thead>
+                <tr><th>구분</th><th>매출액</th><th>변동비</th><th>공헌이익</th><th>고정비</th><th>적용 공통비</th><th>본사 영업이익</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>단위당 (1패키지)</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
+                <tr class="bep-row">
+                    <td>손익분기점 (BEP)</td><td id="resBepRev">0</td><td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td class="result-highlight" id="resBepOp">0</td>
+                </tr>
+                <tr class="target-row">
+                    <td>목표 달성 시</td><td class="result-highlight" id="resTargetRev">0</td><td id="resTargetVc">0</td><td class="result-highlight" id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td class="success-highlight" id="resTargetOp">0</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="summary-text">
+            <p>손익분기점(BEP) 도달 필요 수량: <strong id="resBepQtyText" style="color:var(--text-bold)">0</strong> 개</p>
+            <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--accent)">0</strong> 개</p>
+        </div>
+    </div>
+
     <!-- 패널 5: 공유용 정산 대시보드 -->
     <div class="panel full-width" id="partner-panel" style="position: relative;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
@@ -397,8 +428,8 @@
             </button>
         </div>
 
-        <!-- 인플루언서가 직접 판매 수량을 조정하고 방송일자/채널을 선택하는 입력란 -->
-        <div style="background: #fff; border: 1px solid var(--accent); padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.05); flex-wrap: wrap; gap: 16px;">
+        <!-- 인플루언서가 직접 판매 수량을 조정하고 방송일자/채널을 선택하는 입력란 (관리자 뷰 숨김) -->
+        <div class="influencer-only" style="background: #fff; border: 1px solid var(--accent); padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.05); flex-wrap: wrap; gap: 16px;">
             <div>
                 <span style="font-weight: 700; color: var(--text-bold); font-size: 1.1rem; display: block;">🎯 나의 예상 판매 수량 및 일정</span>
                 <span style="font-size: 0.85rem; color: var(--text-muted);">채널, 방송(오픈) 예정일, 목표 판매 수량을 입력하여 정산액을 시뮬레이션 하세요.</span>
@@ -468,55 +499,26 @@
         </div>
     </div>
 
-    <!-- 패널 6: 본사 전용 상세 내역 표 (관리자 전용) -->
-    <div class="panel full-width admin-only" id="hq-panel">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
-            <h2 style="margin: 0; border: none; padding: 0; width: auto;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비 / 부가세 제외)</span></h2>
-            <button class="btn-print primary" onclick="window.print()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                PDF/인쇄
-            </button>
-        </div>
-        
-        <div style="text-align: right; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">[단위: 원]</div>
-        <table id="resultTable">
-            <thead>
-                <tr><th>구분</th><th>매출액</th><th>변동비</th><th>공헌이익</th><th>고정비</th><th>적용 공통비</th><th>본사 영업이익</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>단위당 (1패키지)</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
-                <tr class="bep-row">
-                    <td>손익분기점 (BEP)</td><td id="resBepRev">0</td><td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td class="result-highlight" id="resBepOp">0</td>
-                </tr>
-                <tr class="target-row">
-                    <td>목표 달성 시</td><td class="result-highlight" id="resTargetRev">0</td><td id="resTargetVc">0</td><td class="result-highlight" id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td class="success-highlight" id="resTargetOp">0</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="summary-text">
-            <p>손익분기점(BEP) 도달 필요 수량: <strong id="resBepQtyText" style="color:var(--text-bold)">0</strong> 개</p>
-            <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--accent)">0</strong> 개</p>
-        </div>
-    </div>
-
     <!-- 패널 7: 인플루언서 확정 대시보드 (관리자 전용) -->
     <div class="panel full-width admin-only" id="panel-admin-campaigns">
         <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(수신된 결재 요청)</span></h2>
         <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-            <table id="campaignTable" style="margin-top: 0; min-width: 1100px; border: none; border-radius: 0; table-layout: fixed;">
+            <table id="campaignTable" style="margin-top: 0; min-width: 1300px; border: none; border-radius: 0; table-layout: fixed;">
                 <thead>
                     <tr>
-                        <th style="width: 110px;">신청일자</th>
-                        <th style="width: 140px;">방송 예정일/채널</th>
+                        <th style="width: 100px;">신청일자</th>
+                        <th style="width: 130px;">방송 예정일/채널</th>
                         <th>패키지 구성 내역</th>
                         <th>사은품 내역</th>
-                        <th style="width: 90px;">목표수량</th>
-                        <th style="width: 120px;">파트너 정산액</th>
-                        <th style="width: 110px;">상태 및 관리</th>
+                        <th style="width: 80px;">목표수량</th>
+                        <th style="width: 110px;">파트너 정산액</th>
+                        <th style="width: 110px;">본사 공헌이익</th>
+                        <th style="width: 110px;">본사 영업이익</th>
+                        <th style="width: 100px;">상태 및 관리</th>
                     </tr>
                 </thead>
                 <tbody id="campaignListBody">
-                    <tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>
+                    <tr><td colspan="9" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -737,7 +739,7 @@
     async function submitCampaign() {
         const bDate = document.getElementById('broadcastDate').value;
         const bChannel = document.getElementById('broadcastChannel').value;
-        const userEmail = document.getElementById('userEmailDisplay').innerText;
+        const userEmail = document.getElementById('userEmailDisplay').textContent;
 
         if (!bDate) {
             customAlert("방송(오픈) 예정일을 달력에서 선택해주세요.");
@@ -749,8 +751,11 @@
         }
 
         const targetQty = getNum('targetQtyInfluencer');
-        const partnerProfitText = document.querySelector('.partnerProfitAmount').innerText;
-        const hqProfitText = document.querySelector('.hqProfitAmount').innerText;
+        
+        // 화면에서 숨김 처리(display: none)된 영역의 데이터도 가져오기 위해 innerText 대신 textContent를 사용합니다.
+        const partnerProfitText = document.querySelector('.partnerProfitAmount').textContent || '0';
+        const hqProfitText = document.querySelector('.hqProfitAmount').textContent || '0';
+        const hqCmText = document.getElementById('resTargetCm').textContent || '0';
 
         const payload = {
             id: Date.now(), // 고유 ID 생성
@@ -760,6 +765,7 @@
             target_qty: targetQty,
             partner_profit: parseInt(partnerProfitText.replace(/,/g, '')),
             hq_profit: parseInt(hqProfitText.replace(/,/g, '')),
+            hq_cm: parseInt(hqCmText.replace(/,/g, '')) || 0, // 본사 공헌이익 추가
             products: selectedProducts.map(id => productsData.find(p => p.id === id).name),
             gifts: addedGifts.map(g => `${g.name}::${g.qty}`), // 사은품 데이터 추가
             status: '승인 대기중',
@@ -776,10 +782,11 @@
             let isPartialSuccess = false;
             
             if (error) {
-                // schema cache 오류 또는 gifts 컬럼 누락 에러 발생 시 gifts 제외하고 재시도
-                if (error.message.includes("gifts") || error.message.includes("schema cache")) {
-                    console.warn("gifts 컬럼 에러 감지. gifts 속성을 제외하고 재시도합니다.", error);
+                // schema cache 오류 또는 컬럼 누락 에러 발생 시 gifts, hq_cm 제외하고 재시도
+                if (error.message.includes("gifts") || error.message.includes("hq_cm") || error.message.includes("schema cache")) {
+                    console.warn("컬럼 에러 감지. gifts 및 hq_cm 속성을 제외하고 재시도합니다.", error);
                     delete payload.gifts;
+                    delete payload.hq_cm;
                     const retryResult = await supabaseClient.from('campaign_simulations').insert([payload]);
                     error = retryResult.error;
                     if (!error) isPartialSuccess = true;
@@ -800,7 +807,7 @@
             renderInfluencerCampaigns();
 
             if (isPartialSuccess) {
-                customAlert(`사은품 내역을 제외한 기본 데이터가 임시 전송되었습니다.\n\n(안내: Supabase에 'gifts' 컬럼은 추가되었으나 아직 시스템 캐시가 갱신되지 않았습니다. 잠시 후 시도하시거나 캐시를 초기화해 주세요.)`, "부분 전송 완료");
+                customAlert(`사은품 및 이익상세 내역을 제외한 기본 데이터가 임시 전송되었습니다.\n\n(안내: Supabase 캐시가 갱신되지 않았거나 컬럼이 존재하지 않습니다. 잠시 후 시도하시거나 DB를 점검해 주세요.)`, "부분 전송 완료");
             } else {
                 customAlert(`성공적으로 데이터가 전송되었습니다.\n\n방송 일정을 새롭게 선택하여 추가로 전송하실 수 있습니다.`, "전송 완료");
             }
@@ -933,7 +940,7 @@
     function renderAdminCampaigns() {
         const tbody = document.getElementById('campaignListBody');
         if (mockCampaigns.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 결재 요청 내역이 없습니다.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>`;
             return;
         }
 
@@ -947,6 +954,10 @@
             // 이미지 헬퍼 함수 적용
             const prodsHtml = generatePackageVisualizerHtml(c.products);
             const giftsHtml = generateGiftVisualizerHtml(c.gifts);
+
+            // 이익 데이터 포맷 (이전 데이터에서 값이 없을 경우 - 로 표시)
+            const hqCmStr = c.hq_cm != null ? formatNum(c.hq_cm) + '원' : '-';
+            const hqOpStr = c.hq_profit != null ? formatNum(c.hq_profit) + '원' : '-';
 
             // 상태에 따른 뱃지 및 승인 버튼 분기 처리
             let statusHtml = '';
@@ -970,6 +981,8 @@
                     <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${giftsHtml}</td>
                     <td style="text-align:center; font-weight:600; vertical-align: middle;">${formatNum(c.target_qty)}개</td>
                     <td style="text-align:right; font-weight:700; color:var(--text-bold); vertical-align: middle;">${formatNum(c.partner_profit)}원</td>
+                    <td style="text-align:right; font-weight:700; color:var(--primary); vertical-align: middle;">${hqCmStr}</td>
+                    <td style="text-align:right; font-weight:700; color:var(--danger); vertical-align: middle;">${hqOpStr}</td>
                     <td style="text-align:center; vertical-align: middle;">${statusHtml}</td>
                 </tr>
             `;
