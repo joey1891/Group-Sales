@@ -105,7 +105,7 @@
         
         input[type="number"], input[type="text"], input[type="date"], input[type="password"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
         input[type="date"] { text-align: left; width: auto; }
-        input[type="password"] { text-align: left; width: 100%; }
+        input[type="password"], input[type="email"] { text-align: left; width: 100%; }
         input[type="text"].text-input { text-align: left; width: 160px; }
         
         input[readonly] { color: var(--text-muted); background: var(--bg-light); border-color: transparent; }
@@ -192,6 +192,17 @@
             box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
+        .auth-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+        .auth-tab { flex: 1; background: none; border: none; padding: 12px; font-size: 1.05rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.2s; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; }
+        .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .auth-form { display: flex; flex-direction: column; gap: 12px; }
+        .auth-input { width: 100% !important; padding: 14px 16px !important; border-radius: 8px !important; border: 1px solid var(--border) !important; font-size: 1rem !important; box-sizing: border-box; font-family: inherit; text-align: left !important; }
+        .auth-input:focus { border-color: var(--accent) !important; outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.1) !important; }
+        .auth-btn { width: 100%; background: var(--text-bold); color: white; border: none; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; margin-top: 8px; font-family: inherit; }
+        .auth-btn:hover { background: #000; }
+        .auth-msg { margin-top: 16px; font-size: 0.9rem; color: var(--danger); font-weight: 500; min-height: 20px; word-break: keep-all; line-height: 1.4; }
+        .auth-msg.success { color: var(--success); }
+
         @media print {
             body { background: #fff; padding: 0; margin: 0; color: #000; }
             .container { display: block; gap: 0; max-width: 100%; }
@@ -205,28 +216,41 @@
 </head>
 <body class="mode-admin"> <!-- 기본은 관리자 모드로 시작 -->
 
-<!-- 자금번호 (비밀번호) 인증 오버레이 -->
-<div id="fundAuthOverlay" class="auth-overlay">
+<!-- 회원가입/로그인 오버레이 -->
+<div id="authOverlay" class="auth-overlay">
     <div class="auth-box">
         <div class="auth-logo">
             <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </div>
-        <h2 style="margin: 0 0 12px 0; font-size: 1.5rem; color: var(--text-bold);">자금번호 인증</h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; word-break: keep-all;">
-            시뮬레이터에 접근하려면 자금번호(비밀번호)를 입력해주세요.
-        </p>
-        <div style="margin-bottom: 24px;">
-            <input type="password" id="authPasswordInput" placeholder="자금번호 입력" style="font-size: 1.1rem; padding: 14px; text-align: center; letter-spacing: 2px;">
+        
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')">로그인</button>
+            <button class="auth-tab" onclick="switchAuthTab('signup')">회원가입</button>
         </div>
-        <button onclick="verifyFundCode()" style="width: 100%; background: var(--text-bold); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.2s;">
-            접속하기
-        </button>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form">
+            <input type="email" id="loginEmail" class="auth-input" placeholder="이메일 주소">
+            <input type="password" id="loginPassword" class="auth-input" placeholder="비밀번호" onkeypress="if(event.key==='Enter') handleLogin()">
+            <button class="auth-btn" onclick="handleLogin()" id="btnLogin">로그인</button>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="auth-form" style="display:none;">
+            <input type="email" id="signupEmail" class="auth-input" placeholder="사용할 이메일 주소">
+            <input type="password" id="signupPassword" class="auth-input" placeholder="비밀번호 (6자 이상)" onkeypress="if(event.key==='Enter') handleSignup()">
+            <button class="auth-btn" onclick="handleSignup()" id="btnSignup">이메일 인증하고 가입하기</button>
+        </div>
+
+        <p id="authMessage" class="auth-msg"></p>
     </div>
 </div>
 
-<div class="mode-toggle-wrapper">
-    <button id="btn-mode-influencer" class="mode-btn" onclick="setMode('influencer')">인플루언서 뷰</button>
-    <button id="btn-mode-admin" class="mode-btn active" onclick="setMode('admin')">관리자 뷰</button>
+<div class="mode-toggle-wrapper" style="align-items: center;">
+    <span id="userEmailDisplay" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin: 0 8px;"></span>
+    <button id="btn-mode-influencer" class="mode-btn" onclick="setMode('influencer', true)" style="display:none;">인플루언서 뷰</button>
+    <button id="btn-mode-admin" class="mode-btn active" onclick="setMode('admin', true)" style="display:none;">관리자 뷰</button>
+    <button class="mode-btn" onclick="handleLogout()" style="background: var(--bg-light); border: 1px solid var(--border); color: var(--danger); margin-left: 4px;">로그아웃</button>
 </div>
 
 <div class="page-title-container">
@@ -506,39 +530,140 @@
 
     var currentChannelFilter = '일반'; // 기본 활성 채널 탭
 
-    // 자금번호 인증 로직
-    function verifyFundCode() {
-        const inputField = document.getElementById('authPasswordInput');
-        const overlay = document.getElementById('fundAuthOverlay');
-        const code = inputField.value;
+    const ADMIN_EMAIL = 'wjshin2450@gmail.com';
 
-        if (code === 'global2026') {
+    // Supabase Auth 상태 감지 및 초기화
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        const overlay = document.getElementById('authOverlay');
+        if (session) {
             overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 400); // fade out 애니메이션 대기
+            setTimeout(() => { overlay.style.display = 'none'; }, 400);
+            applyUserRole(session.user.email);
+            // 로그인 완료 후 데이터 로드 (중복 방지용 상태 체크 가능)
+            if(productsData.length === 0) fetchProducts();
         } else {
-            customAlert("자금번호가 일치하지 않습니다. 다시 확인해주세요.", "인증 실패");
-            inputField.value = '';
-            inputField.focus();
-        }
-    }
-
-    // 엔터키로 인증하기 지원
-    document.getElementById('authPasswordInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            verifyFundCode();
+            overlay.style.display = 'flex';
+            setTimeout(() => { overlay.style.opacity = '1'; }, 10);
+            document.getElementById('userEmailDisplay').innerText = '';
         }
     });
 
+    function switchAuthTab(tab) {
+        document.getElementById('authMessage').innerText = '';
+        document.getElementById('authMessage').className = 'auth-msg';
+        
+        if (tab === 'login') {
+            document.getElementById('loginForm').style.display = 'flex';
+            document.getElementById('signupForm').style.display = 'none';
+            document.querySelectorAll('.auth-tab')[0].classList.add('active');
+            document.querySelectorAll('.auth-tab')[1].classList.remove('active');
+        } else {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'flex';
+            document.querySelectorAll('.auth-tab')[0].classList.remove('active');
+            document.querySelectorAll('.auth-tab')[1].classList.add('active');
+        }
+    }
+
+    function showAuthMessage(msg, isSuccess = false) {
+        const msgEl = document.getElementById('authMessage');
+        msgEl.innerText = msg;
+        msgEl.className = 'auth-msg' + (isSuccess ? ' success' : '');
+    }
+
+    async function handleSignup() {
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const btn = document.getElementById('btnSignup');
+
+        if(!email || !password) return showAuthMessage("이메일과 비밀번호를 모두 입력해주세요.");
+        if(password.length < 6) return showAuthMessage("비밀번호는 6자리 이상이어야 합니다.");
+
+        btn.innerText = "처리 중..."; btn.disabled = true;
+        try {
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (error) throw error;
+            
+            // Supabase에 이메일 인증이 활성화되어 있으면 session이 null로 반환됨
+            if (data.user && !data.session) {
+                showAuthMessage("인증 메일이 발송되었습니다. 수신함(스팸함 포함)의 링크를 클릭 후 로그인해주세요.", true);
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+            } else {
+                showAuthMessage("회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.", true);
+                setTimeout(() => switchAuthTab('login'), 2000);
+            }
+        } catch (err) {
+            showAuthMessage(err.message.includes("already registered") ? "이미 가입된 이메일입니다." : err.message);
+        } finally {
+            btn.innerText = "이메일 인증하고 가입하기"; btn.disabled = false;
+        }
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const btn = document.getElementById('btnLogin');
+
+        if(!email || !password) return showAuthMessage("이메일과 비밀번호를 입력해주세요.");
+
+        btn.innerText = "로그인 중..."; btn.disabled = true;
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                if(error.message.includes("Invalid login credentials")) throw new Error("이메일 또는 비밀번호가 잘못되었습니다.");
+                if(error.message.includes("Email not confirmed")) throw new Error("이메일 인증이 완료되지 않았습니다. 메일함을 확인해주세요.");
+                throw error;
+            }
+            // onAuthStateChange에서 로그인 성공을 처리함
+        } catch (err) {
+            showAuthMessage(err.message);
+        } finally {
+            btn.innerText = "로그인"; btn.disabled = false;
+        }
+    }
+
+    async function handleLogout() {
+        await supabaseClient.auth.signOut();
+        // 로그아웃 시 화면 초기화 (새로고침)
+        window.location.reload(); 
+    }
+
+    function applyUserRole(email) {
+        document.getElementById('userEmailDisplay').innerText = email;
+        const btnInfluencer = document.getElementById('btn-mode-influencer');
+        const btnAdmin = document.getElementById('btn-mode-admin');
+        
+        if (email === ADMIN_EMAIL) {
+            // 관리자
+            btnInfluencer.style.display = 'block';
+            btnAdmin.style.display = 'block';
+            setMode('admin', false);
+        } else {
+            // 인플루언서
+            btnInfluencer.style.display = 'none';
+            btnAdmin.style.display = 'none';
+            setMode('influencer', false); // 강제 인플루언서 모드
+        }
+    }
+
     // 역할(Role) 토글 로직
-    function setMode(mode) {
+    function setMode(mode, showMsg = false) {
         document.body.className = 'mode-' + mode;
         
         document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('btn-mode-' + mode).classList.add('active');
+        const activeBtn = document.getElementById('btn-mode-' + mode);
+        if(activeBtn) activeBtn.classList.add('active');
         
-        if (mode === 'influencer') {
+        if (mode === 'influencer' && showMsg) {
             customAlert("인플루언서 뷰로 전환되었습니다.\n생산 원가 및 본사 세부 설정은 숨김 처리됩니다.", "뷰 전환");
         }
     }
@@ -1193,10 +1318,7 @@
         document.getElementById('resBepQtyText').innerText = formatNum(Math.ceil(bepQty)); 
     }
 
-    window.onload = function() {
-        document.getElementById('authPasswordInput').focus();
-        fetchProducts();
-    };
+    // 초기 데이터 로드는 onAuthStateChange 함수에서 세션 감지 시 자동으로 실행됩니다.
 </script>
 </body>
 </html>
