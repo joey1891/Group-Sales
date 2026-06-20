@@ -713,10 +713,10 @@
         const hqProfitText = document.querySelector('.hqProfitAmount').innerText;
 
         const payload = {
-            id: Date.now(), // 고유 ID 생성 (임시)
+            id: Date.now(), // 고유 ID 생성
             created_at: new Date().toISOString(),
             broadcast_date: bDate,
-            broadcast_channel: bChannel || '미입력', // 채널 정보 추가
+            broadcast_channel: bChannel || '미입력',
             target_qty: targetQty,
             partner_profit: parseInt(partnerProfitText.replace(/,/g, '')),
             hq_profit: parseInt(hqProfitText.replace(/,/g, '')),
@@ -724,56 +724,76 @@
             status: '승인 대기중'
         };
 
-        // 현재 세션의 캠페인 ID 저장 (버튼 상태 연동을 위함)
-        currentSessionCampaignId = payload.id;
-
         const btn = document.getElementById('btn-submit-campaign');
-        btn.innerText = "승인 대기중 ⏳";
-        btn.classList.add('pending');
-        btn.classList.remove('approved');
+        btn.innerText = "전송 중... ⏳";
         btn.disabled = true;
 
         try {
-            // DB에 'campaign_simulations' 테이블이 존재한다면 저장 시도
+            // DB에 실제 저장
             const { error } = await supabaseClient.from('campaign_simulations').insert([payload]);
+            
             if (error) {
-                console.warn("Supabase 테이블 접근 실패 (Fallback 작동): ", error.message);
+                console.error("DB Error:", error);
+                customAlert("데이터베이스 저장 실패\nSupabase에 'campaign_simulations' 테이블이 생성되었는지 확인해주세요.\n\n" + error.message, "오류");
+                btn.innerText = "최종 데이터 전송 및 확정";
+                btn.disabled = false;
+                return;
             }
+
+            // DB 저장 성공 시 UI 변경
+            currentSessionCampaignId = payload.id;
+            btn.innerText = "승인 대기중 ⏳";
+            btn.classList.add('pending');
+            btn.classList.remove('approved');
+            
+            // 관리자 뷰 확인을 위해 로컬 배열에도 반영하고 다시 그리기
+            mockCampaigns.unshift(payload);
+            renderAdminCampaigns();
+
+            customAlert(`성공적으로 데이터가 전송되었습니다.\n\n관리자(본사)의 승인 전까지 [승인 대기중]으로 표시됩니다.\n승인이 완료되면 버튼이 [승인 완료]로 변경됩니다.`, "전송 완료");
+
         } catch (e) {
-            console.warn("DB 에러", e);
+            console.error(e);
+            customAlert("서버와의 통신 중 오류가 발생했습니다.", "오류");
+            btn.innerText = "최종 데이터 전송 및 확정";
+            btn.disabled = false;
         }
-
-        // DB 성공/실패 여부와 상관없이 관리자 뷰 확인을 위해 로컬 배열에 추가
-        mockCampaigns.unshift(payload);
-        renderAdminCampaigns();
-
-        customAlert(`성공적으로 데이터가 전송되었습니다.\n\n관리자(본사)의 승인 전까지 [승인 대기중]으로 표시됩니다.\n승인이 완료되면 버튼이 [승인 완료]로 변경됩니다.`, "전송 완료");
     }
 
     // 관리자가 [승인하기] 버튼을 누를 때 호출되는 함수
     async function approveCampaign(id) {
-        const campaign = mockCampaigns.find(c => c.id === id);
-        if(campaign) {
-            // 상태 업데이트
-            campaign.status = '승인 완료';
+        try {
+            // 실제 DB 데이터 업데이트
+            const { error } = await supabaseClient.from('campaign_simulations').update({ status: '승인 완료' }).eq('id', id);
             
-            // 만약 현재 세션에서 방금 올린 신청건이라면, 인플루언서 뷰의 버튼도 실시간(로컬)으로 초록색 승인완료로 변경
+            if (error) {
+                customAlert("승인 처리 중 오류가 발생했습니다.\n" + error.message, "오류");
+                return;
+            }
+
+            // 로컬 배열 상태도 업데이트
+            const campaign = mockCampaigns.find(c => c.id === id);
+            if(campaign) {
+                campaign.status = '승인 완료';
+            }
+            
+            // 만약 현재 세션에서 방금 올린 신청건이라면, 인플루언서 뷰의 버튼도 실시간으로 변경
             if(id === currentSessionCampaignId) {
                 const btn = document.getElementById('btn-submit-campaign');
-                btn.innerText = "승인 완료 ✅";
-                btn.classList.remove('pending');
-                btn.classList.add('approved');
+                if(btn) {
+                    btn.innerText = "승인 완료 ✅";
+                    btn.classList.remove('pending');
+                    btn.classList.add('approved');
+                }
             }
             
             // 관리자 테이블 다시 렌더링
             renderAdminCampaigns();
-            
-            // 실제 DB가 있다면 DB도 업데이트
-            try {
-                await supabaseClient.from('campaign_simulations').update({ status: '승인 완료' }).eq('id', id);
-            } catch (e) {}
-
             customAlert("해당 캠페인이 '승인 완료' 처리되었습니다.", "승인 완료");
+            
+        } catch (e) {
+            console.error(e);
+            customAlert("승인 처리 중 문제가 발생했습니다.", "오류");
         }
     }
 
