@@ -772,15 +772,23 @@
 
         try {
             // DB에 실제 저장
-            const { error } = await supabaseClient.from('campaign_simulations').insert([payload]);
+            let { error } = await supabaseClient.from('campaign_simulations').insert([payload]);
+            let isPartialSuccess = false;
             
             if (error) {
-                console.error("DB Error:", error);
-                if(error.message.includes("gifts")) {
-                    customAlert("데이터베이스 저장 실패\nSupabase 'campaign_simulations' 테이블에 'gifts' 컬럼(텍스트 배열 타입)을 반드시 추가해주세요.\n\n" + error.message, "오류");
-                } else {
-                    customAlert("데이터베이스 저장 실패\nSupabase 테이블 설정을 확인해주세요.\n\n" + error.message, "오류");
+                // schema cache 오류 또는 gifts 컬럼 누락 에러 발생 시 gifts 제외하고 재시도
+                if (error.message.includes("gifts") || error.message.includes("schema cache")) {
+                    console.warn("gifts 컬럼 에러 감지. gifts 속성을 제외하고 재시도합니다.", error);
+                    delete payload.gifts;
+                    const retryResult = await supabaseClient.from('campaign_simulations').insert([payload]);
+                    error = retryResult.error;
+                    if (!error) isPartialSuccess = true;
                 }
+            }
+
+            if (error) {
+                console.error("DB Error:", error);
+                customAlert("데이터베이스 저장 실패\nSupabase 테이블 설정을 확인해주세요.\n\n" + error.message, "오류");
                 btn.innerText = "최종 데이터 전송 및 확정";
                 btn.disabled = false;
                 return;
@@ -791,7 +799,11 @@
             renderAdminCampaigns();
             renderInfluencerCampaigns();
 
-            customAlert(`성공적으로 데이터가 전송되었습니다.\n\n방송 일정을 새롭게 선택하여 추가로 전송하실 수 있습니다.`, "전송 완료");
+            if (isPartialSuccess) {
+                customAlert(`사은품 내역을 제외한 기본 데이터가 임시 전송되었습니다.\n\n(안내: Supabase에 'gifts' 컬럼은 추가되었으나 아직 시스템 캐시가 갱신되지 않았습니다. 잠시 후 시도하시거나 캐시를 초기화해 주세요.)`, "부분 전송 완료");
+            } else {
+                customAlert(`성공적으로 데이터가 전송되었습니다.\n\n방송 일정을 새롭게 선택하여 추가로 전송하실 수 있습니다.`, "전송 완료");
+            }
             
             // 성공 후 여러 방송 생성을 위해 입력 필드 초기화 및 버튼 복구
             document.getElementById('broadcastDate').value = '';
