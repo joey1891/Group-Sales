@@ -585,8 +585,8 @@
                 email: email,
                 password: password,
                 options: {
-                    // 현재 사용자가 접속 중인 도메인 주소로 이메일 인증 링크 리다이렉트 설정
-                    emailRedirectTo: window.location.origin
+                    // 어떤 환경에서 가입하든, 무조건 이 주소(공동구매 시뮬레이터)로 돌아오도록 강제 고정
+                    emailRedirectTo: 'https://group-sales.vercel.app/'
                 }
             });
 
