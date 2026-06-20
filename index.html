@@ -449,18 +449,19 @@
         <div class="influencer-only" style="margin-top: 40px; border-top: 2px solid var(--border); padding-top: 24px;">
             <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--text-bold);">📝 나의 방송 신청 내역</h3>
             <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-                <table id="myCampaignTable" style="margin-top: 0; min-width: 800px; border: none; border-radius: 0;">
+                <table id="myCampaignTable" style="margin-top: 0; min-width: 950px; border: none; border-radius: 0; table-layout: fixed;">
                     <thead>
                         <tr>
-                            <th style="width: 120px;">신청일자</th>
-                            <th style="width: 150px;">방송 예정일 및 채널</th>
+                            <th style="width: 110px;">신청일자</th>
+                            <th style="width: 140px;">방송 예정일/채널</th>
                             <th>패키지 구성 내역</th>
-                            <th style="width: 100px;">목표수량</th>
-                            <th style="width: 120px;">상태 및 관리</th>
+                            <th>사은품 내역</th>
+                            <th style="width: 90px;">목표수량</th>
+                            <th style="width: 110px;">상태 및 관리</th>
                         </tr>
                     </thead>
                     <tbody id="myCampaignListBody">
-                        <tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>
+                        <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -502,19 +503,20 @@
     <div class="panel full-width admin-only" id="panel-admin-campaigns">
         <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(수신된 결재 요청)</span></h2>
         <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-            <table id="campaignTable" style="margin-top: 0; min-width: 900px; border: none; border-radius: 0;">
+            <table id="campaignTable" style="margin-top: 0; min-width: 1100px; border: none; border-radius: 0; table-layout: fixed;">
                 <thead>
                     <tr>
-                        <th style="width: 120px;">신청일자</th>
-                        <th style="width: 150px;">방송 예정일 및 채널</th>
+                        <th style="width: 110px;">신청일자</th>
+                        <th style="width: 140px;">방송 예정일/채널</th>
                         <th>패키지 구성 내역</th>
-                        <th style="width: 100px;">목표수량</th>
-                        <th style="width: 140px;">파트너 정산액</th>
-                        <th style="width: 120px;">상태 및 관리</th>
+                        <th>사은품 내역</th>
+                        <th style="width: 90px;">목표수량</th>
+                        <th style="width: 120px;">파트너 정산액</th>
+                        <th style="width: 110px;">상태 및 관리</th>
                     </tr>
                 </thead>
                 <tbody id="campaignListBody">
-                    <tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>
+                    <tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -759,6 +761,7 @@
             partner_profit: parseInt(partnerProfitText.replace(/,/g, '')),
             hq_profit: parseInt(hqProfitText.replace(/,/g, '')),
             products: selectedProducts.map(id => productsData.find(p => p.id === id).name),
+            gifts: addedGifts.map(g => `${g.name}::${g.qty}`), // 사은품 데이터 추가
             status: '승인 대기중',
             user_email: userEmail // 유저 식별 이메일 추가
         };
@@ -773,7 +776,11 @@
             
             if (error) {
                 console.error("DB Error:", error);
-                customAlert("데이터베이스 저장 실패\nSupabase 테이블에 'user_email' 컬럼이 생성되었는지 확인해주세요.\n\n" + error.message, "오류");
+                if(error.message.includes("gifts")) {
+                    customAlert("데이터베이스 저장 실패\nSupabase 'campaign_simulations' 테이블에 'gifts' 컬럼(텍스트 배열 타입)을 반드시 추가해주세요.\n\n" + error.message, "오류");
+                } else {
+                    customAlert("데이터베이스 저장 실패\nSupabase 테이블 설정을 확인해주세요.\n\n" + error.message, "오류");
+                }
                 btn.innerText = "최종 데이터 전송 및 확정";
                 btn.disabled = false;
                 return;
@@ -853,11 +860,68 @@
         }
     }
 
+    // 패키지 구성을 이미지 형태로 변환하는 헬퍼 함수
+    function generatePackageVisualizerHtml(productNames) {
+        if (!productNames || productNames.length === 0) return '<span style="color:var(--text-muted);">내역 없음</span>';
+        
+        let itemsHtml = [];
+        // DB에 저장된 데이터가 문자열일 경우와 배열일 경우를 모두 안전하게 처리
+        let namesArray = Array.isArray(productNames) ? productNames : (typeof productNames === 'string' ? productNames.split(',') : []);
+
+        namesArray.forEach(name => {
+            let cleanName = name.trim();
+            let imgUrl = productImageMap[cleanName] || fallbackImg;
+            itemsHtml.push(`
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 68px; flex-shrink: 0; white-space: normal;">
+                    <img src="${imgUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 6px; background: #fff; padding: 2px;">
+                    <span style="font-size: 0.65rem; line-height: 1.2; word-break: keep-all; color: var(--text-bold); font-weight: 600;">${cleanName}</span>
+                </div>
+            `);
+        });
+        
+        return `<div style="width: 100%; overflow-x: auto; padding-bottom: 6px;">
+                    <div style="display: inline-flex; align-items: center; gap: 6px; width: max-content;">
+                        ${itemsHtml.join('<div style="font-weight: bold; color: #cbd5e1; font-size: 1.1rem; flex-shrink: 0; margin: 0 2px;">+</div>')}
+                    </div>
+                </div>`;
+    }
+
+    // 사은품 구성을 이미지 형태로 변환하는 헬퍼 함수
+    function generateGiftVisualizerHtml(gifts) {
+        if (!gifts || gifts.length === 0) return '<span style="color:var(--text-muted); font-size:0.85rem;">사은품 없음</span>';
+        
+        let itemsHtml = [];
+        let giftsArray = Array.isArray(gifts) ? gifts : (typeof gifts === 'string' ? gifts.split(',') : []);
+
+        giftsArray.forEach(giftStr => {
+            let parts = giftStr.split('::');
+            let name = parts[0];
+            let qty = parts.length > 1 ? parts[1] : '';
+            let cleanName = (name || '').trim();
+            let imgUrl = productImageMap[cleanName] || fallbackImg;
+            let qtyText = qty ? `<span style="font-size: 0.7rem; color: var(--accent); font-weight: 700; background: #eff6ff; padding: 2px 6px; border-radius: 4px; margin-top: 4px;">${formatNum(qty)}개</span>` : '';
+
+            itemsHtml.push(`
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 68px; flex-shrink: 0; white-space: normal;">
+                    <img src="${imgUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 6px; background: #fff; padding: 2px;">
+                    <span style="font-size: 0.65rem; line-height: 1.2; word-break: keep-all; color: var(--text-bold); font-weight: 600;">${cleanName}</span>
+                    ${qtyText}
+                </div>
+            `);
+        });
+        
+        return `<div style="width: 100%; overflow-x: auto; padding-bottom: 6px;">
+                    <div style="display: inline-flex; align-items: flex-start; gap: 6px; width: max-content;">
+                        ${itemsHtml.join('<div style="font-weight: bold; color: #cbd5e1; font-size: 1.1rem; flex-shrink: 0; margin: 0 2px; align-self: center;">+</div>')}
+                    </div>
+                </div>`;
+    }
+
     // 관리자 뷰의 '인플루언서 확정 내역' 렌더링
     function renderAdminCampaigns() {
         const tbody = document.getElementById('campaignListBody');
         if (mockCampaigns.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 결재 요청 내역이 없습니다.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 결재 요청 내역이 없습니다.</td></tr>`;
             return;
         }
 
@@ -867,7 +931,10 @@
             const bDateObj = new Date(c.broadcast_date);
             const bDateStr = `${bDateObj.getFullYear()}.${String(bDateObj.getMonth()+1).padStart(2,'0')}.${String(bDateObj.getDate()).padStart(2,'0')}`;
             const channelStr = c.broadcast_channel && c.broadcast_channel !== '미입력' ? `<br><span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">[${c.broadcast_channel}]</span>` : '';
-            const prods = c.products.join(', ');
+            
+            // 이미지 헬퍼 함수 적용
+            const prodsHtml = generatePackageVisualizerHtml(c.products);
+            const giftsHtml = generateGiftVisualizerHtml(c.gifts);
 
             // 상태에 따른 뱃지 및 승인 버튼 분기 처리
             let statusHtml = '';
@@ -882,14 +949,16 @@
                 statusHtml = `<span class="badge-approved">${c.status}</span>`;
             }
 
+            // td의 max-width를 0으로 고정하여 테이블 레이아웃이 무너지지 않도록 방어
             html += `
                 <tr style="background:#fff;">
-                    <td style="text-align:center;">${reqDate}<br><span style="font-size:0.75rem; color:var(--text-muted);">${c.user_email || '알수없음'}</span></td>
-                    <td style="text-align:center; font-weight:700; color:var(--accent);">${bDateStr}${channelStr}</td>
-                    <td style="text-align:left; font-size:0.9rem;">${prods}</td>
-                    <td style="text-align:center; font-weight:600;">${formatNum(c.target_qty)}개</td>
-                    <td style="text-align:right; font-weight:700; color:var(--text-bold);">${formatNum(c.partner_profit)}원</td>
-                    <td style="text-align:center;">${statusHtml}</td>
+                    <td style="text-align:center; vertical-align: middle;">${reqDate}<br><span style="font-size:0.75rem; color:var(--text-muted);">${c.user_email || '알수없음'}</span></td>
+                    <td style="text-align:center; font-weight:700; color:var(--accent); vertical-align: middle;">${bDateStr}${channelStr}</td>
+                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${prodsHtml}</td>
+                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${giftsHtml}</td>
+                    <td style="text-align:center; font-weight:600; vertical-align: middle;">${formatNum(c.target_qty)}개</td>
+                    <td style="text-align:right; font-weight:700; color:var(--text-bold); vertical-align: middle;">${formatNum(c.partner_profit)}원</td>
+                    <td style="text-align:center; vertical-align: middle;">${statusHtml}</td>
                 </tr>
             `;
         });
@@ -907,7 +976,7 @@
         const myCampaigns = mockCampaigns.filter(c => c.user_email === myEmail);
 
         if (myCampaigns.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>`;
             return;
         }
 
@@ -917,7 +986,10 @@
             const bDateObj = new Date(c.broadcast_date);
             const bDateStr = `${bDateObj.getFullYear()}.${String(bDateObj.getMonth()+1).padStart(2,'0')}.${String(bDateObj.getDate()).padStart(2,'0')}`;
             const channelStr = c.broadcast_channel && c.broadcast_channel !== '미입력' ? `<br><span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">[${c.broadcast_channel}]</span>` : '';
-            const prods = c.products.join(', ');
+            
+            // 이미지 헬퍼 함수 적용
+            const prodsHtml = generatePackageVisualizerHtml(c.products);
+            const giftsHtml = generateGiftVisualizerHtml(c.gifts);
 
             let statusHtml = '';
             if (c.status === '승인 대기중') {
@@ -931,13 +1003,15 @@
                 statusHtml = `<span class="badge-approved">${c.status}</span>`;
             }
 
+            // td의 max-width를 0으로 고정하여 테이블 레이아웃이 무너지지 않도록 방어
             html += `
                 <tr style="background:#fff;">
-                    <td style="text-align:center;">${reqDate}</td>
-                    <td style="text-align:center; font-weight:700; color:var(--accent);">${bDateStr}${channelStr}</td>
-                    <td style="text-align:left; font-size:0.9rem;">${prods}</td>
-                    <td style="text-align:center; font-weight:600;">${formatNum(c.target_qty)}개</td>
-                    <td style="text-align:center;">${statusHtml}</td>
+                    <td style="text-align:center; vertical-align: middle;">${reqDate}</td>
+                    <td style="text-align:center; font-weight:700; color:var(--accent); vertical-align: middle;">${bDateStr}${channelStr}</td>
+                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${prodsHtml}</td>
+                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${giftsHtml}</td>
+                    <td style="text-align:center; font-weight:600; vertical-align: middle;">${formatNum(c.target_qty)}개</td>
+                    <td style="text-align:center; vertical-align: middle;">${statusHtml}</td>
                 </tr>
             `;
         });
