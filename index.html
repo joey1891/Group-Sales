@@ -1,4 +1,3 @@
-<!-- STREAMING_CHUNK:Initializing document and styles... -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -48,7 +47,6 @@
         .mode-btn { padding: 8px 16px; border: none; background: transparent; border-radius: 8px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem; }
         .mode-btn.active { background: var(--text-bold); color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
         
-<!-- STREAMING_CHUNK:Defining responsive and custom styles... -->
         /* 모드에 따른 숨김 처리 */
         body.mode-influencer .admin-only { display: none !important; }
         body.mode-admin .influencer-only { display: none !important; }
@@ -79,11 +77,6 @@
         .product-card .price { font-weight: 700; color: var(--text-bold); margin-top: auto; font-size: 1.05rem; }
         .product-card .cost-badge { font-size: 0.8rem; background: #fee2e2; color: var(--danger); padding: 4px 8px; border-radius: 6px; margin-top: 6px; font-weight: 600; border: 1px solid #fecaca; }
         
-<!-- STREAMING_CHUNK:Styling buttons and lists... -->
-        .btn-crawl { background-color: #fff; color: var(--text-bold); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 12px; width: 100%; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .btn-crawl:hover { background-color: var(--bg-light); border-color: #cbd5e1; color: var(--accent); }
-        .btn-crawl:disabled { background-color: var(--bg-light); color: #94a3b8; cursor: not-allowed; border-color: var(--border); }
-
         .btn-print { background-color: #fff; color: var(--text-main); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .btn-print:hover { background-color: var(--bg-light); border-color: var(--text-muted); }
         .btn-print.primary { background-color: var(--primary); color: #fff; border-color: var(--primary); }
@@ -101,7 +94,6 @@
         .pkg-item span { font-size: 0.8rem; line-height: 1.3; word-break: keep-all; color: var(--text-bold); font-weight: 600; }
         .pkg-plus { font-weight: bold; color: #cbd5e1; font-size: 1.5rem; flex-shrink: 0; }
 
-<!-- STREAMING_CHUNK:Styling tables and inputs... -->
         table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; font-size: 0.95rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
         th, td { border-bottom: 1px solid var(--border); padding: 14px 16px; border-right: none; border-left: none; }
         th { background-color: var(--bg-light); text-align: center; font-weight: 600; color: var(--text-muted); }
@@ -122,7 +114,6 @@
         .btn-confirm { background-color: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3); }
         .btn-confirm:hover { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(59, 130, 246, 0.4); }
         
-<!-- STREAMING_CHUNK:Styling layout grids and dashboards... -->
         .btn-approve-admin { background-color: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 6px;}
         .btn-approve-admin:hover { background-color: var(--accent-hover); }
 
@@ -151,7 +142,6 @@
         .hq-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
         .hq-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: #fff; border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
 
-<!-- STREAMING_CHUNK:Styling auth overlays and print media... -->
         #resultTable { table-layout: fixed; }
         #resultTable th { background: var(--bg-light); color: var(--text-bold); text-align: center; border-right: 1px solid var(--border); border-bottom: 2px solid var(--border); font-weight: 700; word-break: keep-all; }
         #resultTable th:last-child { border-right: none; }
@@ -219,7 +209,7 @@
             .container { display: block; gap: 0; max-width: 100%; }
             .panel { display: none; box-shadow: none; border: none; padding: 0; margin: 0; }
             #hq-panel { display: block !important; width: 100%; }
-            .btn-print, .btn-crawl, .mode-toggle-wrapper { display: none !important; }
+            .btn-print, .mode-toggle-wrapper { display: none !important; }
             .page-title-container, #db-status { display: none; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
@@ -227,7 +217,6 @@
 </head>
 <body class="mode-admin">
 
-<!-- STREAMING_CHUNK:Rendering auth overlay and UI containers... -->
 <div id="authOverlay" class="auth-overlay">
     <div class="auth-box">
         <div class="auth-logo">
@@ -270,7 +259,6 @@
 <div id="db-status" class="status-loading">시스템 데이터를 불러오는 중입니다...</div>
 
 <div class="container">
-<!-- STREAMING_CHUNK:Rendering main panels... -->
     
     <!-- 패널 1: 제품 선택 -->
     <div class="panel full-width" id="panel-products">
@@ -321,7 +309,6 @@
         </div>
     </div>
 
-<!-- STREAMING_CHUNK:Rendering admin cost setting panel... -->
     <!-- 패널 3: 시뮬레이션 상세 및 비용 설정 -->
     <div class="panel full-width admin-only" id="panel-admin-costs-settings">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px; flex-wrap: wrap; gap: 16px;">
@@ -398,7 +385,6 @@
         </div>
     </div>
 
-<!-- STREAMING_CHUNK:Rendering HQ profit details and influencer dashboard... -->
     <!-- 패널 6: 본사 전용 상세 내역 표 -->
     <div class="panel full-width admin-only" id="hq-panel">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
@@ -480,7 +466,6 @@
         <div id="selected-sample-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 8px;"></div>
         <div id="selected-gift-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 16px;"></div>
 
-<!-- STREAMING_CHUNK:Rendering campaign history and custom modals... -->
         <div class="influencer-only" style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px dashed var(--border);">
             <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="background-color: var(--text-bold); width: 100%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">최종 데이터 전송 및 확정</button>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">확정 시 본사 담당자에게 구성 내역 및 일정이 전달되며, 승인 대기 상태로 변경됩니다.</p>
@@ -548,11 +533,13 @@
     </div>
 </div>
 
-<!-- STREAMING_CHUNK:Initializing JS logic and states... -->
 <script>
     var SUPABASE_URL = 'https://rayhgqcpupwmwpymtkwg.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheWhncWNwdXB3bXdweW10a3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjc2MTEsImV4cCI6MjA4NDg0MzYxMX0.Ng4K86amltnarVwbQ8FVfw1rTJK03NTE5g3QDoLMFTc';
     var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 가격을 가져올 가격 테이블의 이름을 지정합니다. (데이터베이스 상황에 맞게 변경 가능)
+    const PRICE_TABLE_NAME = 'price_table';
 
     var productsData = [];
     var selectedProducts = [];
@@ -573,7 +560,6 @@
         adminEmails = [...new Set([...adminEmails, ...savedAdmins])];
     } catch(e) {}
 
-<!-- STREAMING_CHUNK:Setting up Auth listeners and handler functions... -->
     supabaseClient.auth.onAuthStateChange((event, session) => {
         const overlay = document.getElementById('authOverlay');
         if (session) {
@@ -669,7 +655,6 @@
         window.location.reload(); 
     }
 
-<!-- STREAMING_CHUNK:Configuring roles and UI interactions... -->
     function applyUserRole(email) {
         document.getElementById('userEmailDisplay').innerText = email;
         const btnInfluencer = document.getElementById('btn-mode-influencer');
@@ -751,7 +736,6 @@
         }
     }
 
-<!-- STREAMING_CHUNK:Handling DB interactions for campaigns... -->
     async function submitCampaign() {
         const bDate = document.getElementById('broadcastDate').value;
         const bChannel = document.getElementById('broadcastChannel').value;
@@ -900,7 +884,7 @@
     }
 
     async function deleteCampaignAdmin(id) {
-        const isConfirmed = await customConfirm("이 데이터를 완전히 삭제하시겠습니까?\n삭제된 데이터는 복구할 수জীবী삭제된 데이터는 복구할 수 없습니다.", "데이터 삭제 확인");
+        const isConfirmed = await customConfirm("이 데이터를 완전히 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.", "데이터 삭제 확인");
         if (!isConfirmed) return;
 
         try {
@@ -917,7 +901,6 @@
         }
     }
 
-<!-- STREAMING_CHUNK:Visualizer generation functions (handling missing images)... -->
     function generatePackageVisualizerHtml(productNames) {
         if (!productNames || productNames.length === 0) return '<span style="color:var(--text-muted);">내역 없음</span>';
         
@@ -981,7 +964,6 @@
                 </div>`;
     }
 
-<!-- STREAMING_CHUNK:Rendering history tables... -->
     function renderAdminCampaigns() {
         const tbody = document.getElementById('campaignListBody');
         if (mockCampaigns.length === 0) {
@@ -1118,7 +1100,109 @@
         renderInfluencerCampaigns(); 
     }
 
-<!-- STREAMING_CHUNK:Product data configuration and mapping... -->
+    async function fetchProducts() {
+        try {
+            // 1. 카탈로그 데이터 조회
+            const { data: formCatalog, error: formErr } = await supabaseClient.from('form_catalog_master').select('*').eq('is_active', true);
+            
+            if (formErr) {
+                console.error("form_catalog_master 조회 에러:", formErr);
+                throw formErr;
+            }
+
+            // 2. 가격 테이블 데이터 조회하여 원화 정가 매칭 맵 생성
+            let priceMap = {};
+            try {
+                // 가격 테이블 이름은 상단에 선언된 PRICE_TABLE_NAME 상수를 따릅니다.
+                const { data: priceData, error: priceErr } = await supabaseClient.from(PRICE_TABLE_NAME).select('*');
+                if (!priceErr && priceData) {
+                    priceData.forEach(p => {
+                        // 환율 변환 로직이 서버에 없거나 원화 전용 테이블일 경우를 고려해 다양한 컬럼명 우선순위 매칭 시도
+                        const krwPrice = p.krw_price || p.price_krw || p.msrp_krw || p.msrp || p.price || p.unit_price || 0;
+                        if (p.product_name) {
+                            priceMap[p.product_name.trim()] = krwPrice;
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn("가격 테이블 연동 실패. 카탈로그의 기본 unit_price를 사용합니다.", e);
+            }
+            
+            productsData = [];
+            const seenProducts = new Set(); // 중복 제품명 확인용 Set
+            
+            if (formCatalog) {
+                console.log("form_catalog_master 로드 완료:", formCatalog.length, "건"); 
+                
+                formCatalog.forEach(f => {
+                    const pName = (f.product_name || '').trim();
+
+                    // 중복 제품 제외 (코어임팩트 등 중복 시 최초 1건만 가져옴)
+                    if (seenProducts.has(pName)) return;
+                    seenProducts.add(pName);
+
+                    // 소비자가 정가: 가격 테이블에서 원화로 매칭된 가격 우선 사용, 없으면 unit_price
+                    const msrp = priceMap[pName] !== undefined ? Number(priceMap[pName]) : (f.unit_price || 0);
+                    
+                    const catText = (f.category || '').toLowerCase().trim();
+                    const subCat2Text = (f.sub_category_2 || '').toLowerCase().trim();
+                    const subCat2NoSpace = subCat2Text.replace(/\s+/g, '');
+
+                    let mappedChannel = null;
+
+                    // 1. 일반용
+                    if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
+                        mappedChannel = '일반';
+                    }
+                    // 2. 약국용
+                    else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
+                        mappedChannel = '약국용';
+                    }
+                    // 3. 병의원용
+                    else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
+                        // 병의원용에서 sub_category_2의 프로페셔널(professional) 제외 조건 추가
+                        if (!subCat2Text.includes('professional') && !subCat2Text.includes('프로페셔널')) {
+                            mappedChannel = '병의원용';
+                        }
+                    }
+
+                    if (mappedChannel) {
+                        productsData.push({
+                            id: f.id, 
+                            name: pName, 
+                            cleanName: pName, 
+                            mainCategory: f.sub_category_1 || '기타',
+                            imageUrl: productImageMap[pName] || '',
+                            msrp: msrp, 
+                            mallPrice: msrp * 0.9, 
+                            price: msrp * 0.7, 
+                            lowestPrice: msrp * 0.8, 
+                            source: '카탈로그', 
+                            cost: 0, // 원가 테이블에 데이터가 없으므로 0
+                            channel: mappedChannel 
+                        });
+                    }
+                });
+            }
+
+            document.getElementById('db-status').style.display = 'none';
+        } catch (error) {
+            console.error(error);
+            document.getElementById('db-status').style.backgroundColor = '#fef2f2';
+            document.getElementById('db-status').style.color = '#991b1b';
+            document.getElementById('db-status').style.borderColor = '#fca5a5';
+            document.getElementById('db-status').innerText = '데이터베이스 연동 중 오류가 발생했습니다.';
+        } finally {
+            if(productsData.length > 0) selectedProducts.push(productsData[0].id);
+            populateSelects(); 
+            renderProducts(); 
+            updateAutoSupplyRatio();
+            calculate(); 
+            fetchCampaigns(); 
+            setMinBroadcastDate(); 
+        }
+    }
+
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
         'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9icjMwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUxMDUsImV4cCI6MjA5NjgwNTEwNX0.utXjZK_UPv63dRtfqhBF5jnLrz3jSZ6LFdkwRN-U_WQ',
@@ -1220,58 +1304,142 @@
         customAlert("보안 정책으로 인해 클립보드 복사 대신 파일로 저장되었습니다.", "저장 완료");
     }
 
-<!-- STREAMING_CHUNK:Fetching ALL product data strictly from form_catalog_master... -->
     async function fetchProducts() {
         try {
-            // [중요 수정] 오직 'form_catalog_master' 테이블만 조회하도록 변경됨
-            const { data: formCatalog, error: formErr } = await supabaseClient.from('form_catalog_master').select('*').eq('is_active', true);
-            
-            if (formErr) {
-                console.error("form_catalog_master 조회 에러:", formErr);
-                throw formErr;
+            // [중요 업데이트] 가격, 카탈로그, 원가, 제품 이미지 4개의 테이블을 병렬로 동시 조회
+            const [pricesRes, catalogRes, costsRes, productsRes] = await Promise.all([
+                supabaseClient.from('product_prices').select('product_id, currency, b2c_msrp'),
+                supabaseClient.from('form_catalog_master').select('*').eq('is_active', true),
+                supabaseClient.from('product_costs').select('product_id, currency, production_cost'),
+                supabaseClient.from('products').select('id, image_url')
+            ]);
+
+            let priceMapByProdId = {};
+            let costMapByProdId = {};
+            let imageUrlMapByProdId = {};
+
+            // 1. 가격 맵핑
+            if (!pricesRes.error && pricesRes.data) {
+                pricesRes.data.forEach(p => {
+                    if (p.b2c_msrp != null) {
+                        if (p.currency === 'KRW' || !p.currency) {
+                            priceMapByProdId[p.product_id] = Number(p.b2c_msrp);
+                        } else if (p.currency === 'USD' && !priceMapByProdId[p.product_id]) {
+                            priceMapByProdId[p.product_id] = Number(p.b2c_msrp) * 1400;
+                        }
+                    }
+                });
             }
+
+            // 2. 원가(Cost) 맵핑
+            if (!costsRes.error && costsRes.data) {
+                costsRes.data.forEach(c => {
+                    if (c.production_cost != null) {
+                        if (c.currency === 'KRW' || !c.currency) {
+                            costMapByProdId[c.product_id] = Number(c.production_cost);
+                        } else if (c.currency === 'USD') {
+                            costMapByProdId[c.product_id] = Number(c.production_cost) * 1400; // 원가 환산
+                        }
+                    }
+                });
+            }
+
+            // 3. 이미지 URL 맵핑
+            if (!productsRes.error && productsRes.data) {
+                productsRes.data.forEach(p => {
+                    if (p.image_url) {
+                        imageUrlMapByProdId[p.id] = p.image_url;
+                    }
+                });
+            }
+
+            const formCatalog = catalogRes.data;
+            if (catalogRes.error) throw catalogRes.error;
             
             productsData = [];
+            const seenProducts = new Set();
             
             if (formCatalog) {
-                console.log("form_catalog_master 로드 완료:", formCatalog.length, "건"); 
-                
                 formCatalog.forEach(f => {
-                    const msrp = f.unit_price || 0;
+                    const pName = (f.product_name || '').trim();
+
+                    if (seenProducts.has(pName)) return;
+                    seenProducts.add(pName);
+
+                    // 정가 매칭
+                    let msrp = 0;
+                    if (f.product_id && priceMapByProdId[f.product_id] !== undefined) {
+                        msrp = priceMapByProdId[f.product_id];
+                    } else {
+                        msrp = Number(f.unit_price) || 0; 
+                    }
+
+                    // 원가 매칭
+                    let cost = 0;
+                    if (f.product_id && costMapByProdId[f.product_id] !== undefined) {
+                        cost = costMapByProdId[f.product_id];
+                    }
+
+                    // 이미지 매칭 (DB 우선 적용, 없으면 기존 하드코딩 맵 사용)
+                    let imageUrl = '';
+                    if (f.product_id && imageUrlMapByProdId[f.product_id]) {
+                        imageUrl = imageUrlMapByProdId[f.product_id];
+                    } else {
+                        imageUrl = productImageMap[pName] || '';
+                    }
                     
                     const catText = (f.category || '').toLowerCase().trim();
+                    const subCat1Text = (f.sub_category_1 || '').toLowerCase().trim();
                     const subCat2Text = (f.sub_category_2 || '').toLowerCase().trim();
-                    const subCat2NoSpace = subCat2Text.replace(/\s+/g, ''); // 공백 무시 비교용
+                    const subCat2NoSpace = subCat2Text.replace(/\s+/g, '');
+                    const nameLower = pName.toLowerCase();
 
                     let mappedChannel = null;
 
-                    // 1. 일반용 분류 조건 (Category가 Cosmetic이거나 Device이고, sub_category_2가 Home Care인 경우)
+                    // 유통 채널 분류
                     if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
                         mappedChannel = '일반';
-                    }
-                    // 2. 약국용 분류 조건 (sub_category_2에 clinic pharmacy 가 있거나 category에 pharmacy가 있는 경우)
-                    else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
+                    } else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
                         mappedChannel = '약국용';
-                    }
-                    // 3. 병의원용 분류 조건 (sub_category_2가 clinic 이거나, category가 clinic, medical device 등인 경우)
-                    else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
-                        mappedChannel = '병의원용';
+                    } else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
+                        if (!subCat2Text.includes('professional') && !subCat2Text.includes('프로페셔널')) {
+                            mappedChannel = '병의원용';
+                        }
                     }
 
-                    // 위 3가지 조건 중 하나라도 매핑이 된 제품만 최종 목록에 추가
+                    // 병원용에서 'crystal' 단어가 포함된 제품 삭제 (단, 'crystal plus'는 살림)
+                    if (mappedChannel === '병의원용' && nameLower.includes('crystal')) {
+                        if (!nameLower.includes('plus')) {
+                            mappedChannel = null; 
+                        }
+                    }
+
+                    let mainCat = '페이스';
+                    let subCat = '화장품';
+
+                    if (catText.includes('device') || nameLower.includes('device') || nameLower.includes('기기') || nameLower.includes('패드')) {
+                        subCat = '디바이스';
+                    }
+
+                    if (subCat1Text.includes('scalp') || subCat1Text.includes('hair') || nameLower.includes('scalp') || nameLower.includes('shampoo') || nameLower.includes('샴푸')) {
+                        mainCat = '스칼프';
+                    }
+
                     if (mappedChannel) {
                         productsData.push({
                             id: f.id, 
-                            name: f.product_name, 
-                            cleanName: f.product_name, 
-                            mainCategory: f.sub_category_1 || '기타',
-                            imageUrl: productImageMap[f.product_name.trim()] || '',
+                            productId: f.product_id, // 이미지 업로드 시 사용하기 위한 원본 FK
+                            name: pName, 
+                            cleanName: pName, 
+                            mainCategory: mainCat,
+                            subCategory: subCat,
+                            imageUrl: imageUrl,
                             msrp: msrp, 
                             mallPrice: msrp * 0.9, 
                             price: msrp * 0.7, 
                             lowestPrice: msrp * 0.8, 
                             source: '카탈로그', 
-                            cost: 0, // 원가 테이블에 데이터가 없으므로 0
+                            cost: cost, // 연동된 원가 저장
                             channel: mappedChannel 
                         });
                     }
@@ -1296,7 +1464,6 @@
         }
     }
 
-<!-- STREAMING_CHUNK:Populating logic and updating UI states... -->
     function populateSelects() {
         const sSel = document.getElementById('sampleSelect');
         const gSel = document.getElementById('giftSelect');
@@ -1376,7 +1543,6 @@
         document.getElementById('ratioSupply').value = tpNet > 0 ? ((tc / tpNet) * 100).toFixed(2) : 0;
     }
 
-<!-- STREAMING_CHUNK:Rendering products and handling empty images... -->
     function renderProducts() {
         const container = document.getElementById('product-list');
         container.innerHTML = '';
@@ -1395,7 +1561,7 @@
         filteredProducts.forEach(prod => {
             // sub_category_1 (예: 앰플, 크림 등)을 메인 그룹명으로 사용
             let mainGroup = prod.mainCategory || '기타';
-            let subGroup = '기본';
+            let subGroup = prod.subCategory || '기본';
 
             if (!grouped[mainGroup]) grouped[mainGroup] = {};
             if (!grouped[mainGroup][subGroup]) grouped[mainGroup][subGroup] = [];
@@ -1433,8 +1599,19 @@
                     const imgHtml = prod.imageUrl 
                         ? `<img src="${prod.imageUrl}" alt="${prod.name}">`
                         : `<div class="no-img-box">NO IMG</div>`;
+                    
+                    // [추가] 관리자 전용 이미지 업로드 버튼 렌더링
+                    let uploadBtnHtml = '';
+                    if (prod.productId) {
+                        uploadBtnHtml = `
+                        <label class="admin-only" style="position:absolute; top:12px; right:12px; cursor:pointer; background:rgba(255,255,255,0.95); border:1px solid var(--border); padding:6px; border-radius:50%; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;" onclick="event.stopPropagation();" title="이미지 업로드/변경">
+                            <svg width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                            <input type="file" style="display:none;" accept="image/*" onchange="uploadProductImage(event, '${prod.id}', '${prod.productId}')">
+                        </label>`;
+                    }
 
                     card.innerHTML = `
+                        ${uploadBtnHtml}
                         ${imgHtml}
                         <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:10px;">${prod.name}</div>
                         
@@ -1457,7 +1634,6 @@
                         </div>
                         
                         <div class="cost-badge admin-only">원가: ${formatNum(prod.cost)}원</div>
-                        <button class="btn-crawl admin-only" onclick="event.stopPropagation(); fetchNaverPrice('${prod.id}')">최저가 자동 수집(URL)</button>
                     `;
                     grid.appendChild(card);
                 });
@@ -1476,7 +1652,6 @@
         updateAutoSupplyRatio(); calculate();
     }
 
-<!-- STREAMING_CHUNK:Final calculation logic... -->
     async function editPrice(id, type) {
         const prod = productsData.find(p => p.id === id);
         if(!prod) return;
@@ -1503,33 +1678,58 @@
         }
     }
 
-    async function fetchNaverPrice(productId) {
-        const targetUrl = await customPrompt(
-            "상품 수동 크롤링",
-            "네이버 상품 URL을 입력하시면 크롤링을 시도하며, 성공 시 이후부터 매일 새벽 스케줄러에 의해 자동으로 갱신됩니다."
-        );
-        if (!targetUrl || targetUrl.trim() === '') return;
-
-        const btn = document.querySelector(`#prod-${productId} .btn-crawl`);
-        const originalText = btn.innerText;
-        btn.innerText = "수집 중... ⏳"; btn.disabled = true;
+    // [추가] 관리자 제품 이미지 업로드 기능
+    async function uploadProductImage(event, catalogId, productId) {
+        const file = event.target.files[0];
+        if(!file || !productId) return;
+        
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) card.style.opacity = '0.5';
 
         try {
-            const { data, error } = await supabaseClient.functions.invoke('crawl-price', { body: { productId: productId, platform: 'Naver', url: targetUrl } });
-            if (error) throw error;
-            if (data && data.success) {
-                await customAlert(`성공적으로 가격을 수집했습니다.\n온라인 최저가: ${formatNum(data.numericPrice)}원\n\n(이제 이 제품은 매일 새벽 자동 수집 대상에 포함됩니다.)`, "크롤링 성공");
-                const prod = productsData.find(p => p.id === productId);
-                if(prod) {
-                    prod.lowestPrice = data.numericPrice;
-                    prod.source = 'Naver 자동수집';
-                    renderProducts();
-                }
-            } else { throw new Error("서버에서 유효한 응답을 받지 못했습니다."); }
-        } catch (err) { 
-            await customAlert("크롤링 실패: " + err.message + "\n\n1. URL이 정확한지 확인해주세요.\n2. 대상 사이트의 봇 차단(Anti-bot)으로 인해 실패했을 수 있습니다.", "크롤링 실패"); 
-        } finally { 
-            btn.innerText = originalText; btn.disabled = false; 
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${productId}-${Date.now()}.${fileExt}`;
+            const filePath = `public/${fileName}`;
+
+            // 1. Supabase Storage 에 업로드
+            const { error: uploadError } = await supabaseClient.storage
+                .from('product_images')
+                .upload(filePath, file, { upsert: true });
+
+            if (uploadError) throw uploadError;
+
+            // 2. Public URL 가져오기
+            const { data: publicUrlData } = supabaseClient.storage
+                .from('product_images')
+                .getPublicUrl(filePath);
+                
+            const newImageUrl = publicUrlData.publicUrl;
+
+            // 3. products 테이블의 image_url 업데이트
+            const { error: dbError } = await supabaseClient
+                .from('products')
+                .update({ image_url: newImageUrl })
+                .eq('id', productId);
+
+            if (dbError) throw dbError;
+
+            // 4. 로컬 데이터 변경 및 화면 갱신
+            const prod = productsData.find(p => p.id === catalogId);
+            if(prod) {
+                prod.imageUrl = newImageUrl;
+                renderProducts();
+                calculate(); 
+                updateSampleUI();
+                updateGiftUI();
+            }
+            
+            customAlert("이미지가 성공적으로 저장되었습니다.", "업로드 완료");
+
+        } catch(e) {
+            console.error(e);
+            customAlert("이미지 업로드 실패: " + e.message, "오류");
+        } finally {
+            if(card) card.style.opacity = '1';
         }
     }
 
@@ -1669,4 +1869,3 @@
 </script>
 </body>
 </html>
-```eof
