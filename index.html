@@ -71,12 +71,22 @@
         .product-grid-inner { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
         .product-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s ease-in-out; background: #fff; display: flex; flex-direction: column; align-items: center; position: relative; }
         .product-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(59, 130, 246, 0.15); }
-        .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 16px; background: var(--bg-light); padding: 8px; box-sizing: border-box; mix-blend-mode: multiply;}
-        .product-card .no-img-box { width: 100%; height: 140px; border-radius: 8px; margin-bottom: 16px; background: var(--bg-light); border: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #94a3b8; font-weight: 600;}
         .product-card.selected { border-color: var(--accent); background-color: #eff6ff; box-shadow: 0 0 0 2px var(--accent); }
         .product-card.drag-over { border-color: var(--accent) !important; background-color: #f0f9ff !important; box-shadow: inset 0 0 0 2px var(--accent); border-style: dashed; }
         .product-card .price { font-weight: 700; color: var(--text-bold); margin-top: auto; font-size: 1.05rem; }
         .product-card .cost-badge { font-size: 0.8rem; background: #fee2e2; color: var(--danger); padding: 4px 8px; border-radius: 6px; margin-top: 6px; font-weight: 600; border: 1px solid #fecaca; }
+        
+        /* Carousel Styles */
+        .carousel-container { position: relative; width: 100%; height: 140px; margin-bottom: 16px; background: var(--bg-light); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid transparent; }
+        .product-card .no-img-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #94a3b8; font-weight: 600; border: 1px dashed #cbd5e1; border-radius: 8px; margin: 0; box-sizing: border-box;}
+        .carousel-container img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; padding: 8px; box-sizing: border-box; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: background 0.2s; z-index: 5; }
+        .carousel-btn:hover { background: rgba(0,0,0,0.6); }
+        .carousel-btn.left { left: 4px; }
+        .carousel-btn.right { right: 4px; }
+        .carousel-counter { position: absolute; bottom: 4px; right: 8px; background: rgba(0,0,0,0.4); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; z-index: 5; font-weight: 600; letter-spacing: 0.5px;}
+        .btn-delete-img { position: absolute; top: 8px; left: 8px; background: rgba(225,29,72,0.9); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .btn-delete-img:hover { background: var(--danger); transform: scale(1.1); }
         
         .btn-print { background-color: #fff; color: var(--text-main); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .btn-print:hover { background-color: var(--bg-light); border-color: var(--text-muted); }
@@ -539,9 +549,6 @@
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheWhncWNwdXB3bXdweW10a3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjc2MTEsImV4cCI6MjA4NDg0MzYxMX0.Ng4K86amltnarVwbQ8FVfw1rTJK03NTE5g3QDoLMFTc';
     var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 가격을 가져올 가격 테이블의 이름을 지정합니다. (데이터베이스 상황에 맞게 변경 가능)
-    const PRICE_TABLE_NAME = 'price_table';
-
     var productsData = [];
     var selectedProducts = [];
     var addedSamples = [];
@@ -549,7 +556,6 @@
     
     var currentSimulationState = { partnerProfit: 0, hqProfit: 0, hqCm: 0 };
     var mockCampaigns = [];
-    var currentSessionCampaignId = null;
 
     var currentChannelFilter = '일반';
 
@@ -910,7 +916,15 @@
 
         namesArray.forEach(name => {
             let cleanName = name.trim();
-            let imgUrl = productImageMap[cleanName] || '';
+            
+            let imgUrl = '';
+            const activeProd = productsData.find(p => p.cleanName === cleanName || p.name === cleanName);
+            if (activeProd && activeProd.imageList && activeProd.imageList.length > 0) {
+                imgUrl = activeProd.imageList[0];
+            } else {
+                imgUrl = productImageMap[cleanName] || '';
+            }
+
             let imgTag = imgUrl 
                 ? `<img src="${imgUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 6px; background: #fff; padding: 2px;">`
                 : `<div style="width: 44px; height: 44px; border-radius: 8px; border: 1px dashed var(--border); margin-bottom: 6px; background: var(--bg-light); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #cbd5e1;">NO IMG</div>`;
@@ -941,7 +955,14 @@
             let name = parts[0];
             let qty = parts.length > 1 ? parts[1] : '';
             let cleanName = (name || '').trim();
-            let imgUrl = productImageMap[cleanName] || '';
+            
+            let imgUrl = '';
+            const activeProd = productsData.find(p => p.cleanName === cleanName || p.name === cleanName);
+            if (activeProd && activeProd.imageList && activeProd.imageList.length > 0) {
+                imgUrl = activeProd.imageList[0];
+            } else {
+                imgUrl = productImageMap[cleanName] || '';
+            }
             
             let imgTag = imgUrl 
                 ? `<img src="${imgUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 6px; background: #fff; padding: 2px;">`
@@ -1101,109 +1122,6 @@
         renderInfluencerCampaigns(); 
     }
 
-    async function fetchProducts() {
-        try {
-            // 1. 카탈로그 데이터 조회
-            const { data: formCatalog, error: formErr } = await supabaseClient.from('form_catalog_master').select('*').eq('is_active', true);
-            
-            if (formErr) {
-                console.error("form_catalog_master 조회 에러:", formErr);
-                throw formErr;
-            }
-
-            // 2. 가격 테이블 데이터 조회하여 원화 정가 매칭 맵 생성
-            let priceMap = {};
-            try {
-                // 가격 테이블 이름은 상단에 선언된 PRICE_TABLE_NAME 상수를 따릅니다.
-                const { data: priceData, error: priceErr } = await supabaseClient.from(PRICE_TABLE_NAME).select('*');
-                if (!priceErr && priceData) {
-                    priceData.forEach(p => {
-                        // 환율 변환 로직이 서버에 없거나 원화 전용 테이블일 경우를 고려해 다양한 컬럼명 우선순위 매칭 시도
-                        const krwPrice = p.krw_price || p.price_krw || p.msrp_krw || p.msrp || p.price || p.unit_price || 0;
-                        if (p.product_name) {
-                            priceMap[p.product_name.trim()] = krwPrice;
-                        }
-                    });
-                }
-            } catch (e) {
-                console.warn("가격 테이블 연동 실패. 카탈로그의 기본 unit_price를 사용합니다.", e);
-            }
-            
-            productsData = [];
-            const seenProducts = new Set(); // 중복 제품명 확인용 Set
-            
-            if (formCatalog) {
-                console.log("form_catalog_master 로드 완료:", formCatalog.length, "건"); 
-                
-                formCatalog.forEach(f => {
-                    const pName = (f.product_name || '').trim();
-
-                    // 중복 제품 제외 (코어임팩트 등 중복 시 최초 1건만 가져옴)
-                    if (seenProducts.has(pName)) return;
-                    seenProducts.add(pName);
-
-                    // 소비자가 정가: 가격 테이블에서 원화로 매칭된 가격 우선 사용, 없으면 unit_price
-                    const msrp = priceMap[pName] !== undefined ? Number(priceMap[pName]) : (f.unit_price || 0);
-                    
-                    const catText = (f.category || '').toLowerCase().trim();
-                    const subCat2Text = (f.sub_category_2 || '').toLowerCase().trim();
-                    const subCat2NoSpace = subCat2Text.replace(/\s+/g, '');
-
-                    let mappedChannel = null;
-
-                    // 1. 일반용
-                    if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
-                        mappedChannel = '일반';
-                    }
-                    // 2. 약국용
-                    else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
-                        mappedChannel = '약국용';
-                    }
-                    // 3. 병의원용
-                    else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
-                        // 병의원용에서 sub_category_2의 프로페셔널(professional) 제외 조건 추가
-                        if (!subCat2Text.includes('professional') && !subCat2Text.includes('프로페셔널')) {
-                            mappedChannel = '병의원용';
-                        }
-                    }
-
-                    if (mappedChannel) {
-                        productsData.push({
-                            id: f.id, 
-                            name: pName, 
-                            cleanName: pName, 
-                            mainCategory: f.sub_category_1 || '기타',
-                            imageUrl: productImageMap[pName] || '',
-                            msrp: msrp, 
-                            mallPrice: msrp * 0.9, 
-                            price: msrp * 0.7, 
-                            lowestPrice: msrp * 0.8, 
-                            source: '카탈로그', 
-                            cost: 0, // 원가 테이블에 데이터가 없으므로 0
-                            channel: mappedChannel 
-                        });
-                    }
-                });
-            }
-
-            document.getElementById('db-status').style.display = 'none';
-        } catch (error) {
-            console.error(error);
-            document.getElementById('db-status').style.backgroundColor = '#fef2f2';
-            document.getElementById('db-status').style.color = '#991b1b';
-            document.getElementById('db-status').style.borderColor = '#fca5a5';
-            document.getElementById('db-status').innerText = '데이터베이스 연동 중 오류가 발생했습니다.';
-        } finally {
-            if(productsData.length > 0) selectedProducts.push(productsData[0].id);
-            populateSelects(); 
-            renderProducts(); 
-            updateAutoSupplyRatio();
-            calculate(); 
-            fetchCampaigns(); 
-            setMinBroadcastDate(); 
-        }
-    }
-
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
         'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9icjMwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUxMDUsImV4cCI6MjA5NjgwNTEwNX0.utXjZK_UPv63dRtfqhBF5jnLrz3jSZ6LFdkwRN-U_WQ',
@@ -1307,21 +1225,16 @@
 
     async function fetchProducts() {
         try {
-            // [중요 업데이트] 가격, 카탈로그, 원가, 제품 이미지 4개의 테이블을 병렬로 동시 조회
-            const [pricesRes, catalogRes, costsRes, productsRes] = await Promise.all([
-                supabaseClient.from('product_prices').select('product_id, currency, b2c_msrp'),
-                supabaseClient.from('form_catalog_master').select('*').eq('is_active', true),
-                supabaseClient.from('product_costs').select('product_id, currency, production_cost'),
-                supabaseClient.from('products').select('id, image_url')
-            ]);
+            const { data: formCatalog, error: formErr } = await supabaseClient.from('form_catalog_master').select('*').eq('is_active', true);
+            if (formErr) throw formErr;
+
+            const { data: pricesData, error: pricesErr } = await supabaseClient.from('product_prices').select('product_id, currency, b2c_msrp');
+            const { data: costsRes, error: costsErr } = await supabaseClient.from('product_costs').select('product_id, currency, production_cost');
+            const { data: productsRes, error: prodErr } = await supabaseClient.from('products').select('id, image_url');
 
             let priceMapByProdId = {};
-            let costMapByProdId = {};
-            let imageUrlMapByProdId = {};
-
-            // 1. 가격 맵핑
-            if (!pricesRes.error && pricesRes.data) {
-                pricesRes.data.forEach(p => {
+            if (!pricesErr && pricesData) {
+                pricesData.forEach(p => {
                     if (p.b2c_msrp != null) {
                         if (p.currency === 'KRW' || !p.currency) {
                             priceMapByProdId[p.product_id] = Number(p.b2c_msrp);
@@ -1332,42 +1245,48 @@
                 });
             }
 
-            // 2. 원가(Cost) 맵핑
-            if (!costsRes.error && costsRes.data) {
-                costsRes.data.forEach(c => {
-                    if (c.production_cost != null) {
-                        if (c.currency === 'KRW' || !c.currency) {
-                            costMapByProdId[c.product_id] = Number(c.production_cost);
-                        } else if (c.currency === 'USD') {
-                            costMapByProdId[c.product_id] = Number(c.production_cost) * 1400; // 원가 환산
-                        }
-                    }
+            let costMapByProdId = {};
+            if (!costsErr && costsRes) {
+                costsRes.forEach(c => {
+                    if(c.production_cost != null) costMapByProdId[c.product_id] = Number(c.production_cost);
                 });
             }
 
-            // 3. 이미지 URL 맵핑
-            if (!productsRes.error && productsRes.data) {
-                productsRes.data.forEach(p => {
+            let imageUrlMapByProdId = {};
+            if (!prodErr && productsRes) {
+                productsRes.forEach(p => {
                     if (p.image_url) {
-                        imageUrlMapByProdId[p.id] = p.image_url;
+                        try {
+                            let parsed = JSON.parse(p.image_url);
+                            imageUrlMapByProdId[p.id] = Array.isArray(parsed) ? parsed : [p.image_url];
+                        } catch(e) {
+                            imageUrlMapByProdId[p.id] = [p.image_url];
+                        }
+                    } else {
+                        imageUrlMapByProdId[p.id] = [];
                     }
                 });
             }
-
-            const formCatalog = catalogRes.data;
-            if (catalogRes.error) throw catalogRes.error;
             
             productsData = [];
-            const seenProducts = new Set();
             
             if (formCatalog) {
+                let seenNames = new Set(); // 중복 검사용 Set
+
                 formCatalog.forEach(f => {
-                    const pName = (f.product_name || '').trim();
+                    let pName = (f.product_name || '').trim();
 
-                    if (seenProducts.has(pName)) return;
-                    seenProducts.add(pName);
+                    // 불필요한 제품 하드코딩 제외
+                    if (pName === 'Root Vitality Volume Shampoo 100ml') return;
 
-                    // 정가 매칭
+                    // 중복 제품군 대표 이름으로 통합 필터링 (코어임팩트, 하이퍼샷)
+                    if (pName.toLowerCase().includes('core impact')) pName = 'Core Impact';
+                    if (pName.toLowerCase().includes('hyper shot')) pName = 'Hyper Shot';
+
+                    // 이미 추가된 이름이면 건너뜀 (중복 제거)
+                    if (seenNames.has(pName)) return;
+                    seenNames.add(pName);
+
                     let msrp = 0;
                     if (f.product_id && priceMapByProdId[f.product_id] !== undefined) {
                         msrp = priceMapByProdId[f.product_id];
@@ -1375,78 +1294,73 @@
                         msrp = Number(f.unit_price) || 0; 
                     }
 
-                    // 원가 매칭
                     let cost = 0;
                     if (f.product_id && costMapByProdId[f.product_id] !== undefined) {
                         cost = costMapByProdId[f.product_id];
                     }
 
-                    // 이미지 매칭 (DB 우선 적용, 없으면 기존 하드코딩 맵 사용)
-                    let imageUrl = '';
-                    if (f.product_id && imageUrlMapByProdId[f.product_id]) {
-                        imageUrl = imageUrlMapByProdId[f.product_id];
-                    } else {
-                        imageUrl = productImageMap[pName] || '';
+                    let imageList = [];
+                    if (f.product_id && imageUrlMapByProdId[f.product_id] && imageUrlMapByProdId[f.product_id].length > 0) {
+                        imageList = imageUrlMapByProdId[f.product_id];
+                    } else if (productImageMap[pName]) {
+                        imageList = [productImageMap[pName]];
                     }
                     
                     const catText = (f.category || '').toLowerCase().trim();
                     const subCat1Text = (f.sub_category_1 || '').toLowerCase().trim();
                     const subCat2Text = (f.sub_category_2 || '').toLowerCase().trim();
                     const subCat2NoSpace = subCat2Text.replace(/\s+/g, '');
-                    const nameLower = pName.toLowerCase();
 
                     let mappedChannel = null;
 
-                    // 유통 채널 분류
                     if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
                         mappedChannel = '일반';
-                    } else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
+                    }
+                    else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
                         mappedChannel = '약국용';
-                    } else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
-                        if (!subCat2Text.includes('professional') && !subCat2Text.includes('프로페셔널')) {
-                            mappedChannel = '병의원용';
+                    }
+                    else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
+                        if (!subCat2Text.includes('professional') && !subCat2NoSpace.includes('professional')) {
+                            // crystal 단어 제외 로직 (단, crystal plus는 제외하지 않음)
+                            const isCrystal = pName.toLowerCase() === 'crystal' || pName.toLowerCase() === 'crystal ';
+                            if(!isCrystal) {
+                                mappedChannel = '병의원용';
+                            }
                         }
                     }
 
-                    // 병원용에서 'crystal' 단어가 포함된 제품 삭제 (단, 'crystal plus'는 살림)
-                    if (mappedChannel === '병의원용' && nameLower.includes('crystal')) {
-                        if (!nameLower.includes('plus')) {
-                            mappedChannel = null; 
-                        }
-                    }
+                    let mainCat = f.sub_category_1 || '기타';
+                    let subCat = '기본';
 
-                    let mainCat = '페이스';
-                    let subCat = '화장품';
-
-                    if (catText.includes('device') || nameLower.includes('device') || nameLower.includes('기기') || nameLower.includes('패드')) {
-                        subCat = '디바이스';
-                    }
-
-                    if (subCat1Text.includes('scalp') || subCat1Text.includes('hair') || nameLower.includes('scalp') || nameLower.includes('shampoo') || nameLower.includes('샴푸')) {
-                        mainCat = '스칼프';
+                    if (mappedChannel === '일반') {
+                        if (subCat1Text.includes('face')) mainCat = '페이스';
+                        else if (subCat1Text.includes('scalp') || subCat1Text.includes('hair')) mainCat = '스칼프';
+                        
+                        if (catText.includes('device')) subCat = '디바이스';
+                        else subCat = '화장품';
                     }
 
                     if (mappedChannel) {
                         productsData.push({
                             id: f.id, 
-                            productId: f.product_id, // 이미지 업로드 시 사용하기 위한 원본 FK
+                            productId: f.product_id,
                             name: pName, 
                             cleanName: pName, 
                             mainCategory: mainCat,
                             subCategory: subCat,
-                            imageUrl: imageUrl,
+                            imageList: imageList,
+                            currentImgIdx: 0,
                             msrp: msrp, 
                             mallPrice: msrp * 0.9, 
                             price: msrp * 0.7, 
                             lowestPrice: msrp * 0.8, 
                             source: '카탈로그', 
-                            cost: cost, // 연동된 원가 저장
+                            cost: cost,
                             channel: mappedChannel 
                         });
                     }
                 });
             }
-
             document.getElementById('db-status').style.display = 'none';
         } catch (error) {
             console.error(error);
@@ -1482,7 +1396,7 @@
         const qty = getNum('sampleQty');
         if(!id || qty <= 0) return;
         const p = productsData.find(x => x.id === id);
-        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: p.imageUrl });
+        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: (p.imageList && p.imageList.length > 0) ? p.imageList[0] : '' });
         updateSampleUI();
     }
     function removeSample(idx) { addedSamples.splice(idx, 1); updateSampleUI(); }
@@ -1503,7 +1417,7 @@
         const qty = getNum('giftQty');
         if(!id || qty <= 0) return;
         const p = productsData.find(x => x.id === id);
-        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: p.imageUrl });
+        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: (p.imageList && p.imageList.length > 0) ? p.imageList[0] : '' });
         updateGiftUI();
     }
     function removeGift(idx) { addedGifts.splice(idx, 1); updateGiftUI(); }
@@ -1548,7 +1462,6 @@
         const container = document.getElementById('product-list');
         container.innerHTML = '';
         
-        // 현재 활성화된 채널 탭에 따라 제품 필터링
         const filteredProducts = productsData.filter(p => p.channel === currentChannelFilter);
 
         if (filteredProducts.length === 0) {
@@ -1557,10 +1470,7 @@
         }
 
         const grouped = {};
-
-        // 동적 그루핑 처리
         filteredProducts.forEach(prod => {
-            // sub_category_1 (예: 앰플, 크림 등)을 메인 그룹명으로 사용
             let mainGroup = prod.mainCategory || '기타';
             let subGroup = prod.subCategory || '기본';
 
@@ -1594,8 +1504,6 @@
                     card.id = `prod-${prod.id}`;
                     card.onclick = () => toggleProduct(prod.id);
                     
-                    const priceLabel = prod.source.includes('Naver') ? `<span class="admin-only" style="font-size:0.7rem; color:var(--accent); margin-left:2px;">[Naver]</span>` : '';
-                    
                     // 드래그 앤 드롭 이벤트 추가
                     card.ondragover = (e) => { 
                         e.preventDefault(); 
@@ -1612,33 +1520,56 @@
                         card.classList.remove('drag-over'); 
                         if (!document.body.classList.contains('mode-admin') || !prod.productId) return; 
                         
-                        const file = e.dataTransfer.files[0];
-                        if (file && file.type.startsWith('image/')) {
-                            processImageUpload(file, prod.id, prod.productId);
-                        } else if(file) {
+                        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                        if (files.length > 0) {
+                            processImageUpload(files, prod.id, prod.productId);
+                        } else if(e.dataTransfer.files.length > 0) {
                             customAlert("이미지 파일만 업로드 가능합니다.", "업로드 오류");
                         }
                     };
+
+                    const hasImages = prod.imageList && prod.imageList.length > 0;
+                    const currentImg = hasImages ? prod.imageList[prod.currentImgIdx] : null;
+
+                    let imgHtml = '';
+                    if (hasImages) {
+                        imgHtml = `<img src="${currentImg}" alt="${prod.name}">`;
+                        if (prod.imageList.length > 1) {
+                            imgHtml += `
+                                <button class="carousel-btn left" onclick="event.stopPropagation(); window.changeImage('${prod.id}', -1)">&#10094;</button>
+                                <button class="carousel-btn right" onclick="event.stopPropagation(); window.changeImage('${prod.id}', 1)">&#10095;</button>
+                                <div class="carousel-counter">${prod.currentImgIdx + 1} / ${prod.imageList.length}</div>
+                            `;
+                        }
+                    } else {
+                        imgHtml = `<div class="no-img-box">NO IMG</div>`;
+                    }
                     
-                    // 이미지가 없으면 빈 박스를 표시 (NO IMG)
-                    const imgHtml = prod.imageUrl 
-                        ? `<img src="${prod.imageUrl}" alt="${prod.name}">`
-                        : `<div class="no-img-box">NO IMG</div>`;
-                    
-                    // [추가] 관리자 전용 이미지 업로드 버튼 렌더링
+                    let deleteBtnHtml = '';
+                    if (document.body.classList.contains('mode-admin') && hasImages && prod.productId) {
+                        deleteBtnHtml = `
+                            <button class="btn-delete-img admin-only" onclick="event.stopPropagation(); window.deleteProductImage('${prod.id}', '${prod.productId}', ${prod.currentImgIdx})" title="현재 이미지 삭제">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        `;
+                    }
+
                     let uploadBtnHtml = '';
                     if (prod.productId) {
                         uploadBtnHtml = `
-                        <label class="admin-only" style="position:absolute; top:12px; right:12px; cursor:pointer; background:rgba(255,255,255,0.95); border:1px solid var(--border); padding:6px; border-radius:50%; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;" onclick="event.stopPropagation();" title="클릭하여 업로드 또는 이미지를 드래그 앤 드롭하세요">
-                            <svg width="18" height="18" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                            <input type="file" style="display:none;" accept="image/*" onchange="handleFileSelect(event, '${prod.id}', '${prod.productId}')">
+                        <label class="admin-only" style="position:absolute; top:8px; right:8px; cursor:pointer; background:rgba(255,255,255,0.95); border:1px solid var(--border); padding:6px; border-radius:50%; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;" onclick="event.stopPropagation();" title="클릭하여 다중 업로드 또는 이미지를 카드에 바로 드롭하세요">
+                            <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                            <input type="file" style="display:none;" accept="image/*" multiple onchange="window.handleFileSelect(event, '${prod.id}', '${prod.productId}')">
                         </label>`;
                     }
 
                     card.innerHTML = `
-                        ${uploadBtnHtml}
-                        ${imgHtml}
-                        <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:10px;">${prod.name}</div>
+                        <div class="carousel-container">
+                            ${deleteBtnHtml}
+                            ${uploadBtnHtml}
+                            ${imgHtml}
+                        </div>
+                        <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px;">${prod.name}</div>
                         
                         <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
                         
@@ -1650,7 +1581,6 @@
                         <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600;">
                             온라인 최저가: <span id="lowest-${prod.id}">${formatNum(prod.lowestPrice)}원</span> 
                             <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'lowest')">수정</span>
-                            ${priceLabel}
                         </div>
                         
                         <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold);">
@@ -1677,13 +1607,24 @@
         updateAutoSupplyRatio(); calculate();
     }
 
-    function handleFileSelect(event, catalogId, productId) {
-        const file = event.target.files[0];
-        if (file) processImageUpload(file, catalogId, productId);
+    window.changeImage = function(catalogId, direction) {
+        const prod = productsData.find(p => p.id === catalogId);
+        if (!prod || !prod.imageList || prod.imageList.length <= 1) return;
+
+        prod.currentImgIdx += direction;
+        if (prod.currentImgIdx < 0) prod.currentImgIdx = prod.imageList.length - 1;
+        if (prod.currentImgIdx >= prod.imageList.length) prod.currentImgIdx = 0;
+
+        renderProducts();
+    };
+
+    window.handleFileSelect = function(event, catalogId, productId) {
+        const files = Array.from(event.target.files);
+        if (files.length > 0) processImageUpload(files, catalogId, productId);
     }
 
-    async function processImageUpload(file, catalogId, productId) {
-        if(!file || !productId) return;
+    async function processImageUpload(files, catalogId, productId) {
+        if(!files || files.length === 0 || !productId) return;
         
         const card = document.getElementById(`prod-${catalogId}`);
         if(card) {
@@ -1692,36 +1633,38 @@
         }
 
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${productId}-${Date.now()}.${fileExt}`;
-            const filePath = `images/${fileName}`; // 폴더 경로 명확화
+            const prod = productsData.find(p => p.id === catalogId);
+            let currentImages = [...(prod.imageList || [])];
 
-            // 1. Supabase Storage 에 업로드
-            const { error: uploadError } = await supabaseClient.storage
-                .from('product_images')
-                .upload(filePath, file, { upsert: true });
+            for (const file of files) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${productId}-${Date.now()}-${Math.floor(Math.random()*1000)}.${fileExt}`;
+                const filePath = `public/${fileName}`;
 
-            if (uploadError) throw uploadError;
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('product_images')
+                    .upload(filePath, file, { upsert: true });
 
-            // 2. Public URL 가져오기 및 캐시 방지(Cache-busting) 파라미터 추가
-            const { data: publicUrlData } = supabaseClient.storage
-                .from('product_images')
-                .getPublicUrl(filePath);
-                
-            const newImageUrl = publicUrlData.publicUrl + '?t=' + Date.now();
+                if (uploadError) throw uploadError;
 
-            // 3. products 테이블의 image_url 업데이트
+                const { data: publicUrlData } = supabaseClient.storage
+                    .from('product_images')
+                    .getPublicUrl(filePath);
+                    
+                const newImageUrl = publicUrlData.publicUrl + '?t=' + Date.now();
+                currentImages.push(newImageUrl);
+            }
+
             const { error: dbError } = await supabaseClient
                 .from('products')
-                .update({ image_url: newImageUrl })
+                .update({ image_url: JSON.stringify(currentImages) })
                 .eq('id', productId);
 
             if (dbError) throw dbError;
 
-            // 4. 로컬 데이터 변경 및 화면 갱신
-            const prod = productsData.find(p => p.id === catalogId);
             if(prod) {
-                prod.imageUrl = newImageUrl;
+                prod.imageList = currentImages;
+                prod.currentImgIdx = currentImages.length - 1; 
                 renderProducts();
                 calculate(); 
                 updateSampleUI();
@@ -1737,6 +1680,56 @@
             if(card) card.style.opacity = '1';
         }
     }
+
+    window.deleteProductImage = async function(catalogId, productId, imgIdx) {
+        const isConfirmed = await customConfirm("현재 보고 있는 이미지를 삭제하시겠습니까?", "이미지 삭제");
+        if (!isConfirmed) return;
+
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod || !prod.imageList || prod.imageList.length <= imgIdx) return;
+
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) card.style.opacity = '0.5';
+
+        try {
+            const urlToDelete = prod.imageList[imgIdx];
+            const newImages = [...prod.imageList];
+            newImages.splice(imgIdx, 1);
+
+            const dbValue = newImages.length > 0 ? JSON.stringify(newImages) : null;
+            const { error: dbError } = await supabaseClient
+                .from('products')
+                .update({ image_url: dbValue })
+                .eq('id', productId);
+
+            if (dbError) throw dbError;
+
+            try {
+                const urlObj = new URL(urlToDelete);
+                const pathParts = urlObj.pathname.split('/product_images/');
+                if (pathParts.length > 1) {
+                    let filePath = pathParts[1].split('?')[0]; 
+                    await supabaseClient.storage.from('product_images').remove([decodeURIComponent(filePath)]);
+                }
+            } catch(e) { console.warn("스토리지 실물 파일 삭제 건너뜀", e); }
+
+            prod.imageList = newImages;
+            if (prod.currentImgIdx >= newImages.length) {
+                prod.currentImgIdx = Math.max(0, newImages.length - 1);
+            }
+            
+            renderProducts();
+            calculate();
+            updateSampleUI();
+            updateGiftUI();
+
+        } catch(e) {
+            console.error(e);
+            customAlert("이미지 삭제 실패: " + e.message, "오류");
+        } finally {
+            if(card) card.style.opacity = '1';
+        }
+    };
 
     async function editPrice(id, type) {
         const prod = productsData.find(p => p.id === id);
@@ -1764,61 +1757,6 @@
         }
     }
 
-    // [추가] 관리자 제품 이미지 업로드 기능
-    async function uploadProductImage(event, catalogId, productId) {
-        const file = event.target.files[0];
-        if(!file || !productId) return;
-        
-        const card = document.getElementById(`prod-${catalogId}`);
-        if(card) card.style.opacity = '0.5';
-
-        try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${productId}-${Date.now()}.${fileExt}`;
-            const filePath = `public/${fileName}`;
-
-            // 1. Supabase Storage 에 업로드
-            const { error: uploadError } = await supabaseClient.storage
-                .from('product_images')
-                .upload(filePath, file, { upsert: true });
-
-            if (uploadError) throw uploadError;
-
-            // 2. Public URL 가져오기
-            const { data: publicUrlData } = supabaseClient.storage
-                .from('product_images')
-                .getPublicUrl(filePath);
-                
-            const newImageUrl = publicUrlData.publicUrl;
-
-            // 3. products 테이블의 image_url 업데이트
-            const { error: dbError } = await supabaseClient
-                .from('products')
-                .update({ image_url: newImageUrl })
-                .eq('id', productId);
-
-            if (dbError) throw dbError;
-
-            // 4. 로컬 데이터 변경 및 화면 갱신
-            const prod = productsData.find(p => p.id === catalogId);
-            if(prod) {
-                prod.imageUrl = newImageUrl;
-                renderProducts();
-                calculate(); 
-                updateSampleUI();
-                updateGiftUI();
-            }
-            
-            customAlert("이미지가 성공적으로 저장되었습니다.", "업로드 완료");
-
-        } catch(e) {
-            console.error(e);
-            customAlert("이미지 업로드 실패: " + e.message, "오류");
-        } finally {
-            if(card) card.style.opacity = '1';
-        }
-    }
-
     function calculate() {
         const pkgEl = document.getElementById('selected-package-info');
         const samEl = document.getElementById('selected-sample-info');
@@ -1840,8 +1778,8 @@
                 totalMall += p.mallPrice || (p.msrp * 0.9);
                 totalLowest += p.lowestPrice || p.price; 
                 
-                let imgHtml = p.imageUrl 
-                    ? `<img src="${p.imageUrl}">` 
+                let imgHtml = (p.imageList && p.imageList.length > 0)
+                    ? `<img src="${p.imageList[0]}">` 
                     : `<div class="no-img-small">NO IMG</div>`;
                     
                 itemsHtml.push(`<div class="pkg-item">${imgHtml}<span>${p.name}</span></div>`); 
