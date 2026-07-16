@@ -504,6 +504,25 @@
         </div>
     </div>
 
+    <!-- 패널: 회원 가입 승인 관리 (관리자 전용) -->
+    <div class="panel full-width admin-only" id="panel-admin-users">
+        <h2 style="margin-bottom: 24px; border-bottom: none;">가입 승인 대기자 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(승인해야 로그인 가능)</span></h2>
+        <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
+            <table id="userApprovalTable" style="margin-top: 0; min-width: 600px; border: none; border-radius: 0;">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">가입 신청일</th>
+                        <th>이메일 주소</th>
+                        <th style="width: 150px;">관리</th>
+                    </tr>
+                </thead>
+                <tbody id="userApprovalListBody">
+                    <tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">승인 대기 중인 사용자가 없습니다.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- 패널 7: 인플루언서 확정 대시보드 (관리자 전용) -->
     <div class="panel full-width admin-only" id="panel-admin-campaigns">
         <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(수신된 결재 요청)</span></h2>
@@ -650,6 +669,19 @@
                 if(error.message.includes("Email not confirmed")) throw new Error("이메일 인증이 완료되지 않았습니다. 메일함을 확인해주세요.");
                 throw error;
             }
+
+            // 가입 승인 여부 체크 로직 추가
+            if (data && data.user) {
+                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved').eq('id', data.user.id).single();
+                
+                // 최고 관리자 계정들은 예외적으로 무조건 통과 (안전장치)
+                const isSuperAdmin = adminEmails.includes(data.user.email);
+                
+                if (!isSuperAdmin && (!profile || profile.is_approved !== true)) {
+                    await supabaseClient.auth.signOut(); // 승인 안된 경우 강제 로그아웃
+                    throw new Error("관리자의 가입 승인 대기 중입니다.\n승인이 완료되어야 로그인이 가능합니다.");
+                }
+            }
         } catch (err) {
             showAuthMessage(err.message);
         } finally {
@@ -673,6 +705,7 @@
             btnAdmin.style.display = 'block';
             btnAddAdmin.style.display = 'block'; 
             setMode('admin', false);
+            fetchPendingUsers(); // 관리자 뷰일 때 가입 대기자 목록 갱신
         } else {
             btnInfluencer.style.display = 'none';
             btnAdmin.style.display = 'none';
@@ -1889,6 +1922,64 @@
 
         document.getElementById('resTargetQtyText').textContent = formatNum(targetQty);
         document.getElementById('resBepQtyText').textContent = formatNum(Math.ceil(bepQty)); 
+    }
+
+    // --- 회원 가입 승인 관련 함수 ---
+    async function fetchPendingUsers() {
+        try {
+            const { data, error } = await supabaseClient.from('user_profiles').select('*').eq('is_approved', false).order('created_at', { ascending: false });
+            if (error) throw error;
+            
+            const tbody = document.getElementById('userApprovalListBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">승인 대기 중인 사용자가 없습니다.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            data.forEach(u => {
+                const reqDate = new Date(u.created_at).toLocaleDateString();
+                html += `
+                    <tr style="background:#fff;">
+                        <td style="text-align:center; vertical-align:middle;">${reqDate}</td>
+                        <td style="text-align:center; font-weight:600; color:var(--text-bold); vertical-align:middle;">${u.email}</td>
+                        <td style="text-align:center; vertical-align:middle;">
+                            <button class="btn-approve-admin" onclick="approveUser('${u.id}')" style="margin:0 4px;">승인</button>
+                            <button class="btn-reject-admin" onclick="rejectUser('${u.id}')" style="margin:0 4px;">거절</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        } catch (e) {
+            console.error("대기자 목록 조회 실패:", e);
+        }
+    }
+
+    async function approveUser(id) {
+        try {
+            const { error } = await supabaseClient.from('user_profiles').update({ is_approved: true }).eq('id', id);
+            if (error) throw error;
+            customAlert("해당 사용자의 가입이 승인되었습니다.", "승인 완료");
+            fetchPendingUsers();
+        } catch (e) {
+            console.error(e);
+            customAlert("승인 처리 중 오류가 발생했습니다.", "오류");
+        }
+    }
+
+    async function rejectUser(id) {
+        const isConfirmed = await customConfirm("해당 사용자의 가입 요청을 거절(데이터 삭제)하시겠습니까?", "가입 거절");
+        if (!isConfirmed) return;
+        try {
+            const { error } = await supabaseClient.from('user_profiles').delete().eq('id', id);
+            if (error) throw error;
+            customAlert("가입 요청이 거절 처리되었습니다.", "처리 완료");
+            fetchPendingUsers();
+        } catch (e) {
+            console.error(e);
+            customAlert("거절 처리 중 오류가 발생했습니다.", "오류");
+        }
     }
 </script>
 </body>
