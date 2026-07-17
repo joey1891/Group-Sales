@@ -432,37 +432,55 @@
 <div id="addProductModal" class="modal-overlay">
     <div class="modal-box" style="max-width: 500px;">
         <h3 class="modal-title">신규 제품 통합 등록</h3>
-        <p class="modal-msg" style="margin-bottom: 16px;">제품명, 가격, 원가를 입력하면 4개의 마스터 DB에 한 번에 등록됩니다.</p>
-        <div style="display: grid; gap: 12px;">
+        <p class="modal-msg" style="margin-bottom: 16px;">제품명, 카테고리, 가격, 원가를 입력하면 4개의 마스터 DB에 한 번에 등록됩니다.</p>
+        <div style="display: grid; gap: 12px; max-height: 60vh; overflow-y: auto; padding-right: 8px;">
             <div>
                 <label style="font-weight:600; font-size:0.9rem;">제품명 (필수)</label>
                 <input type="text" id="newProdName" class="auth-input" placeholder="예: 코어임팩트">
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div>
-                    <label style="font-weight:600; font-size:0.9rem;">메인 분류 (Category)</label>
-                    <input type="text" id="newProdCat" class="auth-input" list="catList" placeholder="선택 또는 입력 (예: Cosmetics)">
-                    <datalist id="catList"></datalist>
-                </div>
-                <div>
-                    <label style="font-weight:600; font-size:0.9rem;">소비자 정가 (원)</label>
-                    <input type="text" inputmode="numeric" id="newProdMsrp" class="auth-input" placeholder="0" oninput="formatInput(this)">
-                </div>
+            <div>
+                <label style="font-weight:600; font-size:0.9rem;">메인 분류 (Category)</label>
+                <input type="text" id="newProdCat" class="auth-input" list="catList" placeholder="선택 또는 입력 (예: Cosmetics)">
+                <datalist id="catList"></datalist>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div>
                     <label style="font-weight:600; font-size:0.9rem;">대분류 (Sub Category 1)</label>
-                    <input type="text" id="newProdSubCat1" class="auth-input" list="subCat1List" placeholder="선택 또는 입력 (예: 페이스)">
+                    <input type="text" id="newProdSubCat1" class="auth-input" list="subCat1List" placeholder="예: 페이스">
                     <datalist id="subCat1List"></datalist>
                 </div>
                 <div>
                     <label style="font-weight:600; font-size:0.9rem;">소분류 (Sub Category 2)</label>
-                    <input type="text" id="newProdSubCat2" class="auth-input" list="subCat2List" placeholder="선택 또는 입력 (예: Home Care)">
+                    <input type="text" id="newProdSubCat2" class="auth-input" list="subCat2List" placeholder="예: Home Care">
                     <datalist id="subCat2List"></datalist>
                 </div>
             </div>
             <div>
-                <label style="font-weight:600; font-size:0.9rem; color:var(--danger);">제품 초기 원가 (원)</label>
+                <label style="font-weight:600; font-size:0.9rem;">세부분류 (Sub Category 3) <span style="color:var(--danger)">*필수</span></label>
+                <input type="text" id="newProdSubCat3" class="auth-input" placeholder="예: 앰플 (없으면 '기본' 입력)">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">단위 (Unit)</label>
+                    <input type="text" id="newProdUnit" class="auth-input" placeholder="예: 30ml">
+                </div>
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">옵션 (Option)</label>
+                    <input type="text" id="newProdOption" class="auth-input" placeholder="예: 1ea">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">소비자 정가 (KRW)</label>
+                    <input type="text" inputmode="numeric" id="newProdMsrpKrw" class="auth-input" placeholder="0" oninput="formatInput(this)">
+                </div>
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">소비자 정가 (USD)</label>
+                    <input type="text" inputmode="numeric" id="newProdMsrpUsd" class="auth-input" placeholder="0.00" oninput="formatInput(this)">
+                </div>
+            </div>
+            <div>
+                <label style="font-weight:600; font-size:0.9rem; color:var(--danger);">제품 초기 원가 (KRW)</label>
                 <input type="text" inputmode="numeric" id="newProdCost" class="auth-input" placeholder="0" oninput="formatInput(this)" style="border-color:var(--danger);">
             </div>
         </div>
@@ -665,125 +683,15 @@
     function openAddProductModal() {
         document.getElementById('addProductModal').style.display = 'flex';
         document.getElementById('newProdName').value = '';
-        document.getElementById('newProdMsrp').value = '';
-        document.getElementById('newProdCost').value = '';
-        document.getElementById('newProdMainCat').value = '';
-        document.getElementById('newProdSubCat').value = '';
-    }
-    function closeAddProductModal() { document.getElementById('addProductModal').style.display = 'none'; }
-
-    async function submitNewProduct() {
-        const name = document.getElementById('newProdName').value.trim();
-        const channel = document.getElementById('newProdChannel').value;
-        const mainCat = document.getElementById('newProdMainCat').value.trim() || '기타';
-        const subCat = document.getElementById('newProdSubCat').value.trim() || '기본';
-        const msrp = getNum('newProdMsrp');
-        const cost = getNum('newProdCost');
-
-        if (!name) return customAlert("제품명을 입력해주세요.");
-
-        const btn = document.getElementById('btnSubmitNewProd');
-        btn.innerText = "데이터베이스 저장 중..."; btn.disabled = true;
-
-        try {
-            // 安全한 고유 ID 생성기 사용 (null 회피)
-            const newProductId = generateSafeUUID();
-
-            const { data: prodData, error: prodErr } = await supabaseClient.from('products')
-                .insert([{ id: newProductId, clean_name: name, main_category: mainCat, sub_category: subCat }])
-                .select('id').single();
-            if (prodErr) throw new Error("마스터 DB 오류:\n" + prodErr.message);
-
-            const productId = prodData.id;
-            
-            const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
-                id: generateSafeUUID(), product_id: productId, product_name: name, category: channel, 
-                sub_category_1: mainCat, sub_category_2: subCat, unit_price: msrp, is_active: true
-            }]);
-            if (catErr) throw new Error("카탈로그 오류:\n" + catErr.message);
-
-            const { error: priceErr } = await supabaseClient.from('product_prices').insert([{
-                id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrp
-            }]);
-            if (priceErr) throw new Error("가격 DB 오류:\n" + priceErr.message);
-
-            const { error: costErr } = await supabaseClient.from('product_costs').insert([{
-                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', production_cost: cost,
-                effective_date: new Date().toISOString().split('T')[0]
-            }]);
-            if (costErr) throw new Error("원가 DB 오류:\n" + costErr.message);
-
-            customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
-            closeAddProductModal();
-            fetchProducts(); 
-        } catch (error) {
-            console.error(error);
-            customAlert("데이터베이스 저장 오류 (Supabase 권한을 확인하세요)\n\n" + error.message, "오류");
-        } finally { btn.innerText = "DB에 통합 등록하기"; btn.disabled = false; }
-    }
-
-    window.editCost = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-        
-        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", (prod.cost||0).toString());
-        if(!newValStr) return;
-        
-        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
-        if(newVal >= 0) {
-            document.getElementById(`prod-${catalogId}`).style.opacity = '0.5';
-            try {
-                const { data: existing, error: fetchErr } = await supabaseClient.from('product_costs').select('id').eq('product_id', productId).maybeSingle();
-                if (fetchErr) throw fetchErr;
-
-                if (existing) {
-                    const { error: updateErr } = await supabaseClient.from('product_costs').update({ production_cost: newVal, updated_at: new Date().toISOString() }).eq('id', existing.id);
-                    if (updateErr) throw updateErr;
-                } else {
-                    const { error: insertErr } = await supabaseClient.from('product_costs').insert([{
-                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', production_cost: newVal,
-                        effective_date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString(), updated_at: new Date().toISOString()
-                    }]);
-                    if (insertErr) throw insertErr;
-                }
-                prod.cost = newVal;
-                renderProducts(); updateAutoSupplyRatio(); calculate();
-                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
-            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); } 
-            finally { document.getElementById(`prod-${catalogId}`).style.opacity = '1'; }
-        }
-    };
-
-    function renderCategoryTabs() {
-        const container = document.getElementById('category-tab-container');
-        if(!container) return;
-        container.innerHTML = '';
-        
-        categoryList.forEach(cat => {
-            let tab = document.createElement('div');
-            tab.className = `channel-tab ${currentCategoryFilter === cat ? 'active' : ''}`;
-            tab.onclick = function() { setCategoryTab(cat, this); };
-            tab.innerText = cat;
-            container.appendChild(tab);
-        });
-    }
-
-    function setCategoryTab(cat, element) {
-        document.querySelectorAll('.channel-tab').forEach(el => el.classList.remove('active'));
-        if(element) element.classList.add('active');
-        currentCategoryFilter = cat;
-        if(productsData.length > 0) renderProducts();
-    }
-
-    function openAddProductModal() {
-        document.getElementById('addProductModal').style.display = 'flex';
-        document.getElementById('newProdName').value = '';
-        document.getElementById('newProdMsrp').value = '';
+        document.getElementById('newProdMsrpKrw').value = '';
+        document.getElementById('newProdMsrpUsd').value = '';
         document.getElementById('newProdCost').value = '';
         document.getElementById('newProdCat').value = '';
-        document.getElementById('newProdSubCat1').value = currentCategoryFilter || '';
+        document.getElementById('newProdSubCat1').value = '';
         document.getElementById('newProdSubCat2').value = '';
+        document.getElementById('newProdSubCat3').value = '기본'; // NOT NULL 제약조건 우회용 기본값
+        document.getElementById('newProdUnit').value = '';
+        document.getElementById('newProdOption').value = '';
         
         // 현재 DB에 있는 분류 데이터를 가져와서 자동완성(Datalist) 목록 생성
         const catSet = new Set();
@@ -808,7 +716,12 @@
         const cat = document.getElementById('newProdCat').value.trim() || '기타';
         const subCat1 = document.getElementById('newProdSubCat1').value.trim() || '기타';
         const subCat2 = document.getElementById('newProdSubCat2').value.trim() || '기본';
-        const msrp = getNum('newProdMsrp');
+        const subCat3 = document.getElementById('newProdSubCat3').value.trim() || '기본'; // DB 에러 방지
+        const unit = document.getElementById('newProdUnit').value.trim();
+        const option = document.getElementById('newProdOption').value.trim();
+        
+        const msrpKrw = getNum('newProdMsrpKrw');
+        const msrpUsd = getNum('newProdMsrpUsd') || 0; // 달러 값이 없으면 0 처리
         const cost = getNum('newProdCost');
 
         if (!name) return customAlert("제품명을 입력해주세요.");
@@ -827,17 +740,27 @@
 
             const productId = prodData.id;
             
-            // 2. form_catalog_master 테이블에 카탈로그 노출용 정보 Insert
+            // 2. form_catalog_master 테이블에 카탈로그 노출용 정보 Insert (USD 정가 기록, Unit, Option, SubCat3 포함)
             const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
-                id: crypto.randomUUID(), product_id: productId, product_name: name, category: cat, 
-                sub_category_1: subCat1, sub_category_2: subCat2, unit_price: msrp, is_active: true
+                id: crypto.randomUUID(), 
+                product_id: productId, 
+                product_name: name, 
+                category: cat, 
+                sub_category_1: subCat1, 
+                sub_category_2: subCat2, 
+                sub_category_3: subCat3,
+                unit: unit,
+                product_option: option,
+                unit_price: msrpUsd, // 폼 카탈로그는 USD 기록
+                is_active: true
             }]);
             if (catErr) throw new Error("카탈로그 등록 실패:\n" + catErr.message);
 
-            // 3. product_prices 테이블에 가격 정보 Insert
-            const { error: priceErr } = await supabaseClient.from('product_prices').insert([{
-                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrp
-            }]);
+            // 3. product_prices 테이블에 가격 정보 Insert (KRW, USD 두 가지 동시 기록)
+            const { error: priceErr } = await supabaseClient.from('product_prices').insert([
+                { id: crypto.randomUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrpKrw },
+                { id: crypto.randomUUID(), product_id: productId, currency: 'USD', b2c_msrp: msrpUsd }
+            ]);
             if (priceErr) throw new Error("가격 등록 실패:\n" + priceErr.message);
 
             // 4. product_costs 테이블에 원가 정보 Insert
