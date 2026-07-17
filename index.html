@@ -680,6 +680,28 @@
         if (mode === 'influencer' && showMsg) customAlert("인플루언서 뷰로 전환되었습니다.");
     }
 
+    // 누락되었던 탭 렌더링 함수 복구
+    function renderCategoryTabs() {
+        const container = document.getElementById('category-tab-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        categoryList.forEach(cat => {
+            const btn = document.createElement('div');
+            btn.className = `channel-tab ${cat === currentCategoryFilter ? 'active' : ''}`;
+            btn.innerText = cat;
+            btn.onclick = () => setCategoryTab(cat);
+            container.appendChild(btn);
+        });
+    }
+
+    // 누락되었던 탭 클릭 필터링 함수 복구
+    function setCategoryTab(category) {
+        currentCategoryFilter = category;
+        renderCategoryTabs(); // 탭 활성화 상태 업데이트
+        renderProducts();     // 선택된 카테고리에 맞게 제품 다시 그리기
+    }
+
     function openAddProductModal() {
         document.getElementById('addProductModal').style.display = 'flex';
         document.getElementById('newProdName').value = '';
