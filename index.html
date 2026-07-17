@@ -42,24 +42,20 @@
         .panel { background: var(--card-bg); padding: 32px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1); border: none; }
         .full-width { grid-column: 1 / -1; }
         
-        /* 모드 토글 스위치 디자인 */
         .mode-toggle-wrapper { position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 6px; display: flex; gap: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .mode-btn { padding: 8px 16px; border: none; background: transparent; border-radius: 8px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem; }
         .mode-btn.active { background: var(--text-bold); color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
         
-        /* 모드에 따른 숨김 처리 */
         body.mode-influencer .admin-only { display: none !important; }
         body.mode-admin .influencer-only { display: none !important; }
         body.mode-influencer .dashboard-grid { grid-template-columns: 1fr; }
 
         .page-title-container { text-align: center; margin-bottom: 40px; margin-top: 10px; }
         .page-title { font-size: 2.25rem; font-weight: 800; color: var(--text-inverse); margin: 0 0 8px 0; letter-spacing: -0.03em; }
-        .page-subtitle { font-size: 1rem; font-weight: 500; color: #94a3b8; margin: 0; letter-spacing: -0.01em; }
-
+        
         h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-bold); margin-top: 0; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px; display: inline-block; width: 100%;}
         h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-top: 28px; margin-bottom: 12px; }
 
-        /* 제품 채널 탭 스타일 */
         .channel-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; overflow-x: auto; }
         .channel-tab { padding: 8px 20px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--text-muted); font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-size: 0.95rem; }
         .channel-tab.active { background: var(--text-bold); color: #fff; border-color: var(--text-bold); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
@@ -76,27 +72,23 @@
         .product-card .price { font-weight: 700; color: var(--text-bold); margin-top: auto; font-size: 1.05rem; }
         .product-card .cost-badge { font-size: 0.8rem; background: #fee2e2; color: var(--danger); padding: 4px 8px; border-radius: 6px; margin-top: 6px; font-weight: 600; border: 1px solid #fecaca; }
         
-        /* Carousel Styles */
-        .carousel-container { position: relative; width: 100%; height: 140px; margin-bottom: 16px; background: var(--bg-light); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid transparent; }
-        .product-card .no-img-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #94a3b8; font-weight: 600; border: 1px dashed #cbd5e1; border-radius: 8px; margin: 0; box-sizing: border-box;}
+        .carousel-container { position: relative; width: 100%; height: 140px; margin-bottom: 16px; background: var(--bg-light); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .carousel-container img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; padding: 8px; box-sizing: border-box; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: background 0.2s; z-index: 5; }
-        .carousel-btn:hover { background: rgba(0,0,0,0.6); }
+        .product-card .no-img-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #94a3b8; font-weight: 600; border: 1px dashed #cbd5e1; border-radius: 8px; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.25); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 12px; z-index: 5; }
         .carousel-btn.left { left: 4px; }
         .carousel-btn.right { right: 4px; }
-        .carousel-counter { position: absolute; bottom: 4px; right: 8px; background: rgba(0,0,0,0.4); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; z-index: 5; font-weight: 600; letter-spacing: 0.5px;}
+        .carousel-counter { position: absolute; bottom: 4px; right: 8px; background: rgba(0,0,0,0.4); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; z-index: 5; font-weight: 600;}
         .btn-delete-img { position: absolute; top: 8px; left: 8px; background: rgba(225,29,72,0.9); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .btn-delete-img:hover { background: var(--danger); transform: scale(1.1); }
         
         .btn-print { background-color: #fff; color: var(--text-main); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .btn-print:hover { background-color: var(--bg-light); border-color: var(--text-muted); }
         .btn-print.primary { background-color: var(--primary); color: #fff; border-color: var(--primary); }
-        .btn-print.primary:hover { background-color: var(--primary-hover); }
-
+        
         .added-item-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
         .added-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-light); padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; font-weight: 500; color: var(--text-bold); }
-        .added-item-del { color: var(--danger); cursor: pointer; font-weight: bold; padding: 4px; background: #fff; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background-color 0.2s; }
-        .added-item-del:hover { background-color: #ffe4e6; }
+        .added-item-del { color: var(--danger); cursor: pointer; font-weight: bold; padding: 4px; background: #fff; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         
         .package-visualizer { display: flex; align-items: center; gap: 16px; padding: 20px; background-color: var(--bg-light); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 20px; }
         .pkg-item { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100px; flex-shrink: 0; }
@@ -116,23 +108,15 @@
         input[type="date"] { text-align: left; width: auto; }
         input[type="password"], input[type="email"] { text-align: left; width: 100%; }
         input[type="text"].text-input { text-align: left; width: 160px; }
-        
         input[readonly] { color: var(--text-muted); background: var(--bg-light); border-color: transparent; }
         input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         select { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); font-family: inherit; font-size: 0.95rem; outline: none; background: #fff; font-weight: 500; color: var(--text-bold); }
-        select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         
         .btn-confirm { background-color: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3); }
-        .btn-confirm:hover { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(59, 130, 246, 0.4); }
         
         .btn-approve-admin { background-color: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 6px;}
-        .btn-approve-admin:hover { background-color: var(--accent-hover); }
-
         .btn-reject-admin { background-color: #fff; color: var(--danger); border: 1px solid var(--danger); padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 6px;}
-        .btn-reject-admin:hover { background-color: #ffe4e6; }
-        
         .btn-delete-admin { background-color: var(--text-muted); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 6px;}
-        .btn-delete-admin:hover { background-color: var(--text-main); }
 
         .badge-pending { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
         .badge-approved { background: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
@@ -143,13 +127,13 @@
         
         .partner-summary-card { background: #ffffff; border: 1px solid var(--border); border-top: 4px solid var(--accent); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
         .partner-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
-        .partner-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
+        .partner-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--accent); margin-bottom: 16px; line-height: 1; }
         .partner-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
         .partner-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: var(--bg-light); border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
 
-        .hq-summary-card { background: var(--bg-light); border: 1px solid var(--border); border-top: 4px solid var(--text-bold); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .hq-summary-card { background: var(--bg-light); border: 1px solid var(--border); border-top: 4px solid var(--text-bold); color: var(--text-bold); padding: 32px 24px; border-radius: 12px; text-align: center; }
         .hq-summary-card .summary-label { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
-        .hq-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--text-bold); margin-bottom: 16px; letter-spacing: -0.02em; line-height: 1; }
+        .hq-summary-card .summary-value { font-size: 2.75rem; font-weight: 800; color: var(--text-bold); margin-bottom: 16px; line-height: 1; }
         .hq-summary-card .summary-value .unit { font-size: 1.25rem; font-weight: 600; margin-left: 6px; color: var(--text-muted); }
         .hq-summary-card .summary-desc { font-size: 0.9rem; color: var(--text-muted); background: #fff; border: 1px solid var(--border); display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
 
@@ -160,104 +144,60 @@
         #resultTable td:last-child { border-right: none; }
         #resultTable td:first-child { text-align: center; font-weight: 600; background: #fff; width: auto; }
         #resultTable tr.bep-row td { background-color: var(--bg-light); color: var(--text-muted); }
-        #resultTable tr.bep-row td:first-child { background-color: var(--bg-light); }
         #resultTable tr.target-row td { background-color: #eff6ff; }
         #resultTable tr.target-row td:first-child { background-color: #eff6ff; color: var(--accent); }
         
         #db-status { padding: 12px 20px; margin-bottom: 32px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: var(--text-bold); border: 1px solid var(--border); }
         
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Custom Modal Styles */
+        /* Modal & Auth Styling */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 9999; }
         .modal-box { background: #fff; padding: 32px; border-radius: 16px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid var(--border); }
         .modal-title { margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; font-weight: 700; color: var(--text-bold); }
         .modal-msg { margin-bottom: 24px; color: var(--text-muted); font-size: 1rem; word-break: keep-all; line-height: 1.5; }
         .modal-input { width: 100%; display: none; padding: 12px; margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; text-align: left; box-sizing: border-box; font-family: inherit; color: var(--text-bold); }
-        .modal-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         .modal-actions { text-align: right; display: flex; gap: 8px; justify-content: flex-end; }
         .modal-btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; transition: all 0.2s; font-family: inherit; }
         .modal-btn-cancel { background: var(--bg-light); color: var(--text-bold); border: 1px solid var(--border); }
-        .modal-btn-cancel:hover { background: #e2e8f0; }
         .modal-btn-ok { background: var(--primary); color: #fff; }
-        .modal-btn-ok:hover { background: var(--primary-hover); }
-
-        /* Auth Overlay Styles */
-        .auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background-color: var(--bg-page); z-index: 100000; 
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 0.4s ease;
-        }
-        .auth-box {
-            background: #ffffff; padding: 48px 40px; border-radius: 20px; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-            max-width: 400px; width: 90%; text-align: center;
-        }
-        .auth-logo {
-            width: 64px; height: 64px; background: var(--accent); color: white; 
-            border-radius: 16px; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: bold; margin-bottom: 24px;
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
-        }
-
+        
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-page); z-index: 100000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.4s ease; }
+        .auth-box { background: #ffffff; padding: 48px 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); max-width: 400px; width: 90%; text-align: center; }
+        .auth-logo { width: 64px; height: 64px; background: var(--accent); color: white; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin-bottom: 24px; box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3); }
         .auth-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
         .auth-tab { flex: 1; background: none; border: none; padding: 12px; font-size: 1.05rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.2s; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; }
         .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
         .auth-form { display: flex; flex-direction: column; gap: 12px; }
         .auth-input { width: 100% !important; padding: 14px 16px !important; border-radius: 8px !important; border: 1px solid var(--border) !important; font-size: 1rem !important; box-sizing: border-box; font-family: inherit; text-align: left !important; }
-        .auth-input:focus { border-color: var(--accent) !important; outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.1) !important; }
         .auth-btn { width: 100%; background: var(--text-bold); color: white; border: none; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; margin-top: 8px; font-family: inherit; }
-        .auth-btn:hover { background: #000; }
         .auth-msg { margin-top: 16px; font-size: 0.9rem; color: var(--danger); font-weight: 500; min-height: 20px; word-break: keep-all; line-height: 1.4; }
         .auth-msg.success { color: var(--success); }
-
-        @media print {
-            body { background: #fff; padding: 0; margin: 0; color: #000; }
-            .container { display: block; gap: 0; max-width: 100%; }
-            .panel { display: none; box-shadow: none; border: none; padding: 0; margin: 0; }
-            #hq-panel { display: block !important; width: 100%; }
-            .btn-print, .mode-toggle-wrapper { display: none !important; }
-            .page-title-container, #db-status { display: none; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        }
     </style>
 </head>
 <body class="mode-admin">
 
 <div id="authOverlay" class="auth-overlay">
     <div class="auth-box">
-        <div class="auth-logo">
-            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-        </div>
-        
+        <div class="auth-logo"><svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
         <div class="auth-tabs">
             <button class="auth-tab active" onclick="switchAuthTab('login')">로그인</button>
             <button class="auth-tab" onclick="switchAuthTab('signup')">회원가입</button>
         </div>
-
         <div id="loginForm" class="auth-form">
             <input type="email" id="loginEmail" class="auth-input" placeholder="이메일 주소">
             <input type="password" id="loginPassword" class="auth-input" placeholder="비밀번호" onkeypress="if(event.key==='Enter') handleLogin()">
             <button class="auth-btn" onclick="handleLogin()" id="btnLogin">로그인</button>
         </div>
-
         <div id="signupForm" class="auth-form" style="display:none;">
             <input type="email" id="signupEmail" class="auth-input" placeholder="사용할 이메일 주소">
             <input type="password" id="signupPassword" class="auth-input" placeholder="비밀번호 (6자 이상)" onkeypress="if(event.key==='Enter') handleSignup()">
             <button class="auth-btn" onclick="handleSignup()" id="btnSignup">이메일 인증하고 가입하기</button>
         </div>
-
         <p id="authMessage" class="auth-msg"></p>
     </div>
 </div>
 
 <div class="mode-toggle-wrapper" style="align-items: center;">
     <span id="userEmailDisplay" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin: 0 8px;"></span>
-    <button id="btn-add-admin" class="mode-btn" onclick="addNewAdmin()" style="display:none; border: 1px dashed var(--accent); color: var(--accent); background: #eff6ff;">+ 관리자 추가</button>
     <button id="btn-mode-influencer" class="mode-btn" onclick="setMode('influencer', true)" style="display:none;">인플루언서 뷰</button>
     <button id="btn-mode-admin" class="mode-btn active" onclick="setMode('admin', true)" style="display:none;">관리자 뷰</button>
     <button class="mode-btn" onclick="handleLogout()" style="background: var(--bg-light); border: 1px solid var(--border); color: var(--danger); margin-left: 4px;">로그아웃</button>
@@ -266,23 +206,21 @@
 <div class="page-title-container">
     <h1 class="page-title">Group Buying Profit Simulator</h1>
 </div>
-
 <div id="db-status" class="status-loading">시스템 데이터를 불러오는 중입니다...</div>
 
 <div class="container">
-    
-    <!-- 패널 1: 제품 선택 -->
+    <!-- 패널 1: 제품 선택 및 신규 추가 -->
     <div class="panel full-width" id="panel-products">
         <h2>제품 구성 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
         
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-            <div class="channel-tabs" style="border: none; padding: 0; margin: 0; margin-bottom: -12px;">
-                <div class="channel-tab active" onclick="setChannelTab('일반', this)">일반</div>
-                <div class="channel-tab" onclick="setChannelTab('약국용', this)">약국용</div>
-                <div class="channel-tab" onclick="setChannelTab('병의원용', this)">병의원용</div>
+        <div class="channel-tabs" style="display:flex; justify-content: space-between; align-items: center; border-bottom: none;">
+            <div id="category-tab-container" style="display:flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;">
+                <!-- 탭이 DB 카테고리(sub_category_1)에 맞게 동적으로 생성됩니다 -->
             </div>
-            <button class="btn-print primary admin-only" onclick="openAddProductModal()" style="padding: 6px 12px; font-size: 0.85rem; margin-bottom: 4px;">+ 신규 제품 등록</button>
+            <!-- 신규 제품 등록 버튼 -->
+            <button class="admin-only" style="background:var(--accent); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); flex-shrink: 0;" onclick="openAddProductModal()">+ 신규 제품 통합 등록</button>
         </div>
+        <div style="border-bottom: 1px solid var(--border); margin-bottom: 24px; padding-bottom: 12px;"></div>
 
         <div id="product-list" style="max-height: 600px; overflow-y: auto; padding-right: 8px;"></div>
     </div>
@@ -290,35 +228,26 @@
     <!-- 패널 2: 샘플 및 사은품 -->
     <div class="panel full-width" id="panel-samples">
         <h2>샘플 및 사은품 요청 <span class="admin-only" style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(원가 발생 -> 고정비 자동반영)</span></h2>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:-16px; margin-bottom: 16px;">테스트용 샘플 및 고객 제공용 사은품을 구성해보세요.</p>
-        
         <div class="dashboard-grid">
-            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0 0 16px 0; font-size: 1.05rem; color: var(--text-bold);">🧪 리뷰/테스트용 샘플 추가</h4>
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 16px 0; color: var(--text-bold);">🧪 리뷰/테스트용 샘플 추가</h4>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
                     <select id="sampleSelect" style="flex: 1; min-width: 140px;"></select>
                     <input type="text" inputmode="numeric" id="sampleQty" value="1" oninput="formatInput(this)" style="width: 60px;"> 개
                     <button type="button" onclick="addSample()" style="background-color: var(--text-bold); color: #fff; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">+ 추가</button>
                 </div>
                 <div id="sampleAddedList" class="added-item-list"></div>
-                
-                <div class="admin-only" style="text-align: right; margin-top: 16px; font-weight: bold; color: var(--danger); font-size:1.05rem;">
-                    총 신청 샘플 원가: <span id="sampleCostDisplay">0</span> 원
-                </div>
+                <div class="admin-only" style="text-align: right; margin-top: 16px; font-weight: bold; color: var(--danger);">총 신청 샘플 원가: <span id="sampleCostDisplay">0</span> 원</div>
             </div>
-
-            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin: 0 0 16px 0; font-size: 1.05rem; color: var(--text-bold);">🎁 고객 제공용 사은품 추가</h4>
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 16px 0; color: var(--text-bold);">🎁 고객 제공용 사은품 추가</h4>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
                     <select id="giftSelect" style="flex: 1; min-width: 140px;"></select>
                     <input type="text" inputmode="numeric" id="giftQty" value="300" oninput="formatInput(this)" style="width: 60px;"> 개
                     <button type="button" onclick="addGift()" style="background-color: var(--accent); color: #fff; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">+ 추가</button>
                 </div>
                 <div id="giftAddedList" class="added-item-list"></div>
-                
-                <div class="admin-only" style="text-align: right; margin-top: 16px; font-weight: bold; color: var(--danger); font-size:1.05rem;">
-                    총 사은품 원가: <span id="giftCostDisplay">0</span> 원
-                </div>
+                <div class="admin-only" style="text-align: right; margin-top: 16px; font-weight: bold; color: var(--danger);">총 사은품 원가: <span id="giftCostDisplay">0</span> 원</div>
             </div>
         </div>
     </div>
@@ -326,48 +255,42 @@
     <!-- 패널 3: 시뮬레이션 상세 및 비용 설정 -->
     <div class="panel full-width admin-only" id="panel-admin-costs-settings">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px; flex-wrap: wrap; gap: 16px;">
-            <h2 style="margin: 0; border: none; padding: 0; width: auto;">시뮬레이션 비용 및 배부 설정 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비)</span></h2>
+            <h2 style="margin: 0; border: none; padding: 0; width: auto;">시뮬레이션 비용 및 배부 설정</h2>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-weight: 700; color: var(--text-bold); font-size: 0.95rem;">목표 판매 수량:</span>
-                <input type="text" inputmode="numeric" id="targetQtyAdmin" value="300" oninput="formatInput(this); syncTargetQty(this.value); calculate()" style="width: 100px; font-size: 1.1rem; font-weight: bold; color: var(--accent); border: 2px solid var(--accent); border-radius: 6px; padding: 6px 12px; text-align: right; outline: none;"> <span style="font-weight:700;">개</span>
+                <input type="text" inputmode="numeric" id="targetQtyAdmin" value="300" oninput="formatInput(this); syncTargetQty(this.value); calculate()" style="width: 100px; font-size: 1.1rem; font-weight: bold; color: var(--accent); border: 2px solid var(--accent); border-radius: 6px; padding: 6px 12px; text-align: right;"> <span style="font-weight:700;">개</span>
             </div>
         </div>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
             <div>
                 <h3 style="margin-top: 0; color: var(--text-bold); font-size: 1.1rem;">▶ 변동비 설정</h3>
-                <table style="margin-top: 0;">
+                <table>
                     <tr style="background-color: #fff;">
-                        <td><strong>총 제품 공급가</strong><br><span style="font-size:0.8em; color:var(--text-muted);">(1세트 원가 합계)</span></td>
+                        <td><strong>총 제품 공급가</strong></td>
                         <td id="displayTotalCost" style="font-weight: 800; color: var(--danger); font-size: 1.1em;">0 원</td>
                     </tr>
-                    <tr><td>제품공급가 비율 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()" readonly style="width: 70px;"> %</td></tr>
+                    <tr><td>제품공급가 비율</td><td><input type="number" id="ratioSupply" value="0" step="0.01" oninput="calculate()" readonly style="width: 70px;"> %</td></tr>
                     <tr><td>배송비 비율</td><td><input type="number" id="ratioShipping" value="7" step="1" oninput="calculate()" style="width: 70px;"> %</td></tr>
-                    <tr><td>플랫폼 수수료 비율</td><td><input type="number" id="ratioPlatform" value="5" step="0.1" oninput="calculate()" style="width: 70px;"> %</td></tr>
-                    <tr><td>카드 수수료 비율</td><td><input type="number" id="ratioCard" value="2" step="1" oninput="calculate()" style="width: 70px;"> %</td></tr>
+                    <tr><td>플랫폼 수수료</td><td><input type="number" id="ratioPlatform" value="5" step="0.1" oninput="calculate()" style="width: 70px;"> %</td></tr>
+                    <tr><td>카드 수수료</td><td><input type="number" id="ratioCard" value="2" step="1" oninput="calculate()" style="width: 70px;"> %</td></tr>
                     <tr>
                         <td style="color: var(--accent); font-weight: 700;">파트너 정산</td>
                         <td style="text-align: right;">
                             <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-size: 0.85rem; color: var(--text-muted);">비율</span>
-                                    <input type="number" id="ratioGonggu" value="35" step="1" oninput="calculate()" style="width: 70px; font-weight:bold; color:var(--accent); border-color: var(--accent);"> %
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-size: 0.85rem; color: var(--text-muted);">특약</span>
-                                    <input type="text" inputmode="numeric" id="fcContract" value="0" oninput="formatInput(this); calculate()" style="width: 90px; font-weight:bold; color:var(--accent); border-color: var(--accent);"> 원
-                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">비율 <input type="number" id="ratioGonggu" value="35" step="1" oninput="calculate()" style="width: 70px; font-weight:bold; color:var(--accent); border-color: var(--accent);"> %</div>
+                                <div style="display: flex; align-items: center; gap: 8px;">특약 <input type="text" inputmode="numeric" id="fcContract" value="0" oninput="formatInput(this); calculate()" style="width: 90px; font-weight:bold; color:var(--accent); border-color: var(--accent);"> 원</div>
                             </div>
                         </td>
                     </tr>
                     <tr><td>인센티브 비율</td><td><input type="number" id="ratioIncentive" value="5" step="1" oninput="calculate()" style="width: 70px;"> %</td></tr>
-                    <tr><td>MCN 수수료 비율</td><td><input type="number" id="ratioReferral" value="5" step="1" oninput="calculate()" style="width: 70px;"> %</td></tr>
+                    <tr><td>MCN 수수료</td><td><input type="number" id="ratioReferral" value="5" step="1" oninput="calculate()" style="width: 70px;"> %</td></tr>
                 </table>
             </div>
 
             <div>
                 <h3 style="margin-top: 0; color: var(--text-bold); font-size: 1.1rem;">▶ 고정비 설정</h3>
-                <table style="margin-top: 0;">
+                <table>
                     <tr style="background-color: #fff;">
                         <td><strong>참여 인원 (명)</strong></td>
                         <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--accent); width: 60px;"> 명</td>
@@ -378,16 +301,16 @@
                     <tr><td>장소대여비</td><td><input type="text" inputmode="numeric" id="fcRent" value="200,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>소품비</td><td><input type="text" inputmode="numeric" id="fcProps" value="200,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>기타 비용</td><td><input type="text" inputmode="numeric" id="fcOther" value="30,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
-                    <tr><td>샘플비 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly style="width: 90px;"></td></tr>
-                    <tr><td>사은품 <span style="font-size:0.8em; color:var(--text-muted);">(자동)</span></td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly style="width: 90px;"></td></tr>
-                    <tr><td>특약비 <span style="font-size:0.8em; color:var(--accent);">(연동)</span></td><td><input type="text" inputmode="numeric" id="fcContractDisplay" value="0" readonly style="color:var(--accent); font-weight:bold; width: 90px;"></td></tr>
+                    <tr><td>샘플비</td><td><input type="text" inputmode="numeric" id="fcSamples" value="0" readonly style="width: 90px;"></td></tr>
+                    <tr><td>사은품</td><td><input type="text" inputmode="numeric" id="fcGifts" value="0" readonly style="width: 90px;"></td></tr>
+                    <tr><td>특약비</td><td><input type="text" inputmode="numeric" id="fcContractDisplay" value="0" readonly style="color:var(--accent); font-weight:bold; width: 90px;"></td></tr>
                     <tr><th style="text-align: left; background-color: var(--bg-light); color: var(--danger);">고정비 총계</th><th style="text-align: right; background-color: var(--bg-light); color: var(--danger);" id="totalFcDisplay">0 원</th></tr>
                 </table>
             </div>
 
             <div>
                 <h3 style="margin-top: 0; color: var(--text-bold); font-size: 1.1rem;">▶ 공통비 배부</h3>
-                <table style="margin-top: 0;">
+                <table>
                     <tr><td>임원/경영/연구소</td><td><input type="text" inputmode="numeric" id="ccTotal" value="150,000,000" oninput="formatInput(this); calculate()" style="width: 100px;"></td></tr>
                     <tr style="background-color: #fff;">
                         <td><strong>프로젝트 배부율</strong></td>
@@ -399,66 +322,38 @@
         </div>
     </div>
 
-    <!-- 패널 6: 본사 전용 상세 내역 표 -->
+    <!-- 패널: 본사 전용 상세 내역 표 -->
     <div class="panel full-width admin-only" id="hq-panel">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
-            <h2 style="margin: 0; border: none; padding: 0; width: auto;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비 / 부가세 제외)</span></h2>
-            <button class="btn-print primary" onclick="window.print()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                PDF/인쇄
-            </button>
-        </div>
-        
-        <div style="text-align: right; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">[단위: 원]</div>
+        <h2 style="margin: 0 0 24px 0; border: none; padding: 0;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비)</span></h2>
         <table id="resultTable">
             <thead>
-                <tr><th>구분</th><th>매출액</th><th>변동비</th><th>공헌이익</th><th>고정비</th><th>적용 공통비</th><th>본사 영업이익</th></tr>
+                <tr><th>구분</th><th>매출액</th><th>변동비</th><th>공헌이익</th><th>고정비</th><th>적용 공통비</th><th>영업이익</th></tr>
             </thead>
             <tbody>
-                <tr><td>단위당 (1패키지)</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
+                <tr><td>단위당</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
                 <tr class="bep-row">
-                    <td>손익분기점 (BEP)</td><td id="resBepRev">0</td><td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td class="result-highlight" id="resBepOp">0</td>
+                    <td>손익분기(BEP)</td><td id="resBepRev">0</td><td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td id="resBepOp">0</td>
                 </tr>
                 <tr class="target-row">
-                    <td>목표 달성 시</td><td class="result-highlight" id="resTargetRev">0</td><td id="resTargetVc">0</td><td class="result-highlight" id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td class="success-highlight" id="resTargetOp">0</td>
+                    <td>목표 달성 시</td><td id="resTargetRev">0</td><td id="resTargetVc">0</td><td id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td id="resTargetOp" style="font-weight:bold; color:var(--accent);">0</td>
                 </tr>
             </tbody>
         </table>
-        <div class="summary-text">
-            <p>손익분기점(BEP) 도달 필요 수량: <strong id="resBepQtyText" style="color:var(--text-bold)">0</strong> 개</p>
-            <p>목표 달성 시 총 판매 수량: <strong id="resTargetQtyText" style="color:var(--accent)">0</strong> 개</p>
-        </div>
     </div>
 
-    <!-- 패널 5: 공유용 정산 대시보드 -->
-    <div class="panel full-width" id="partner-panel" style="position: relative;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
-            <h2 style="margin: 0; border: none; padding: 0; width: auto;">예상 정산 대시보드</h2>
-            <button class="btn-print" onclick="captureImage()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                대시보드 이미지 복사
-            </button>
-        </div>
-
-        <div class="influencer-only" style="background: #fff; border: 1px solid var(--accent); padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.05); flex-wrap: wrap; gap: 16px;">
+    <!-- 패널: 공유용 정산 대시보드 -->
+    <div class="panel full-width" id="partner-panel">
+        <h2 style="margin: 0 0 24px 0; border: none; padding: 0;">예상 정산 대시보드</h2>
+        
+        <div class="influencer-only" style="background: #fff; border: 1px solid var(--accent); padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;">
             <div>
                 <span style="font-weight: 700; color: var(--text-bold); font-size: 1.1rem; display: block;">🎯 나의 예상 판매 수량 및 일정</span>
-                <span style="font-size: 0.85rem; color: var(--text-muted);">채널, 방송(오픈) 예정일, 목표 판매 수량을 입력하여 정산액을 시뮬레이션 하세요.</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">채널, 방송일, 목표 판매 수량을 입력하여 정산액을 확인하세요.</span>
             </div>
             <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-weight: 600; font-size: 0.95rem;">방송채널:</span>
-                    <input type="text" class="text-input" id="broadcastChannel" placeholder="예: 인스타, 유튜브 등" style="border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 1rem; color: var(--text-bold); outline: none;">
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-weight: 600; font-size: 0.95rem;">방송예정일:</span>
-                    <input type="date" id="broadcastDate" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 1rem; color: var(--text-bold); outline: none;">
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-weight: 600; font-size: 0.95rem;">목표수량:</span>
-                    <input type="text" inputmode="numeric" id="targetQtyInfluencer" value="300" oninput="formatInput(this); syncTargetQty(this.value); calculate();" style="width: 100px; font-size: 1.1rem; color: var(--accent); border: 1px solid var(--accent); text-align: right; padding: 8px 12px; border-radius: 6px; font-weight: bold; outline: none;">
-                    <span style="font-weight: 700; color: var(--text-bold); font-size:1.1rem;">개</span>
-                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">채널: <input type="text" class="text-input" id="broadcastChannel" placeholder="예: 인스타"></div>
+                <div style="display: flex; align-items: center; gap: 8px;">예정일: <input type="date" id="broadcastDate"></div>
+                <div style="display: flex; align-items: center; gap: 8px;">수량: <input type="text" inputmode="numeric" id="targetQtyInfluencer" value="300" oninput="formatInput(this); syncTargetQty(this.value); calculate();" style="width: 100px; font-weight: bold; color: var(--accent);"> 개</div>
             </div>
         </div>
 
@@ -468,7 +363,6 @@
                 <div class="summary-value"><span class="partnerProfitAmount">0</span><span class="unit">원</span></div>
                 <div class="summary-desc">판매수수료 <span class="partnerProfitRate" style="color: var(--accent); font-weight:700;">35</span>% + 특약비 <span class="partnerProfitContract" style="font-weight:700;">0</span>원 기준</div>
             </div>
-            
             <div class="hq-summary-card admin-only">
                 <div class="summary-label">본사 예상 영업이익</div>
                 <div class="summary-value"><span class="hqProfitAmount">0</span><span class="unit">원</span></div>
@@ -476,103 +370,52 @@
             </div>
         </div>
 
-        <div id="selected-package-info" class="package-visualizer" style="margin-bottom: 8px;"></div>
-        <div id="selected-sample-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 8px;"></div>
-        <div id="selected-gift-info" class="package-visualizer" style="display: none; background-color: #fff; margin-bottom: 16px;"></div>
+        <div id="selected-package-info" class="package-visualizer"></div>
+        <div id="selected-sample-info" class="package-visualizer" style="display: none;"></div>
+        <div id="selected-gift-info" class="package-visualizer" style="display: none;"></div>
 
-        <div class="influencer-only" style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px dashed var(--border);">
-            <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="background-color: var(--text-bold); width: 100%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">최종 데이터 전송 및 확정</button>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">확정 시 본사 담당자에게 구성 내역 및 일정이 전달되며, 승인 대기 상태로 변경됩니다.</p>
+        <div class="influencer-only" style="text-align: center; margin-top: 32px; border-top: 1px dashed var(--border); padding-top: 24px;">
+            <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="width: 100%; max-width: 400px;">최종 데이터 전송 및 확정</button>
         </div>
 
         <div class="influencer-only" style="margin-top: 40px; border-top: 2px solid var(--border); padding-top: 24px;">
-            <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--text-bold);">📝 나의 방송 신청 내역</h3>
-            <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-                <table id="myCampaignTable" style="margin-top: 0; min-width: 950px; border: none; border-radius: 0; table-layout: fixed;">
-                    <thead>
-                        <tr>
-                            <th style="width: 110px;">신청일자</th>
-                            <th style="width: 140px;">방송 예정일/채널</th>
-                            <th>패키지 구성 내역</th>
-                            <th>사은품 내역</th>
-                            <th style="width: 90px;">목표수량</th>
-                            <th style="width: 110px;">상태 및 관리</th>
-                        </tr>
-                    </thead>
-                    <tbody id="myCampaignListBody">
-                        <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>
-                    </tbody>
-                </table>
-            </div>
+            <h3 style="margin-top: 0; color: var(--text-bold);">📝 나의 방송 신청 내역</h3>
+            <table id="myCampaignTable">
+                <thead><tr><th>신청일자</th><th>방송 예정일/채널</th><th>상태 및 관리</th></tr></thead>
+                <tbody id="myCampaignListBody"><tr><td colspan="3" style="text-align:center; padding:24px;">내역이 없습니다.</td></tr></tbody>
+            </table>
         </div>
     </div>
 
-    <!-- 패널: 회원 가입 승인 관리 (관리자 전용) -->
+    <!-- 패널: 회원 가입 승인 관리 -->
     <div class="panel full-width admin-only" id="panel-admin-users">
-        <h2 style="margin-bottom: 24px; border-bottom: none;">가입 승인 대기자 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(승인해야 로그인 가능)</span></h2>
-        <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-            <table id="userApprovalTable" style="margin-top: 0; min-width: 600px; border: none; border-radius: 0;">
-                <thead>
-                    <tr>
-                        <th style="width: 150px;">가입 신청일</th>
-                        <th>이메일 주소</th>
-                        <th style="width: 150px;">관리</th>
-                    </tr>
-                </thead>
-                <tbody id="userApprovalListBody">
-                    <tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">승인 대기 중인 사용자가 없습니다.</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 추가: 관리자 권한 관리 (수퍼관리자 전용) -->
-        <div id="admin-management-section" style="display: none; margin-top: 40px; border-top: 2px solid var(--border); padding-top: 24px;">
-            <h2 style="margin-bottom: 24px; border-bottom: none;">관리자 권한 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(최고 관리자 전용)</span></h2>
-            <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-                <table style="margin-top: 0; min-width: 600px; border: none; border-radius: 0;">
-                    <thead>
-                        <tr>
-                            <th>이메일 주소</th>
-                            <th style="width: 150px;">현재 권한</th>
-                            <th style="width: 150px;">관리</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminListBody">
-                        <tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">등록된 일반 관리자가 없습니다.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <h2 style="margin-bottom: 24px; border-bottom: none;">가입 승인 대기자 관리</h2>
+        <table id="userApprovalTable">
+            <thead><tr><th>가입 신청일</th><th>이메일 주소</th><th>관리</th></tr></thead>
+            <tbody id="userApprovalListBody"><tr><td colspan="3" style="text-align:center; padding:32px;">대기 중인 사용자가 없습니다.</td></tr></tbody>
+        </table>
     </div>
 
-    <!-- 패널 7: 인플루언서 확정 대시보드 (관리자 전용) -->
+    <!-- 패널: 최고 관리자 전용 권한 제어 -->
+    <div class="panel full-width admin-only" id="panel-super-admin" style="display:none;">
+        <h2 style="margin-bottom: 24px; border-bottom: none;">관리자 권한 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(최고 관리자 전용)</span></h2>
+        <table id="adminRolesTable">
+            <thead><tr><th>이메일 주소</th><th>현재 권한</th><th>권한 변경</th></tr></thead>
+            <tbody id="adminRolesListBody"><tr><td colspan="3" style="text-align:center; padding:32px;">로딩 중...</td></tr></tbody>
+        </table>
+    </div>
+
+    <!-- 패널: 인플루언서 확정 내역 -->
     <div class="panel full-width admin-only" id="panel-admin-campaigns">
-        <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(수신된 결재 요청)</span></h2>
-        <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
-            <table id="campaignTable" style="margin-top: 0; min-width: 1300px; border: none; border-radius: 0; table-layout: fixed;">
-                <thead>
-                    <tr>
-                        <th style="width: 100px;">신청일자</th>
-                        <th style="width: 130px;">방송 예정일/채널</th>
-                        <th>패키지 구성 내역</th>
-                        <th>사은품 내역</th>
-                        <th style="width: 80px;">목표수량</th>
-                        <th style="width: 110px;">파트너 정산액</th>
-                        <th style="width: 110px;">본사 공헌이익</th>
-                        <th style="width: 110px;">본사 영업이익</th>
-                        <th style="width: 130px;">상태 및 관리</th>
-                    </tr>
-                </thead>
-                <tbody id="campaignListBody">
-                    <tr><td colspan="9" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>
-                </tbody>
-            </table>
-        </div>
+        <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역</h2>
+        <table id="campaignTable">
+            <thead><tr><th>신청일자</th><th>예정일/채널</th><th>목표수량</th><th>파트너 정산액</th><th>영업이익</th><th>상태 및 관리</th></tr></thead>
+            <tbody id="campaignListBody"><tr><td colspan="6" style="text-align:center; padding:32px;">수신된 내역이 없습니다.</td></tr></tbody>
+        </table>
     </div>
-
 </div>
 
-<!-- Custom Modal UI Container -->
+<!-- 일반 커스텀 모달 -->
 <div id="customModal" class="modal-overlay">
     <div class="modal-box">
         <h3 id="modalTitle" class="modal-title">알림</h3>
@@ -585,50 +428,47 @@
     </div>
 </div>
 
-<!-- 신규 제품 등록 Modal -->
+<!-- 신규 제품 통합 등록 모달 -->
 <div id="addProductModal" class="modal-overlay">
     <div class="modal-box" style="max-width: 500px;">
         <h3 class="modal-title">신규 제품 통합 등록</h3>
-        <p class="modal-msg" style="margin-bottom: 16px;">새로운 제품을 데이터베이스(마스터, 카탈로그, 가격, 원가)에 즉시 등록합니다.</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+        <p class="modal-msg" style="margin-bottom: 16px;">제품명, 가격, 원가를 입력하면 4개의 마스터 DB에 한 번에 등록됩니다.</p>
+        <div style="display: grid; gap: 12px;">
             <div>
-                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">제품명</label>
-                <input type="text" id="newProdName" class="modal-input" style="display: block; margin-bottom: 0;" placeholder="예: 엑소좀 리페어 크림">
+                <label style="font-weight:600; font-size:0.9rem;">제품명 (필수)</label>
+                <input type="text" id="newProdName" class="auth-input" placeholder="예: 코어임팩트">
             </div>
-            <div style="display: flex; gap: 12px;">
-                <div style="flex: 1;">
-                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">유통 채널</label>
-                    <select id="newProdChannel" style="width: 100%; display: block; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-weight: bold; color: var(--text-bold);">
-                        <option value="일반">일반</option>
-                        <option value="약국용">약국용</option>
-                        <option value="병의원용">병의원용</option>
-                    </select>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">메인 분류 (Category)</label>
+                    <input type="text" id="newProdCat" class="auth-input" list="catList" placeholder="선택 또는 입력 (예: Cosmetics)">
+                    <datalist id="catList"></datalist>
                 </div>
-                <div style="flex: 1;">
-                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">소비자정가 (원)</label>
-                    <input type="text" inputmode="numeric" id="newProdMsrp" class="modal-input" style="display: block; margin-bottom: 0; text-align: right;" placeholder="0" oninput="formatInput(this)">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">소비자 정가 (원)</label>
+                    <input type="text" inputmode="numeric" id="newProdMsrp" class="auth-input" placeholder="0" oninput="formatInput(this)">
                 </div>
             </div>
-            <div style="display: flex; gap: 12px;">
-                <div style="flex: 1;">
-                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">메인 카테고리</label>
-                    <input type="text" id="newProdMainCat" class="modal-input" style="display: block; margin-bottom: 0;" placeholder="예: 페이스, 스칼프">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">대분류 (Sub Category 1)</label>
+                    <input type="text" id="newProdSubCat1" class="auth-input" list="subCat1List" placeholder="선택 또는 입력 (예: 페이스)">
+                    <datalist id="subCat1List"></datalist>
                 </div>
-                <div style="flex: 1;">
-                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">서브 카테고리</label>
-                    <input type="text" id="newProdSubCat" class="modal-input" style="display: block; margin-bottom: 0;" placeholder="예: 화장품, 디바이스">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">소분류 (Sub Category 2)</label>
+                    <input type="text" id="newProdSubCat2" class="auth-input" list="subCat2List" placeholder="선택 또는 입력 (예: Home Care)">
+                    <datalist id="subCat2List"></datalist>
                 </div>
             </div>
             <div>
-                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">초기 원가 (원)</label>
-                <input type="text" inputmode="numeric" id="newProdCost" class="modal-input" style="display: block; margin-bottom: 0; text-align: right;" placeholder="0" oninput="formatInput(this)">
+                <label style="font-weight:600; font-size:0.9rem; color:var(--danger);">제품 초기 원가 (원)</label>
+                <input type="text" inputmode="numeric" id="newProdCost" class="auth-input" placeholder="0" oninput="formatInput(this)" style="border-color:var(--danger);">
             </div>
         </div>
-        
-        <div class="modal-actions">
-            <button onclick="closeAddProductModal()" class="modal-btn modal-btn-cancel">취소</button>
-            <button onclick="submitNewProduct()" class="modal-btn modal-btn-ok" id="btnSubmitNewProd">DB에 통합 등록하기</button>
+        <div class="modal-actions" style="margin-top: 24px;">
+            <button class="modal-btn modal-btn-cancel" onclick="closeAddProductModal()">취소</button>
+            <button class="modal-btn modal-btn-ok" id="btnSubmitNewProd" onclick="submitNewProduct()">DB에 통합 등록하기</button>
         </div>
     </div>
 </div>
@@ -642,35 +482,76 @@
     var selectedProducts = [];
     var addedSamples = [];
     var addedGifts = [];
-    
     var currentSimulationState = { partnerProfit: 0, hqProfit: 0, hqCm: 0 };
     var mockCampaigns = [];
-
-    var currentChannelFilter = '일반';
+    var currentCategoryFilter = '';
+    var categoryList = [];
 
     const SUPER_ADMIN = 'wjshin2450@gmail.com';
-    let currentUserRole = 'user';
+    let isAdmin = false;
 
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+    // 안전한 UUID 생성 함수 (Iframe 등 보안되지 않은 컨텍스트의 오류 우회용)
+    function generateSafeUUID() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            try { return crypto.randomUUID(); } catch (e) {}
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    var formatNum = (num) => { if(!isFinite(num)) return '0'; return Math.round(num).toLocaleString('ko-KR'); };
+    function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
+    function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
+
+    function customAlert(msg, title="알림") {
+        return new Promise(resolve => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('modalInput').style.display = 'none';
+            document.getElementById('modalCancelBtn').style.display = 'none'; 
+            document.getElementById('modalOkBtn').onclick = () => { modal.style.display = 'none'; resolve(); };
+            modal.style.display = 'flex';
+        });
+    }
+
+    function customConfirm(msg, title="확인") {
+        return new Promise(resolve => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('modalInput').style.display = 'none';
+            document.getElementById('modalCancelBtn').style.display = 'inline-block';
+            document.getElementById('modalOkBtn').onclick = () => { modal.style.display = 'none'; resolve(true); };
+            document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; resolve(false); };
+            modal.style.display = 'flex';
+        });
+    }
+
+    function customPrompt(title, msg, placeholder="입력하세요", defaultValue="") {
+        return new Promise(resolve => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            const input = document.getElementById('modalInput');
+            input.style.display = 'block'; 
+            input.value = defaultValue; 
+            input.placeholder = placeholder;
+            document.getElementById('modalCancelBtn').style.display = 'inline-block';
+            document.getElementById('modalOkBtn').onclick = () => { modal.style.display = 'none'; resolve(input.value); };
+            document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; resolve(null); };
+            modal.style.display = 'flex';
+        });
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
         const overlay = document.getElementById('authOverlay');
         if (session) {
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.style.display = 'none'; }, 400);
-            
-            try {
-                // DB에서 현재 유저의 상태 및 권한(role)을 불러옴
-                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved, role').eq('id', session.user.id).single();
-                
-                if (session.user.email === SUPER_ADMIN) {
-                    currentUserRole = 'super_admin';
-                } else if (profile && profile.role === 'admin') {
-                    currentUserRole = 'admin';
-                } else {
-                    currentUserRole = 'user';
-                }
-            } catch(e) { console.error(e); currentUserRole = 'user'; }
-            
-            applyUserRole(session.user.email, currentUserRole);
+            applyUserRole(session.user.email);
             if(productsData.length === 0) fetchProducts();
         } else {
             overlay.style.display = 'flex';
@@ -681,8 +562,6 @@
 
     function switchAuthTab(tab) {
         document.getElementById('authMessage').innerText = '';
-        document.getElementById('authMessage').className = 'auth-msg';
-        
         if (tab === 'login') {
             document.getElementById('loginForm').style.display = 'flex';
             document.getElementById('signupForm').style.display = 'none';
@@ -705,638 +584,93 @@
     async function handleSignup() {
         const email = document.getElementById('signupEmail').value;
         const password = document.getElementById('signupPassword').value;
-        const btn = document.getElementById('btnSignup');
-
-        if(!email || !password) return showAuthMessage("이메일과 비밀번호를 모두 입력해주세요.");
-        if(password.length < 6) return showAuthMessage("비밀번호는 6자리 이상이어야 합니다.");
-
-        btn.innerText = "처리 중..."; btn.disabled = true;
+        if(!email || password.length < 6) return showAuthMessage("이메일과 6자리 이상 비밀번호를 입력하세요.");
+        
+        document.getElementById('btnSignup').innerText = "처리 중...";
         try {
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: password,
-                options: { emailRedirectTo: 'https://group-sales.vercel.app/' }
-            });
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
             if (error) throw error;
-            if (data.user && !data.session) {
-                showAuthMessage("인증 메일이 발송되었습니다. 수신함(스팸함 포함)의 링크를 클릭 후 로그인해주세요.", true);
-                document.getElementById('signupEmail').value = '';
-                document.getElementById('signupPassword').value = '';
-            } else {
-                showAuthMessage("회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.", true);
-                setTimeout(() => switchAuthTab('login'), 2000);
-            }
+            showAuthMessage("가입 요청 완료! 관리자 승인 후 로그인 가능합니다.", true);
+            setTimeout(() => switchAuthTab('login'), 2000);
         } catch (err) {
-            showAuthMessage(err.message.includes("already registered") ? "이미 가입된 이메일입니다." : err.message);
-        } finally {
-            btn.innerText = "이메일 인증하고 가입하기"; btn.disabled = false;
-        }
+            showAuthMessage(err.message);
+        } finally { document.getElementById('btnSignup').innerText = "이메일 인증하고 가입하기"; }
     }
 
     async function handleLogin() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
-        const btn = document.getElementById('btnLogin');
-
         if(!email || !password) return showAuthMessage("이메일과 비밀번호를 입력해주세요.");
 
-        btn.innerText = "로그인 중..."; btn.disabled = true;
+        document.getElementById('btnLogin').innerText = "로그인 중...";
         try {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
-            if (error) {
-                if(error.message.includes("Invalid login credentials")) throw new Error("이메일 또는 비밀번호가 잘못되었습니다.");
-                if(error.message.includes("Email not confirmed")) throw new Error("이메일 인증이 완료되지 않았습니다. 메일함을 확인해주세요.");
-                throw error;
-            }
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) throw new Error("계정 정보가 잘못되었습니다.");
 
-            // 가입 승인 여부 체크 로직 추가
             if (data && data.user) {
-                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved, role').eq('id', data.user.id).single();
-                
-                const isSuperAdmin = data.user.email === SUPER_ADMIN;
-                
+                const isSuperAdmin = (data.user.email === SUPER_ADMIN);
+                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved').eq('id', data.user.id).single();
                 if (!isSuperAdmin && (!profile || profile.is_approved !== true)) {
-                    await supabaseClient.auth.signOut(); // 승인 안된 경우 강제 로그아웃
-                    throw new Error("관리자의 가입 승인 대기 중입니다.\n승인이 완료되어야 로그인이 가능합니다.");
+                    await supabaseClient.auth.signOut();
+                    throw new Error("관리자의 가입 승인 대기 중입니다.");
                 }
             }
-        } catch (err) {
-            showAuthMessage(err.message);
-        } finally {
-            btn.innerText = "로그인"; btn.disabled = false;
-        }
+        } catch (err) { showAuthMessage(err.message); } 
+        finally { document.getElementById('btnLogin').innerText = "로그인"; }
     }
 
-    async function handleLogout() {
-        await supabaseClient.auth.signOut();
-        window.location.reload(); 
-    }
+    async function handleLogout() { await supabaseClient.auth.signOut(); window.location.reload(); }
 
-    function applyUserRole(email, role) {
+    async function applyUserRole(email) {
         document.getElementById('userEmailDisplay').innerText = email;
-        const btnInfluencer = document.getElementById('btn-mode-influencer');
-        const btnAdmin = document.getElementById('btn-mode-admin');
-        const btnAddAdmin = document.getElementById('btn-add-admin');
-        const adminMgmtSection = document.getElementById('admin-management-section');
+        const isSuperAdmin = (email === SUPER_ADMIN);
         
-        if (role === 'admin' || role === 'super_admin') {
-            btnInfluencer.style.display = 'block';
-            btnAdmin.style.display = 'block';
-            
-            // 최고 관리자만 관리자 추가 버튼 및 관리자 목록 섹션 노출
-            if (role === 'super_admin') {
-                btnAddAdmin.style.display = 'block';
-                if (adminMgmtSection) adminMgmtSection.style.display = 'block';
-                fetchAdmins();
-            } else {
-                btnAddAdmin.style.display = 'none';
-                if (adminMgmtSection) adminMgmtSection.style.display = 'none';
-            }
-            
+        let isGeneralAdmin = false;
+        try {
+            const { data } = await supabaseClient.from('user_profiles').select('role').eq('email', email).single();
+            if (data && data.role === 'admin') isGeneralAdmin = true;
+        } catch(e) {}
+
+        isAdmin = isSuperAdmin || isGeneralAdmin;
+
+        if (isAdmin) {
+            document.getElementById('btn-mode-influencer').style.display = 'block';
+            document.getElementById('btn-mode-admin').style.display = 'block';
             setMode('admin', false);
-            fetchPendingUsers(); // 관리자 뷰일 때 가입 대기자 목록 갱신
+            fetchPendingUsers(); 
         } else {
-            btnInfluencer.style.display = 'none';
-            btnAdmin.style.display = 'none';
-            btnAddAdmin.style.display = 'none';
-            if (adminMgmtSection) adminMgmtSection.style.display = 'none';
+            document.getElementById('btn-mode-influencer').style.display = 'none';
+            document.getElementById('btn-mode-admin').style.display = 'none';
             setMode('influencer', false); 
         }
+
+        // 최고 관리자용 제어 패널 노출
+        if (isSuperAdmin) {
+            document.getElementById('panel-super-admin').style.display = 'block';
+            fetchAllUsersForRoles();
+        } else {
+            document.getElementById('panel-super-admin').style.display = 'none';
+        }
+        
         renderInfluencerCampaigns();
-    }
-
-    async function fetchAdmins() {
-        try {
-            const { data, error } = await supabaseClient.from('user_profiles').select('*').eq('role', 'admin');
-            if (error) throw error;
-            
-            const tbody = document.getElementById('adminListBody');
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">등록된 일반 관리자가 없습니다.</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            data.forEach(u => {
-                html += `
-                    <tr style="background:#fff;">
-                        <td style="text-align:center; font-weight:600; color:var(--text-bold); vertical-align:middle;">${u.email}</td>
-                        <td style="text-align:center; vertical-align:middle;"><span class="badge-approved">일반 관리자</span></td>
-                        <td style="text-align:center; vertical-align:middle;">
-                            <button class="btn-reject-admin" onclick="revokeAdmin('${u.id}', '${u.email}')" style="margin:0;">권한 회수</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        } catch (e) {
-            console.error("관리자 목록 조회 실패:", e);
-        }
-    }
-
-    async function addNewAdmin() {
-        const newEmail = await customPrompt("관리자 추가", "추가할 관리자의 이메일 주소를 입력해주세요.\n(해당 사용자는 이미 회원가입이 되어 있어야 합니다.)", "예: admin@medifab.com");
-        if (!newEmail || newEmail.trim() === '') return;
-        
-        const email = newEmail.trim();
-        
-        try {
-            // DB에서 유저 프로필 조회
-            const { data: users, error: findErr } = await supabaseClient.from('user_profiles').select('id, role').eq('email', email);
-            if (findErr) throw findErr;
-            
-            if (!users || users.length === 0) {
-                customAlert(`[${email}] 계정을 찾을 수 없습니다.\n해당 사용자가 먼저 이메일 회원가입을 완료해야 합니다.`);
-                return;
-            }
-            
-            const user = users[0];
-            if (user.role === 'admin' || user.role === 'super_admin') {
-                customAlert("이미 관리자 권한을 가진 계정입니다.");
-                return;
-            }
-            
-            // 해당 유저의 권한(role)을 admin으로 변경 및 자동 가입승인 처리
-            const { error: updateErr } = await supabaseClient.from('user_profiles').update({ role: 'admin', is_approved: true }).eq('id', user.id);
-            if (updateErr) throw updateErr;
-            
-            customAlert(`[${email}]\n계정이 성공적으로 관리자로 추가되었습니다.`, "관리자 추가 완료");
-            fetchAdmins(); // 목록 새로고침
-            
-        } catch(e) {
-            console.error(e);
-            customAlert("관리자 추가 중 오류가 발생했습니다.\n" + e.message, "오류");
-        }
-    }
-
-    async function revokeAdmin(userId, email) {
-        const isConfirmed = await customConfirm(`[${email}]\n해당 계정의 관리자 권한을 회수하시겠습니까?\n(권한 회수 시 일반 사용자(인플루언서)로 강등됩니다.)`, "권한 회수 확인");
-        if (!isConfirmed) return;
-        
-        try {
-            // role을 일반 user로 변경
-            const { error } = await supabaseClient.from('user_profiles').update({ role: 'user' }).eq('id', userId);
-            if (error) throw error;
-            
-            customAlert("관리자 권한이 성공적으로 회수되었습니다.", "회수 완료");
-            fetchAdmins(); // 목록 새로고침
-        } catch(e) {
-            console.error(e);
-            customAlert("권한 회수 중 오류가 발생했습니다.", "오류");
-        }
     }
 
     function setMode(mode, showMsg = false) {
         document.body.className = 'mode-' + mode;
         document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.getElementById('btn-mode-' + mode);
-        if(activeBtn) activeBtn.classList.add('active');
-        
-        if (mode === 'influencer' && showMsg) {
-            customAlert("인플루언서 뷰로 전환되었습니다.\n생산 원가 및 본사 세부 설정은 숨김 처리됩니다.", "뷰 전환");
-        }
+        if(document.getElementById('btn-mode-' + mode)) document.getElementById('btn-mode-' + mode).classList.add('active');
+        if (mode === 'influencer' && showMsg) customAlert("인플루언서 뷰로 전환되었습니다.");
     }
 
-    function setChannelTab(channel, element) {
-        document.querySelectorAll('.channel-tab').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
-        currentChannelFilter = channel;
-        
-        if(productsData.length > 0) {
-            renderProducts();
-        }
-    }
-
-    function syncTargetQty(val) {
-        let cleanVal = val.replace(/[^0-9]/g, '');
-        if (cleanVal === '') cleanVal = '0';
-        const formatted = Number(cleanVal).toLocaleString('ko-KR');
-        
-        document.getElementById('targetQtyAdmin').value = formatted;
-        document.getElementById('targetQtyInfluencer').value = formatted;
-    }
-
-    function setMinBroadcastDate() {
-        const dateInput = document.getElementById('broadcastDate');
-        if(dateInput) {
-            const today = new Date();
-            today.setDate(today.getDate() + 3);
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            dateInput.min = `${yyyy}-${mm}-${dd}`;
-        }
-    }
-
-    async function submitCampaign() {
-        const bDate = document.getElementById('broadcastDate').value;
-        const bChannel = document.getElementById('broadcastChannel').value;
-        const userEmail = document.getElementById('userEmailDisplay').textContent;
-
-        if (!bDate) {
-            customAlert("방송(오픈) 예정일을 달력에서 선택해주세요.");
-            return;
-        }
-        if (selectedProducts.length === 0) {
-            customAlert("선택된 제품 구성 내역이 없습니다.");
-            return;
-        }
-
-        const targetQty = getNum('targetQtyInfluencer');
-        
-        const payload = {
-            id: Date.now(),
-            created_at: new Date().toISOString(),
-            broadcast_date: bDate,
-            broadcast_channel: bChannel || '미입력',
-            target_qty: targetQty,
-            partner_profit: Math.round(currentSimulationState.partnerProfit),
-            hq_profit: Math.round(currentSimulationState.hqProfit),
-            hq_cm: Math.round(currentSimulationState.hqCm),
-            products: selectedProducts.map(id => productsData.find(p => p.id === id).name),
-            gifts: addedGifts.map(g => `${g.name}::${g.qty}`),
-            status: '승인 대기중',
-            user_email: userEmail
-        };
-
-        const dbPayload = { ...payload }; 
-
-        const btn = document.getElementById('btn-submit-campaign');
-        btn.innerText = "전송 중... ⏳";
-        btn.disabled = true;
-
-        try {
-            let { error } = await supabaseClient.from('campaign_simulations').insert([dbPayload]);
-            let isPartialSuccess = false;
-            
-            if (error) {
-                if (error.message.includes("gifts") || error.message.includes("hq_cm") || error.message.includes("schema cache")) {
-                    console.warn("컬럼 에러 감지. DB 설정 문제로 일부 속성을 제외하고 재시도합니다.", error);
-                    delete dbPayload.gifts;
-                    delete dbPayload.hq_cm;
-                    const retryResult = await supabaseClient.from('campaign_simulations').insert([dbPayload]);
-                    error = retryResult.error;
-                    if (!error) isPartialSuccess = true;
-                }
-            }
-
-            if (error) {
-                console.error("DB Error:", error);
-                customAlert("데이터베이스 저장 실패\nSupabase 테이블 설정을 확인해주세요.\n\n" + error.message, "오류");
-                btn.innerText = "최종 데이터 전송 및 확정";
-                btn.disabled = false;
-                return;
-            }
-
-            mockCampaigns.unshift(payload);
-            renderAdminCampaigns();
-            renderInfluencerCampaigns();
-
-            if (isPartialSuccess) {
-                customAlert(`데이터가 전송되었습니다.\n\n(안내: 캐시 초기화 명령어를 단독으로 실행해야 DB에 완벽히 저장됩니다. 관리자에게 문의하세요.)`, "부분 전송 완료");
-            } else {
-                customAlert(`성공적으로 데이터가 전송되었습니다.\n\n방송 일정을 새롭게 선택하여 추가로 전송하실 수 있습니다.`, "전송 완료");
-            }
-            
-            document.getElementById('broadcastDate').value = '';
-            document.getElementById('broadcastChannel').value = '';
-            btn.innerText = "최종 데이터 전송 및 확정";
-            btn.disabled = false;
-
-        } catch (e) {
-            console.error(e);
-            customAlert("서버와의 통신 중 오류가 발생했습니다.", "오류");
-            btn.innerText = "최종 데이터 전송 및 확정";
-            btn.disabled = false;
-        }
-    }
-
-    async function cancelCampaign(id) {
-        const isConfirmed = await customConfirm("정말로 이 방송 승인 요청을 취소하시겠습니까?", "요청 취소 확인");
-        if (!isConfirmed) return;
-
-        try {
-            const { error } = await supabaseClient.from('campaign_simulations').delete().eq('id', id);
-            if (error) throw error;
-            
-            mockCampaigns = mockCampaigns.filter(c => c.id !== id);
-            renderAdminCampaigns();
-            renderInfluencerCampaigns();
-            
-            customAlert("요청이 성공적으로 취소(삭제)되었습니다.", "취소 완료");
-            
-        } catch (e) {
-            console.error(e);
-            customAlert("취소 처리 중 오류가 발생했습니다.", "오류");
-        }
-    }
-
-    async function approveCampaign(id) {
-        try {
-            const { error } = await supabaseClient.from('campaign_simulations').update({ status: '승인 완료' }).eq('id', id);
-            if (error) {
-                customAlert("승인 처리 중 오류가 발생했습니다.\n" + error.message, "오류");
-                return;
-            }
-
-            const campaign = mockCampaigns.find(c => c.id === id);
-            if(campaign) { campaign.status = '승인 완료'; }
-            
-            renderAdminCampaigns();
-            renderInfluencerCampaigns();
-            
-            customAlert("해당 캠페인이 '승인 완료' 처리되었습니다.", "승인 완료");
-            
-        } catch (e) {
-            console.error(e);
-            customAlert("승인 처리 중 문제가 발생했습니다.", "오류");
-        }
-    }
-
-    async function rejectCampaign(id) {
-        const isConfirmed = await customConfirm("정말로 이 방송 승인 요청을 거절하시겠습니까?", "요청 거절 확인");
-        if (!isConfirmed) return;
-
-        try {
-            const { error } = await supabaseClient.from('campaign_simulations').update({ status: '거절됨' }).eq('id', id);
-            if (error) {
-                customAlert("거절 처리 중 오류가 발생했습니다.\n" + error.message, "오류");
-                return;
-            }
-            const campaign = mockCampaigns.find(c => c.id === id);
-            if(campaign) campaign.status = '거절됨';
-            
-            renderAdminCampaigns();
-            renderInfluencerCampaigns();
-            customAlert("해당 캠페인이 '거절됨' 처리되었습니다.", "거절 완료");
-        } catch (e) {
-            console.error(e);
-            customAlert("거절 처리 중 문제가 발생했습니다.", "오류");
-        }
-    }
-
-    async function deleteCampaignAdmin(id) {
-        const isConfirmed = await customConfirm("이 데이터를 완전히 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.", "데이터 삭제 확인");
-        if (!isConfirmed) return;
-
-        try {
-            const { error } = await supabaseClient.from('campaign_simulations').delete().eq('id', id);
-            if (error) throw error;
-            
-            mockCampaigns = mockCampaigns.filter(c => c.id !== id);
-            renderAdminCampaigns();
-            renderInfluencerCampaigns();
-            customAlert("성공적으로 삭제되었습니다.", "삭제 완료");
-        } catch (e) {
-            console.error(e);
-            customAlert("삭제 처리 중 오류가 발생했습니다.", "오류");
-        }
-    }
-
-    function generatePackageVisualizerHtml(productNames) {
-        if (!productNames || productNames.length === 0) return '<span style="color:var(--text-muted);">내역 없음</span>';
-        
-        let itemsHtml = [];
-        let namesArray = Array.isArray(productNames) ? productNames : (typeof productNames === 'string' ? productNames.split(',') : []);
-
-        namesArray.forEach(name => {
-            let cleanName = name.trim();
-            
-            let imgUrl = '';
-            const activeProd = productsData.find(p => p.cleanName === cleanName || p.name === cleanName);
-            if (activeProd && activeProd.imageList && activeProd.imageList.length > 0) {
-                imgUrl = activeProd.imageList[0];
-            } else {
-                imgUrl = productImageMap[cleanName] || '';
-            }
-
-            let imgTag = imgUrl 
-                ? `<img src="${imgUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 6px; background: #fff; padding: 2px;">`
-                : `<div style="width: 44px; height: 44px; border-radius: 8px; border: 1px dashed var(--border); margin-bottom: 6px; background: var(--bg-light); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #cbd5e1;">NO IMG</div>`;
-
-            itemsHtml.push(`
-                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 68px; flex-shrink: 0; white-space: normal;">
-                    ${imgTag}
-                    <span style="font-size: 0.65rem; line-height: 1.2; word-break: keep-all; color: var(--text-bold); font-weight: 600;">${cleanName}</span>
-                </div>
-            `);
-        });
-        
-        return `<div style="width: 100%; overflow-x: auto; padding-bottom: 6px;">
-                    <div style="display: inline-flex; align-items: center; gap: 6px; width: max-content;">
-                        ${itemsHtml.join('<div style="font-weight: bold; color: #cbd5e1; font-size: 1.1rem; flex-shrink: 0; margin: 0 2px;">+</div>')}
-                    </div>
-                </div>`;
-    }
-
-    function generateGiftVisualizerHtml(gifts) {
-        if (!gifts || gifts.length === 0) return '<span style="color:var(--text-muted); font-size:0.85rem;">사은품 없음</span>';
-        
-        let itemsHtml = [];
-        let giftsArray = Array.isArray(gifts) ? gifts : (typeof gifts === 'string' ? gifts.split(',') : []);
-
-        giftsArray.forEach(giftStr => {
-            let parts = giftStr.split('::');
-            let name = parts[0];
-            let qty = parts.length > 1 ? parts[1] : '';
-            let cleanName = (name || '').trim();
-            
-            let imgUrl = '';
-            const activeProd = productsData.find(p => p.cleanName === cleanName || p.name === cleanName);
-            if (activeProd && activeProd.imageList && activeProd.imageList.length > 0) {
-                imgUrl = activeProd.imageList[0];
-            } else {
-                imgUrl = productImageMap[cleanName] || '';
-            }
-            
-            let imgTag = imgUrl 
-                ? `<img src="${imgUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 6px; background: #fff; padding: 2px;">`
-                : `<div style="width: 44px; height: 44px; border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 6px; background: var(--bg-light); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #cbd5e1;">NO IMG</div>`;
-                
-            let qtyText = qty ? `<span style="font-size: 0.7rem; color: var(--accent); font-weight: 700; background: #eff6ff; padding: 2px 6px; border-radius: 4px; margin-top: 4px;">${formatNum(qty)}개</span>` : '';
-
-            itemsHtml.push(`
-                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 68px; flex-shrink: 0; white-space: normal;">
-                    ${imgTag}
-                    <span style="font-size: 0.65rem; line-height: 1.2; word-break: keep-all; color: var(--text-bold); font-weight: 600;">${cleanName}</span>
-                    ${qtyText}
-                </div>
-            `);
-        });
-        
-        return `<div style="width: 100%; overflow-x: auto; padding-bottom: 6px;">
-                    <div style="display: inline-flex; align-items: flex-start; gap: 6px; width: max-content;">
-                        ${itemsHtml.join('<div style="font-weight: bold; color: #cbd5e1; font-size: 1.1rem; flex-shrink: 0; margin: 0 2px; align-self: center;">+</div>')}
-                    </div>
-                </div>`;
-    }
-
-    function renderAdminCampaigns() {
-        const tbody = document.getElementById('campaignListBody');
-        if (mockCampaigns.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:32px; color:var(--text-muted);">수신된 확정 내역이 없습니다.</td></tr>`;
-            return;
-        }
-
-        let html = '';
-        mockCampaigns.forEach(c => {
-            const reqDate = new Date(c.created_at).toLocaleDateString();
-            const bDateObj = new Date(c.broadcast_date);
-            const bDateStr = `${bDateObj.getFullYear()}.${String(bDateObj.getMonth()+1).padStart(2,'0')}.${String(bDateObj.getDate()).padStart(2,'0')}`;
-            const channelStr = c.broadcast_channel && c.broadcast_channel !== '미입력' ? `<br><span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">[${c.broadcast_channel}]</span>` : '';
-            
-            const prodsHtml = generatePackageVisualizerHtml(c.products);
-            const giftsHtml = generateGiftVisualizerHtml(c.gifts);
-
-            let calcHqCm = c.hq_cm;
-            if (calcHqCm == null && c.hq_profit != null) {
-                const fallbackFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + getNum('fcContract');
-                const fallbackCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
-                calcHqCm = Number(c.hq_profit) + fallbackFc + fallbackCc;
-            }
-
-            const hqCmStr = calcHqCm != null ? formatNum(calcHqCm) + '원' : '-';
-            const hqOpStr = c.hq_profit != null ? formatNum(c.hq_profit) + '원' : '-';
-
-            let statusHtml = '';
-            if (c.status === '승인 대기중') {
-                statusHtml = `
-                    <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                        <span class="badge-pending">${c.status}</span>
-                        <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:center;">
-                            <button class="btn-approve-admin" onclick="approveCampaign(${c.id})" style="margin-top:0;">승인</button>
-                            <button class="btn-reject-admin" onclick="rejectCampaign(${c.id})" style="margin-top:0;">거절</button>
-                        </div>
-                        <button class="btn-delete-admin" onclick="deleteCampaignAdmin(${c.id})" style="margin-top:0; width:100%;">삭제</button>
-                    </div>
-                `;
-            } else if (c.status === '거절됨') {
-                statusHtml = `
-                    <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                        <span class="badge-rejected">${c.status}</span>
-                        <button class="btn-approve-admin" onclick="approveCampaign(${c.id})" style="margin-top:0; width:100%;">다시 승인</button>
-                        <button class="btn-delete-admin" onclick="deleteCampaignAdmin(${c.id})" style="margin-top:0; width:100%;">삭제</button>
-                    </div>
-                `;
-            } else {
-                statusHtml = `
-                    <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                        <span class="badge-approved">${c.status}</span>
-                        <button class="btn-delete-admin" onclick="deleteCampaignAdmin(${c.id})" style="margin-top:4px; width:100%;">삭제</button>
-                    </div>
-                `;
-            }
-
-            html += `
-                <tr style="background:#fff;">
-                    <td style="text-align:center; vertical-align: middle;">${reqDate}<br><span style="font-size:0.75rem; color:var(--text-muted);">${c.user_email || '알수없음'}</span></td>
-                    <td style="text-align:center; font-weight:700; color:var(--accent); vertical-align: middle;">${bDateStr}${channelStr}</td>
-                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${prodsHtml}</td>
-                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${giftsHtml}</td>
-                    <td style="text-align:center; font-weight:600; vertical-align: middle;">${formatNum(c.target_qty)}개</td>
-                    <td style="text-align:right; font-weight:700; color:var(--text-bold); vertical-align: middle;">${formatNum(c.partner_profit)}원</td>
-                    <td style="text-align:right; font-weight:700; color:var(--primary); vertical-align: middle;">${hqCmStr}</td>
-                    <td style="text-align:right; font-weight:700; color:var(--danger); vertical-align: middle;">${hqOpStr}</td>
-                    <td style="text-align:center; vertical-align: middle;">${statusHtml}</td>
-                </tr>
-            `;
-        });
-        tbody.innerHTML = html;
-    }
-
-    function renderInfluencerCampaigns() {
-        const tbody = document.getElementById('myCampaignListBody');
-        if(!tbody) return;
-        
-        const myEmail = document.getElementById('userEmailDisplay').innerText;
-        const myCampaigns = mockCampaigns.filter(c => c.user_email === myEmail);
-
-        if (myCampaigns.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">신청한 방송 내역이 없습니다.</td></tr>`;
-            return;
-        }
-
-        let html = '';
-        myCampaigns.forEach(c => {
-            const reqDate = new Date(c.created_at).toLocaleDateString();
-            const bDateObj = new Date(c.broadcast_date);
-            const bDateStr = `${bDateObj.getFullYear()}.${String(bDateObj.getMonth()+1).padStart(2,'0')}.${String(bDateObj.getDate()).padStart(2,'0')}`;
-            const channelStr = c.broadcast_channel && c.broadcast_channel !== '미입력' ? `<br><span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">[${c.broadcast_channel}]</span>` : '';
-            
-            const prodsHtml = generatePackageVisualizerHtml(c.products);
-            const giftsHtml = generateGiftVisualizerHtml(c.gifts);
-
-            let statusHtml = '';
-            if (c.status === '승인 대기중') {
-                statusHtml = `
-                    <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
-                        <span class="badge-pending">${c.status}</span>
-                        <button onclick="cancelCampaign(${c.id})" style="background:#fff; border:1px solid var(--danger); color:var(--danger); padding:4px 10px; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.2s;">요청 취소</button>
-                    </div>
-                `;
-            } else if (c.status === '거절됨') {
-                statusHtml = `<span class="badge-rejected">${c.status}</span>`;
-            } else {
-                statusHtml = `<span class="badge-approved">${c.status}</span>`;
-            }
-
-            html += `
-                <tr style="background:#fff;">
-                    <td style="text-align:center; vertical-align: middle;">${reqDate}</td>
-                    <td style="text-align:center; font-weight:700; color:var(--accent); vertical-align: middle;">${bDateStr}${channelStr}</td>
-                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${prodsHtml}</td>
-                    <td style="text-align:left; padding: 12px; max-width: 0; vertical-align: middle;">${giftsHtml}</td>
-                    <td style="text-align:center; font-weight:600; vertical-align: middle;">${formatNum(c.target_qty)}개</td>
-                    <td style="text-align:center; vertical-align: middle;">${statusHtml}</td>
-                </tr>
-            `;
-        });
-        tbody.innerHTML = html;
-    }
-
-    async function fetchCampaigns() {
-        try {
-            const { data, error } = await supabaseClient.from('campaign_simulations').select('*').order('created_at', { ascending: false });
-            if (!error && data && data.length > 0) {
-                mockCampaigns = data;
-            }
-        } catch(e) {
-            console.log("캠페인 내역 로드 무시됨 (초기설정)");
-        }
-        renderAdminCampaigns();
-        renderInfluencerCampaigns(); 
-    }
-
-    var productImageMap = {
-        'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9MaWZ0LXRvbmluZyBzdW4gcHJvdGVjdG9yIGNyZWFtLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDQ5NzksImV4cCI6MjA5NjgwNDk3OX0.JmfQ9_VRAYjXHFWdco4hqdMzvXlik2EJ6kMrKoUoWYA',
-        'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9icjMwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUxMDUsImV4cCI6MjA5NjgwNTEwNX0.utXjZK_UPv63dRtfqhBF5jnLrz3jSZ6LFdkwRN-U_WQ',
-        'Root Vitality Volume Shampoo': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/shampoo300ml.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9zaGFtcG9vMzAwbWwuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTEyNSwiZXhwIjoyMDk2ODA1MTI1fQ.uXQQA3Oz4iNR0FNjGENab_jLzuufF55X76dzQreclQQ',
-        'Phyto Protein Volumizing Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Vol30.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9Wb2wzMC53ZWJwIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTE2OSwiZXhwIjoxNzgyMzA5MTY5fQ.K2luZj-pScS59iA9qH8WSHOJb7L3LK8XlY-xXHxFNv0',
-        'Plan Tox Lifting Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/plan30.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9wbGFuMzAuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTIwMywiZXhwIjoyMDk2ODA1MjAzfQ.QB5TfAmdnnVnRxEK9YeYtwjF_q4-gXiMfXiq0FbJjPo',
-        'Expert Shot Scalp Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/scalp3ea.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9zY2FscDNlYS5qcGciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgxNDQ1MjQ3LCJleHAiOjIwOTY4MDUyNDd9.UIq0sncXY7R0BisI_QO9vtGdiqhGEQ-nT09HFfwLrbA',
-        'Ev Shot Skin Boosting Mask': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/mask.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9tYXNrLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDUyNzMsImV4cCI6MTc4MjMwOTI3M30.BCm0J8Rd3BpTw7UmuwyorhPvQWkH0uIljKN59dRQbwg',
-        'Active Barrier Hydrating Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/250707000867784.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS8yNTA3MDcwMDA4Njc3ODQuanBnIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MTQ0NTM2NywiZXhwIjoxNzgyMzA5MzY3fQ.hUKjhpuPoRD0a0Cvl5JShJzxznAavwPISbgOT2_ixQ8',
-        'Blue Crystal Hydrating Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Blue%20crystal%20hydrating%20ampoule.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9CbHVlIGNyeXN0YWwgaHlkcmF0aW5nIGFtcG91bGUuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2ODAsImV4cCI6MjA5NjgwNTY4MH0._ylMPkY3ip37yFfO9uJr8FLxThqJR-eV17UDEvHbNSU',
-        'Hyper Shot': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/hypershot.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9oeXBlcnNob3Qud2VicCIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU3MzgsImV4cCI6MjA5NjgwNTczOH0.EDNePKM0zrR_sOfSaLf3FIhF4cXuELce8AouWytiCVI',
-        'Cellular Water Ampoule Booster': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/ampoulbooster120.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9hbXBvdWxib29zdGVyMTIwLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2MDAsImV4cCI6MjA5NjgwNTYwMH0.MOp7XSTZ4T2GrDdpSIQkZzE4fgYZs5G0Z6huTCd8hG4',
-        'Core Impact': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/coreimpact.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jNzc5OGQ0YS02MzU1LTRlNmUtYTBjMC1mYjYwMGZlMWIxYzciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJNZWRpZmFiIEdsb2JhbCBJbWFnZS9jb3JlaW1wYWN0LmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODE0NDU2NTIsImV4cCI6MjA5NjgwNTY1Mn0.-i_vLHYLF0vRVYlz-OQ-XmBt3Xi48gtOcsbwBBIfqco'
-    };
-
-    var formatNum = (num) => { if(!isFinite(num)) return '0'; return Math.round(num).toLocaleString('ko-KR'); };
-    function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
-    function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
-
-    /* --- 신규 제품 등록 로직 --- */
-    function openAddProductModal() { document.getElementById('addProductModal').style.display = 'flex'; }
-    function closeAddProductModal() {
-        document.getElementById('addProductModal').style.display = 'none';
+    function openAddProductModal() {
+        document.getElementById('addProductModal').style.display = 'flex';
         document.getElementById('newProdName').value = '';
-        document.getElementById('newProdChannel').value = '일반';
-        document.getElementById('newProdMainCat').value = '';
-        document.getElementById('newProdSubCat').value = '';
         document.getElementById('newProdMsrp').value = '';
         document.getElementById('newProdCost').value = '';
+        document.getElementById('newProdMainCat').value = '';
+        document.getElementById('newProdSubCat').value = '';
     }
+    function closeAddProductModal() { document.getElementById('addProductModal').style.display = 'none'; }
 
     async function submitNewProduct() {
         const name = document.getElementById('newProdName').value.trim();
@@ -1349,44 +683,166 @@
         if (!name) return customAlert("제품명을 입력해주세요.");
 
         const btn = document.getElementById('btnSubmitNewProd');
-        btn.innerText = "데이터베이스 저장 중...";
-        btn.disabled = true;
+        btn.innerText = "데이터베이스 저장 중..."; btn.disabled = true;
+
+        try {
+            // 安全한 고유 ID 생성기 사용 (null 회피)
+            const newProductId = generateSafeUUID();
+
+            const { data: prodData, error: prodErr } = await supabaseClient.from('products')
+                .insert([{ id: newProductId, clean_name: name, main_category: mainCat, sub_category: subCat }])
+                .select('id').single();
+            if (prodErr) throw new Error("마스터 DB 오류:\n" + prodErr.message);
+
+            const productId = prodData.id;
+            
+            const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
+                id: generateSafeUUID(), product_id: productId, product_name: name, category: channel, 
+                sub_category_1: mainCat, sub_category_2: subCat, unit_price: msrp, is_active: true
+            }]);
+            if (catErr) throw new Error("카탈로그 오류:\n" + catErr.message);
+
+            const { error: priceErr } = await supabaseClient.from('product_prices').insert([{
+                id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrp
+            }]);
+            if (priceErr) throw new Error("가격 DB 오류:\n" + priceErr.message);
+
+            const { error: costErr } = await supabaseClient.from('product_costs').insert([{
+                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', production_cost: cost,
+                effective_date: new Date().toISOString().split('T')[0]
+            }]);
+            if (costErr) throw new Error("원가 DB 오류:\n" + costErr.message);
+
+            customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
+            closeAddProductModal();
+            fetchProducts(); 
+        } catch (error) {
+            console.error(error);
+            customAlert("데이터베이스 저장 오류 (Supabase 권한을 확인하세요)\n\n" + error.message, "오류");
+        } finally { btn.innerText = "DB에 통합 등록하기"; btn.disabled = false; }
+    }
+
+    window.editCost = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", (prod.cost||0).toString());
+        if(!newValStr) return;
+        
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            document.getElementById(`prod-${catalogId}`).style.opacity = '0.5';
+            try {
+                const { data: existing, error: fetchErr } = await supabaseClient.from('product_costs').select('id').eq('product_id', productId).maybeSingle();
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient.from('product_costs').update({ production_cost: newVal, updated_at: new Date().toISOString() }).eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient.from('product_costs').insert([{
+                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', production_cost: newVal,
+                        effective_date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+                    }]);
+                    if (insertErr) throw insertErr;
+                }
+                prod.cost = newVal;
+                renderProducts(); updateAutoSupplyRatio(); calculate();
+                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
+            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); } 
+            finally { document.getElementById(`prod-${catalogId}`).style.opacity = '1'; }
+        }
+    };
+
+    function renderCategoryTabs() {
+        const container = document.getElementById('category-tab-container');
+        if(!container) return;
+        container.innerHTML = '';
+        
+        categoryList.forEach(cat => {
+            let tab = document.createElement('div');
+            tab.className = `channel-tab ${currentCategoryFilter === cat ? 'active' : ''}`;
+            tab.onclick = function() { setCategoryTab(cat, this); };
+            tab.innerText = cat;
+            container.appendChild(tab);
+        });
+    }
+
+    function setCategoryTab(cat, element) {
+        document.querySelectorAll('.channel-tab').forEach(el => el.classList.remove('active'));
+        if(element) element.classList.add('active');
+        currentCategoryFilter = cat;
+        if(productsData.length > 0) renderProducts();
+    }
+
+    function openAddProductModal() {
+        document.getElementById('addProductModal').style.display = 'flex';
+        document.getElementById('newProdName').value = '';
+        document.getElementById('newProdMsrp').value = '';
+        document.getElementById('newProdCost').value = '';
+        document.getElementById('newProdCat').value = '';
+        document.getElementById('newProdSubCat1').value = currentCategoryFilter || '';
+        document.getElementById('newProdSubCat2').value = '';
+        
+        // 현재 DB에 있는 분류 데이터를 가져와서 자동완성(Datalist) 목록 생성
+        const catSet = new Set();
+        const subCat1Set = new Set();
+        const subCat2Set = new Set();
+
+        productsData.forEach(p => {
+            if(p.formCategory && p.formCategory !== '기타') catSet.add(p.formCategory);
+            if(p.mainCategory) subCat1Set.add(p.mainCategory);
+            if(p.subCategory && p.subCategory !== '기본') subCat2Set.add(p.subCategory);
+        });
+
+        document.getElementById('catList').innerHTML = Array.from(catSet).map(c => `<option value="${c}">`).join('');
+        document.getElementById('subCat1List').innerHTML = Array.from(subCat1Set).map(c => `<option value="${c}">`).join('');
+        document.getElementById('subCat2List').innerHTML = Array.from(subCat2Set).map(c => `<option value="${c}">`).join('');
+    }
+    
+    function closeAddProductModal() { document.getElementById('addProductModal').style.display = 'none'; }
+
+    async function submitNewProduct() {
+        const name = document.getElementById('newProdName').value.trim();
+        const cat = document.getElementById('newProdCat').value.trim() || '기타';
+        const subCat1 = document.getElementById('newProdSubCat1').value.trim() || '기타';
+        const subCat2 = document.getElementById('newProdSubCat2').value.trim() || '기본';
+        const msrp = getNum('newProdMsrp');
+        const cost = getNum('newProdCost');
+
+        if (!name) return customAlert("제품명을 입력해주세요.");
+
+        const btn = document.getElementById('btnSubmitNewProd');
+        btn.innerText = "데이터베이스 저장 중..."; btn.disabled = true;
 
         try {
             // 1. products 테이블에 기본 제품 정보 Insert (Insert 후 생성된 id 반환받기)
-            const { data: prodData, error: prodErr } = await supabaseClient
-                .from('products')
-                .insert([{ clean_name: name, main_category: mainCat, sub_category: subCat }])
+            const newProductId = crypto.randomUUID();
+            
+            const { data: prodData, error: prodErr } = await supabaseClient.from('products')
+                .insert([{ id: newProductId, clean_name: name, main_category: subCat1, sub_category: subCat2 }])
                 .select('id').single();
-
             if (prodErr) throw new Error("Product 마스터 등록 실패:\n" + prodErr.message);
-            const productId = prodData.id;
 
+            const productId = prodData.id;
+            
             // 2. form_catalog_master 테이블에 카탈로그 노출용 정보 Insert
             const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
-                product_id: productId,
-                product_name: name,
-                category: channel, // '일반', '약국용', '병의원용' 직접 저장
-                sub_category_1: mainCat,
-                sub_category_2: subCat,
-                unit_price: msrp,
-                is_active: true
+                id: crypto.randomUUID(), product_id: productId, product_name: name, category: cat, 
+                sub_category_1: subCat1, sub_category_2: subCat2, unit_price: msrp, is_active: true
             }]);
             if (catErr) throw new Error("카탈로그 등록 실패:\n" + catErr.message);
 
             // 3. product_prices 테이블에 가격 정보 Insert
             const { error: priceErr } = await supabaseClient.from('product_prices').insert([{
-                product_id: productId,
-                currency: 'KRW',
-                b2c_msrp: msrp
+                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrp
             }]);
             if (priceErr) throw new Error("가격 등록 실패:\n" + priceErr.message);
 
             // 4. product_costs 테이블에 원가 정보 Insert
             const { error: costErr } = await supabaseClient.from('product_costs').insert([{
-                product_id: productId,
-                currency: 'KRW',
-                production_cost: cost,
+                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', production_cost: cost,
                 effective_date: new Date().toISOString().split('T')[0]
             }]);
             if (costErr) throw new Error("원가 등록 실패:\n" + costErr.message);
@@ -1394,100 +850,429 @@
             customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
             closeAddProductModal();
             fetchProducts(); // 즉시 리스트 새로고침
-
         } catch (error) {
             console.error(error);
             customAlert("데이터베이스 저장 오류 (Supabase RLS 권한을 확인하세요)\n\n" + error.message, "오류");
-        } finally {
-            btn.innerText = "DB에 통합 등록하기";
-            btn.disabled = false;
+        } finally { btn.innerText = "DB에 통합 등록하기"; btn.disabled = false; }
+    }
+    
+    window.editCost = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", (prod.cost||0).toString());
+        if(!newValStr) return;
+        
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            const card = document.getElementById(`prod-${catalogId}`);
+            if(card) card.style.opacity = '0.5';
+            try {
+                const { data: existing, error: fetchErr } = await supabaseClient.from('product_costs').select('id').eq('product_id', productId).maybeSingle();
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient.from('product_costs').update({ production_cost: newVal, updated_at: new Date().toISOString() }).eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient.from('product_costs').insert([{
+                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', production_cost: newVal,
+                        effective_date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+                    }]);
+                    if (insertErr) throw insertErr;
+                }
+                prod.cost = newVal;
+                renderProducts(); updateAutoSupplyRatio(); calculate();
+                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
+            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); } 
+            finally { if(card) card.style.opacity = '1'; }
+        }
+    };
+
+    function populateSelects() {
+        const sSel = document.getElementById('sampleSelect'); const gSel = document.getElementById('giftSelect');
+        sSel.innerHTML = '<option value="">선택</option>'; gSel.innerHTML = '<option value="">선택</option>';
+        productsData.forEach(p => { const opt = `<option value="${p.id}">${p.name} (${p.mainCategory})</option>`; sSel.innerHTML += opt; gSel.innerHTML += opt; });
+    }
+
+    function addSample() {
+        const id = document.getElementById('sampleSelect').value; const qty = getNum('sampleQty');
+        if(!id || qty <= 0) return;
+        const p = productsData.find(x => x.id === id);
+        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty }); updateSampleUI();
+    }
+    function removeSample(idx) { addedSamples.splice(idx, 1); updateSampleUI(); }
+    function updateSampleUI() {
+        let listHtml = '', totalCost = 0;
+        addedSamples.forEach((s, idx) => {
+            let lineCost = s.cost * s.qty; totalCost += lineCost;
+            listHtml += `<div class="added-item"><span>${s.name} x ${formatNum(s.qty)}개</span><div><span class="admin-only" style="margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeSample(${idx})">X</span></div></div>`;
+        });
+        document.getElementById('sampleAddedList').innerHTML = listHtml;
+        document.getElementById('sampleCostDisplay').innerText = formatNum(totalCost); document.getElementById('fcSamples').value = formatNum(totalCost); calculate();
+    }
+
+    function addGift() {
+        const id = document.getElementById('giftSelect').value; const qty = getNum('giftQty');
+        if(!id || qty <= 0) return;
+        const p = productsData.find(x => x.id === id);
+        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty }); updateGiftUI();
+    }
+    function removeGift(idx) { addedGifts.splice(idx, 1); updateGiftUI(); }
+    function updateGiftUI() {
+        let listHtml = '', totalCost = 0;
+        addedGifts.forEach((g, idx) => {
+            let lineCost = g.cost * g.qty; totalCost += lineCost;
+            listHtml += `<div class="added-item"><span>${g.name} x ${formatNum(g.qty)}개</span><div><span class="admin-only" style="margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeGift(${idx})">X</span></div></div>`;
+        });
+        document.getElementById('giftAddedList').innerHTML = listHtml;
+        document.getElementById('giftCostDisplay').innerText = formatNum(totalCost); document.getElementById('fcGifts').value = formatNum(totalCost); calculate();
+    }
+
+    function updateFixedCostsByPeople() {
+        const p = getNum('fcPeople');
+        document.getElementById('fcLabor').value = formatNum(p * 150000); document.getElementById('fcTravel').value = formatNum(p * 50000); document.getElementById('fcFood').value = formatNum(p * 30000); calculate();
+    }
+
+    function updateAutoSupplyRatio() {
+        if (selectedProducts.length === 0) { document.getElementById('ratioSupply').value = 0; document.getElementById('displayTotalCost').innerText = '0 원'; return; }
+        let tc = 0, tpVatInc = 0;
+        selectedProducts.forEach(id => { const p = productsData.find(x => x.id === id); if (p) { tc += p.cost; tpVatInc += p.price; } });
+        const tpNet = tpVatInc / 1.1;
+        document.getElementById('displayTotalCost').innerText = formatNum(tc) + ' 원';
+        document.getElementById('ratioSupply').value = tpNet > 0 ? ((tc / tpNet) * 100).toFixed(2) : 0;
+    }
+
+    function renderProducts() {
+        const container = document.getElementById('product-list'); container.innerHTML = '';
+        const filteredProducts = productsData.filter(p => p.mainCategory === currentCategoryFilter);
+        
+        if (filteredProducts.length === 0) { 
+            container.innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-muted);">해당 분류에 등록된 제품이 없습니다.</div>`; 
+            return; 
+        }
+
+        const grouped = {};
+        filteredProducts.forEach(prod => {
+            let subGroup = prod.subCategory || '기본';
+            let formCat = prod.formCategory || '기타';
+            
+            if (!grouped[subGroup]) grouped[subGroup] = {};
+            if (!grouped[subGroup][formCat]) grouped[subGroup][formCat] = [];
+            grouped[subGroup][formCat].push(prod);
+        });
+
+        // 서브 카테고리 정렬 순서 강제 지정 (Home Care -> Clinic / Pharmacy -> Clinic)
+        const sortOrder = {
+            'home care': 1,
+            'clinic / pharmacy': 2,
+            'clinic': 3
+        };
+
+        const sortedSubGroups = Object.keys(grouped).sort((a, b) => {
+            const aKey = a.toLowerCase().trim();
+            const bKey = b.toLowerCase().trim();
+            const aRank = sortOrder[aKey] || 99;
+            const bRank = sortOrder[bKey] || 99;
+            if (aRank !== bRank) return aRank - bRank;
+            return a.localeCompare(b);
+        });
+
+        for (const subName of sortedSubGroups) {
+            const formCats = grouped[subName];
+            if (Object.keys(formCats).length === 0) continue;
+            
+            if (subName !== '기본') {
+                const subHeader = document.createElement('div');
+                subHeader.className = 'subcategory-header';
+                subHeader.innerText = subName;
+                container.appendChild(subHeader);
+            }
+            
+            const sortedFormCats = Object.keys(formCats).sort();
+            
+            for (const formCat of sortedFormCats) {
+                const prods = formCats[formCat];
+                if (prods.length === 0) continue;
+                
+                // 폼 카탈로그 메인 카테고리(category) 헤더 표시
+                if (formCat !== '기타' && formCat !== '') {
+                    const formCatHeader = document.createElement('div');
+                    formCatHeader.style.cssText = "font-size: 0.9rem; font-weight: 700; color: #64748b; margin-top: 12px; margin-bottom: 12px; padding-left: 12px; border-left: 3px solid #cbd5e1; letter-spacing: -0.01em;";
+                    formCatHeader.innerText = formCat;
+                    container.appendChild(formCatHeader);
+                }
+                
+                const grid = document.createElement('div'); grid.className = 'product-grid-inner';
+                prods.forEach(prod => {
+                    const card = document.createElement('div');
+                    card.className = `product-card ${selectedProducts.includes(prod.id) ? 'selected' : ''}`;
+                    card.id = `prod-${prod.id}`; 
+
+                const hasImages = prod.imageList && prod.imageList.length > 0;
+                const currentImg = hasImages ? prod.imageList[prod.currentImgIdx || 0] : null;
+
+                let imgHtml = '';
+                if (hasImages) {
+                    imgHtml = `<img src="${currentImg}" alt="${prod.name}">`;
+                    if (prod.imageList.length > 1) {
+                        imgHtml += `
+                            <button class="carousel-btn left" onclick="event.stopPropagation(); window.changeImage('${prod.id}', -1)">&#10094;</button>
+                            <button class="carousel-btn right" onclick="event.stopPropagation(); window.changeImage('${prod.id}', 1)">&#10095;</button>
+                            <div class="carousel-counter">${(prod.currentImgIdx || 0) + 1} / ${prod.imageList.length}</div>
+                        `;
+                    }
+                } else {
+                    imgHtml = `<div class="no-img-box">NO IMG</div>`;
+                }
+                
+                let deleteBtnHtml = '';
+                if (document.body.classList.contains('mode-admin') && hasImages && prod.productId) {
+                    deleteBtnHtml = `
+                        <button class="btn-delete-img admin-only" onclick="event.stopPropagation(); if(typeof window.deleteProductImage === 'function') window.deleteProductImage('${prod.id}', '${prod.productId}', ${prod.currentImgIdx || 0})" title="현재 이미지 삭제">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    `;
+                }
+
+                let uploadBtnHtml = '';
+                if (prod.productId) {
+                    uploadBtnHtml = `
+                    <label class="admin-only" style="position:absolute; top:8px; right:8px; cursor:pointer; background:rgba(255,255,255,0.95); border:1px solid var(--border); padding:6px; border-radius:50%; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;" onclick="event.stopPropagation();" title="다중 업로드 또는 이미지를 카드에 드롭하세요">
+                        <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        <input type="file" style="display:none;" accept="image/*" multiple onchange="if(typeof window.handleFileSelect === 'function') window.handleFileSelect(event, '${prod.id}', '${prod.productId}')">
+                    </label>`;
+                }
+
+                // --- 복구된 가격 수정 버튼 및 HTML 구조 ---
+                card.innerHTML = `
+                    <div class="carousel-container">
+                        ${deleteBtnHtml}
+                        ${uploadBtnHtml}
+                        ${imgHtml}
+                    </div>
+                    <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px;">${prod.name}</div>
+                    
+                    <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
+                    
+                    <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600;">
+                        자사몰가: <span id="mall-${prod.id}">${formatNum(prod.mallPrice)}원</span> 
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'mall')">수정</span>
+                    </div>
+                    
+                    <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600;">
+                        온라인 최저가: <span id="lowest-${prod.id}">${formatNum(prod.lowestPrice)}원</span> 
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'lowest')">수정</span>
+                    </div>
+                    
+                    <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold);">
+                        프로모션가: ${formatNum(prod.price)}원 
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'price')">수정</span>
+                    </div>
+                    
+                    <div class="cost-badge admin-only" style="cursor:pointer; display:inline-block;" onclick="event.stopPropagation(); if(typeof window.editCost === 'function') window.editCost('${prod.id}', '${prod.productId}')" title="클릭하여 원가 수정">
+                        원가: ${formatNum(prod.cost)}원 <span style="font-size:0.75rem; text-decoration:underline; font-weight:normal; margin-left:4px; color:var(--danger);">수정</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            container.appendChild(grid);
+            }
         }
     }
 
-    function customAlert(msg, title="알림") {
-        return new Promise(resolve => {
-            const modal = document.getElementById('customModal');
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMessage').innerText = msg;
-            document.getElementById('modalInput').style.display = 'none';
-            document.getElementById('modalCancelBtn').style.display = 'none'; 
-            const okBtn = document.getElementById('modalOkBtn');
-            
-            modal.style.display = 'flex';
-            okBtn.onclick = () => { modal.style.display = 'none'; resolve(); };
-        });
+    function toggleProduct(id) {
+        const index = selectedProducts.indexOf(id);
+        if (index > -1) { if (selectedProducts.length > 1) { selectedProducts.splice(index, 1); document.getElementById(`prod-${id}`).classList.remove('selected'); } } 
+        else { selectedProducts.push(id); document.getElementById(`prod-${id}`).classList.add('selected'); }
+        updateAutoSupplyRatio(); calculate();
     }
 
-    function customConfirm(msg, title="확인") {
-        return new Promise(resolve => {
-            const modal = document.getElementById('customModal');
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMessage').innerText = msg;
-            document.getElementById('modalInput').style.display = 'none';
-            
-            const okBtn = document.getElementById('modalOkBtn');
-            const cancelBtn = document.getElementById('modalCancelBtn');
-            
-            cancelBtn.style.display = 'inline-block';
-            
-            modal.style.display = 'flex';
-            
-            okBtn.onclick = () => { modal.style.display = 'none'; resolve(true); };
-            cancelBtn.onclick = () => { modal.style.display = 'none'; resolve(false); };
-        });
-    }
+    // --- 누락되었던 이미지 및 가격 수정 관련 기능 롤백 복구 ---
+    window.changeImage = function(catalogId, direction) {
+        const prod = productsData.find(p => p.id === catalogId);
+        if (!prod || !prod.imageList || prod.imageList.length <= 1) return;
+        prod.currentImgIdx += direction;
+        if (prod.currentImgIdx < 0) prod.currentImgIdx = prod.imageList.length - 1;
+        if (prod.currentImgIdx >= prod.imageList.length) prod.currentImgIdx = 0;
+        renderProducts();
+    };
 
-    function customPrompt(title, msg, placeholder="URL을 입력하세요", defaultValue="") {
-        return new Promise(resolve => {
-            const modal = document.getElementById('customModal');
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMessage').innerText = msg;
-            
-            const input = document.getElementById('modalInput');
-            input.style.display = 'block'; 
-            input.value = defaultValue; 
-            input.placeholder = placeholder;
-            
-            document.getElementById('modalCancelBtn').style.display = 'inline-block';
-            
-            const okBtn = document.getElementById('modalOkBtn');
-            const cancelBtn = document.getElementById('modalCancelBtn');
-            
-            modal.style.display = 'flex';
-            okBtn.onclick = () => { modal.style.display = 'none'; resolve(input.value); };
-            cancelBtn.onclick = () => { modal.style.display = 'none'; resolve(null); };
-        });
-    }
+    window.handleFileSelect = function(event, catalogId, productId) {
+        const files = Array.from(event.target.files);
+        if (files.length > 0) processImageUpload(files, catalogId, productId);
+    };
 
-    function captureImage() {
-        const target = document.getElementById('partner-panel');
-        const btns = target.querySelectorAll('.btn-print, .btn-confirm, p');
-        btns.forEach(btn => btn.style.display = 'none'); 
+    window.processImageUpload = async function(files, catalogId, productId) {
+        if(!files || files.length === 0 || !productId) return;
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) { card.style.opacity = '0.5'; card.classList.remove('drag-over'); }
+        try {
+            const prod = productsData.find(p => p.id === catalogId);
+            let currentImages = [...(prod.imageList || [])];
+            for (const file of files) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${productId}-${Date.now()}-${Math.floor(Math.random()*1000)}.${fileExt}`;
+                const filePath = `public/${fileName}`;
+                const { error: uploadError } = await supabaseClient.storage.from('product_images').upload(filePath, file, { upsert: true });
+                if (uploadError) throw uploadError;
+                const { data: publicUrlData } = supabaseClient.storage.from('product_images').getPublicUrl(filePath);
+                currentImages.push(publicUrlData.publicUrl + '?t=' + Date.now());
+            }
+            const { error: dbError } = await supabaseClient.from('products').update({ image_url: JSON.stringify(currentImages) }).eq('id', productId);
+            if (dbError) throw dbError;
+            if(prod) { prod.imageList = currentImages; prod.currentImgIdx = currentImages.length - 1; renderProducts(); calculate(); }
+            customAlert("이미지가 성공적으로 업로드되었습니다.");
+        } catch(e) { console.error(e); customAlert("업로드 실패: " + e.message); } 
+        finally { if(card) card.style.opacity = '1'; }
+    };
+
+    window.deleteProductImage = async function(catalogId, productId, imgIdx) {
+        const isConfirmed = await customConfirm("현재 보고 있는 이미지를 삭제하시겠습니까?", "이미지 삭제");
+        if (!isConfirmed) return;
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod || !prod.imageList || prod.imageList.length <= imgIdx) return;
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) card.style.opacity = '0.5';
+        try {
+            const urlToDelete = prod.imageList[imgIdx];
+            const newImages = [...prod.imageList];
+            newImages.splice(imgIdx, 1);
+            const dbValue = newImages.length > 0 ? JSON.stringify(newImages) : null;
+            const { error: dbError } = await supabaseClient.from('products').update({ image_url: dbValue }).eq('id', productId);
+            if (dbError) throw dbError;
+            try {
+                const urlObj = new URL(urlToDelete);
+                const pathParts = urlObj.pathname.split('/product_images/');
+                if (pathParts.length > 1) {
+                    let filePath = pathParts[1].split('?')[0]; 
+                    await supabaseClient.storage.from('product_images').remove([decodeURIComponent(filePath)]);
+                }
+            } catch(e) {}
+            prod.imageList = newImages;
+            if (prod.currentImgIdx >= newImages.length) prod.currentImgIdx = Math.max(0, newImages.length - 1);
+            renderProducts(); calculate();
+        } catch(e) { console.error(e); customAlert("삭제 실패: " + e.message); } 
+        finally { if(card) card.style.opacity = '1'; }
+    };
+
+    window.editPrice = async function(id, type) {
+        const prod = productsData.find(p => p.id === id);
+        if(!prod) return;
+        const typeName = type === 'price' ? '공구 프로모션가' : (type === 'mall' ? '자사몰가' : '온라인 최저가');
+        const currentVal = type === 'price' ? prod.price : (type === 'mall' ? prod.mallPrice : prod.lowestPrice);
+        const newValStr = await customPrompt(`${typeName} 변경`, `새로운 ${typeName}를 입력해주세요.`, "가격을 입력하세요", currentVal.toString());
+        if(!newValStr) return;
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal > 0) {
+            if(type === 'price') prod.price = newVal;
+            else if (type === 'mall') prod.mallPrice = newVal;
+            else { prod.lowestPrice = newVal; prod.source = '수동입력'; }
+            renderProducts(); updateAutoSupplyRatio(); calculate();
+        }
+    };
+
+    function calculate() {
+        if (selectedProducts.length === 0) return;
+        let totalPromo = 0, totalMsrp = 0, totalLowest = 0;
         
-        html2canvas(target, { scale: 2, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
-            canvas.toBlob(blob => {
-                try {
-                    navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ]).then(() => {
-                        customAlert("클립보드에 대시보드 이미지가 복사되었습니다.\n메신저에 바로 붙여넣기(Ctrl+V) 하세요.", "복사 완료");
-                    }).catch(err => { fallbackDownload(canvas); });
-                } catch (err) { fallbackDownload(canvas); }
-            }, 'image/png');
-            btns.forEach(btn => btn.style.display = '');
-        }).catch(err => {
-            console.error(err);
-            btns.forEach(btn => btn.style.display = '');
-            customAlert("이미지 생성 중 오류가 발생했습니다.");
+        selectedProducts.forEach(id => {
+            const p = productsData.find(x => x.id === id);
+            if(p) { totalPromo += p.price; totalMsrp += p.msrp; totalLowest += p.lowestPrice || p.price; }
         });
+        
+        const unitRev = totalPromo / 1.1;
+        const targetQty = getNum('targetQtyAdmin'); 
+        const gongguRate = Number(document.getElementById('ratioGonggu').value);
+        const contractFee = getNum('fcContract'); 
+        
+        const totalVcRatio = (Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + gongguRate + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)) / 100; 
+        
+        const unitVc = unitRev * totalVcRatio; const unitCm = unitRev * (1 - totalVcRatio);
+        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
+        const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
+        
+        document.getElementById('fcContractDisplay').value = formatNum(contractFee);
+        document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
+        document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
+
+        const totalFixedAndCommon = totalFc + totalCc;
+        const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
+        const partnerProfit = ((targetQty * unitRev) * (gongguRate / 100)) + contractFee;
+        const hqTargetOp = (targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc;
+
+        document.querySelectorAll('.partnerProfitAmount').forEach(el => el.textContent = formatNum(partnerProfit));
+        document.querySelectorAll('.partnerProfitRate').forEach(el => el.textContent = gongguRate);
+        document.querySelectorAll('.partnerProfitContract').forEach(el => el.textContent = formatNum(contractFee));
+        document.querySelectorAll('.hqProfitAmount').forEach(el => el.textContent = formatNum(hqTargetOp));
+        document.querySelectorAll('.partnerProfitQty').forEach(el => el.textContent = formatNum(targetQty));
     }
 
-    function fallbackDownload(canvas) {
-        const link = document.createElement('a');
-        link.download = '공동구매_정산안내.png'; link.href = canvas.toDataURL('image/png'); link.click();
-        customAlert("보안 정책으로 인해 클립보드 복사 대신 파일로 저장되었습니다.", "저장 완료");
+    async function fetchAllUsersForRoles() {
+        try {
+            const { data } = await supabaseClient.from('user_profiles').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('adminRolesListBody'); let html = '';
+            data.forEach(u => {
+                if (u.email === SUPER_ADMIN) return; 
+                const currentRole = u.role === 'admin' ? '<span class="badge-approved">관리자</span>' : '<span style="color:var(--text-muted);">일반 인플루언서</span>';
+                let actionBtn = u.role === 'admin' ? `<button class="btn-reject-admin" onclick="revokeAdmin('${u.id}')" style="margin:0;">권한 회수</button>` : `<button class="btn-approve-admin" onclick="grantAdmin('${u.id}')" style="margin:0;">관리자 권한 부여</button>`;
+                html += `<tr style="background:#fff;"><td style="text-align:center; font-weight:600;">${u.email}</td><td style="text-align:center;">${currentRole}</td><td style="text-align:center;">${actionBtn}</td></tr>`;
+            });
+            tbody.innerHTML = html || `<tr><td colspan="3" style="text-align:center; padding:32px;">사용자가 없습니다.</td></tr>`;
+        } catch (e) { console.error(e); }
     }
+
+    async function grantAdmin(id) {
+        try { await supabaseClient.from('user_profiles').update({ role: 'admin' }).eq('id', id); customAlert("관리자 권한 부여 완료."); fetchAllUsersForRoles(); } catch(e) { }
+    }
+    async function revokeAdmin(id) {
+        const confirm = await customConfirm("관리자 권한을 회수하시겠습니까?"); if(!confirm) return;
+        try { await supabaseClient.from('user_profiles').update({ role: null }).eq('id', id); customAlert("권한 회수 완료."); fetchAllUsersForRoles(); } catch(e) { }
+    }
+
+    async function fetchPendingUsers() {
+        try {
+            const { data } = await supabaseClient.from('user_profiles').select('*').eq('is_approved', false).order('created_at', { ascending: false });
+            const tbody = document.getElementById('userApprovalListBody');
+            if (!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px;">대기 중인 사용자가 없습니다.</td></tr>`;
+            let html = '';
+            data.forEach(u => {
+                html += `<tr style="background:#fff;"><td style="text-align:center;">${new Date(u.created_at).toLocaleDateString()}</td><td style="text-align:center; font-weight:600;">${u.email}</td>
+                        <td style="text-align:center;"><button class="btn-approve-admin" onclick="approveUser('${u.id}')" style="margin:0 4px;">승인</button><button class="btn-reject-admin" onclick="rejectUser('${u.id}')" style="margin:0 4px;">거절</button></td></tr>`;
+            });
+            tbody.innerHTML = html;
+        } catch (e) { console.error(e); }
+    }
+
+    async function approveUser(id) {
+        try { await supabaseClient.from('user_profiles').update({ is_approved: true }).eq('id', id); customAlert("승인되었습니다."); fetchPendingUsers(); } catch (e) { }
+    }
+    async function rejectUser(id) {
+        const confirm = await customConfirm("거절하시겠습니까?"); if(!confirm) return;
+        try { await supabaseClient.from('user_profiles').delete().eq('id', id); customAlert("거절되었습니다."); fetchPendingUsers(); } catch (e) { }
+    }
+    
+    var productImageMap = {
+        'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg',
+        'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg',
+        'Root Vitality Volume Shampoo': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/shampoo300ml.jpg',
+        'Phyto Protein Volumizing Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Vol30.webp',
+        'Plan Tox Lifting Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/plan30.jpg',
+        'Expert Shot Scalp Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/scalp3ea.jpg',
+        'Ev Shot Skin Boosting Mask': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/mask.png',
+        'Active Barrier Hydrating Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/250707000867784.jpg',
+        'Blue Crystal Hydrating Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Blue%20crystal%20hydrating%20ampoule.jpeg',
+        'Hyper Shot': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/hypershot.webp',
+        'Cellular Water Ampoule Booster': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/ampoulbooster120.jpg',
+        'Core Impact': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/coreimpact.jpg'
+    };
 
     async function fetchProducts() {
         try {
+            document.getElementById('db-status').style.display = 'block';
+            document.getElementById('db-status').innerText = '데이터베이스를 불러오는 중입니다...';
+
             const { data: formCatalog, error: formErr } = await supabaseClient.from('form_catalog_master').select('*').eq('is_active', true);
             if (formErr) throw formErr;
 
@@ -1499,11 +1284,8 @@
             if (!pricesErr && pricesData) {
                 pricesData.forEach(p => {
                     if (p.b2c_msrp != null) {
-                        if (p.currency === 'KRW' || !p.currency) {
-                            priceMapByProdId[p.product_id] = Number(p.b2c_msrp);
-                        } else if (p.currency === 'USD' && !priceMapByProdId[p.product_id]) {
-                            priceMapByProdId[p.product_id] = Number(p.b2c_msrp) * 1400;
-                        }
+                        if (p.currency === 'KRW' || !p.currency) priceMapByProdId[p.product_id] = Number(p.b2c_msrp);
+                        else if (p.currency === 'USD' && !priceMapByProdId[p.product_id]) priceMapByProdId[p.product_id] = Number(p.b2c_msrp) * 1400;
                     }
                 });
             }
@@ -1522,9 +1304,7 @@
                         try {
                             let parsed = JSON.parse(p.image_url);
                             imageUrlMapByProdId[p.id] = Array.isArray(parsed) ? parsed : [p.image_url];
-                        } catch(e) {
-                            imageUrlMapByProdId[p.id] = [p.image_url];
-                        }
+                        } catch(e) { imageUrlMapByProdId[p.id] = [p.image_url]; }
                     } else {
                         imageUrlMapByProdId[p.id] = [];
                     }
@@ -1532,103 +1312,73 @@
             }
             
             productsData = [];
-            
+            let seenNames = new Set();
+            let catSet = new Set();
+
             if (formCatalog) {
-                let seenNames = new Set(); // 중복 검사용 Set
+                let seenNames = new Set(); 
 
                 formCatalog.forEach(f => {
                     let pName = (f.product_name || '').trim();
 
-                    // 불필요한 제품 하드코딩 제외
                     if (pName === 'Root Vitality Volume Shampoo 100ml') return;
-
-                    // 중복 제품군 대표 이름으로 통합 필터링 (코어임팩트, 하이퍼샷)
+                    if (pName.toLowerCase() === 'crystal') return; // 페이스 클리닉의 Crystal 제품 단독 강제 제외
+                    
                     if (pName.toLowerCase().includes('core impact')) pName = 'Core Impact';
                     if (pName.toLowerCase().includes('hyper shot')) pName = 'Hyper Shot';
+                    
+                    let mainCat = (f.sub_category_1 || '기타').trim();
+                    let subCat = (f.sub_category_2 || '기본').trim();
+                    let formCat = (f.category || '기타').trim();
 
-                    // 이미 추가된 이름이면 건너뜀 (중복 제거)
+                    // 불필요한 카테고리 스킵
+                    if (subCat.toLowerCase().includes('base ingredient') || formCat.toLowerCase().includes('base ingredient') || mainCat.toLowerCase().includes('base ingredient')) return;
+                    if (subCat.toLowerCase().includes('professional') || formCat.toLowerCase().includes('professional') || mainCat.toLowerCase().includes('professional')) return;
+
                     if (seenNames.has(pName)) return;
                     seenNames.add(pName);
 
                     let msrp = 0;
-                    if (f.product_id && priceMapByProdId[f.product_id] !== undefined) {
-                        msrp = priceMapByProdId[f.product_id];
-                    } else {
-                        msrp = Number(f.unit_price) || 0; 
-                    }
+                    if (f.product_id && priceMapByProdId[f.product_id] !== undefined) msrp = priceMapByProdId[f.product_id];
+                    else msrp = Number(f.unit_price) || 0; 
 
                     let cost = 0;
-                    if (f.product_id && costMapByProdId[f.product_id] !== undefined) {
-                        cost = costMapByProdId[f.product_id];
-                    }
+                    if (f.product_id && costMapByProdId[f.product_id] !== undefined) cost = costMapByProdId[f.product_id];
 
                     let imageList = [];
                     if (f.product_id && imageUrlMapByProdId[f.product_id] && imageUrlMapByProdId[f.product_id].length > 0) {
                         imageList = imageUrlMapByProdId[f.product_id];
-                    } else if (productImageMap[pName]) {
+                    } else if (typeof productImageMap !== 'undefined' && productImageMap[pName]) {
                         imageList = [productImageMap[pName]];
                     }
                     
-                    const catText = (f.category || '').toLowerCase().trim();
-                    const subCat1Text = (f.sub_category_1 || '').toLowerCase().trim();
-                    const subCat2Text = (f.sub_category_2 || '').toLowerCase().trim();
-                    const subCat2NoSpace = subCat2Text.replace(/\s+/g, '');
+                    if (mainCat && mainCat !== '기타') catSet.add(mainCat);
 
-                    let mappedChannel = null;
-
-                    // 신규 등록된 직관적인 카테고리명을 바로 인식하도록 최상단에 추가
-                    if (['일반', '약국용', '병의원용'].includes(f.category)) {
-                        mappedChannel = f.category;
-                    }
-                    else if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
-                        mappedChannel = '일반';
-                    }
-                    else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
-                        mappedChannel = '약국용';
-                    }
-                    else if (subCat2NoSpace === 'clinic' || catText.includes('clinic') || catText.includes('medical device') || catText.includes('병원') || catText.includes('의원')) {
-                        if (!subCat2Text.includes('professional') && !subCat2NoSpace.includes('professional')) {
-                            // crystal 단어 제외 로직 (단, crystal plus는 제외하지 않음)
-                            const isCrystal = pName.toLowerCase() === 'crystal' || pName.toLowerCase() === 'crystal ';
-                            if(!isCrystal) {
-                                mappedChannel = '병의원용';
-                            }
-                        }
-                    }
-
-                    let mainCat = f.sub_category_1 || '기타';
-                    let subCat = f.sub_category_2 || '기본';
-
-                    // 신규 등록한 제품은 원래 입력값을 보존하고, 기존 카탈로그 매핑만 덮어쓰기 적용
-                    if (mappedChannel === '일반' && !['일반', '약국용', '병의원용'].includes(f.category)) {
-                        if (subCat1Text.includes('face')) mainCat = '페이스';
-                        else if (subCat1Text.includes('scalp') || subCat1Text.includes('hair')) mainCat = '스칼프';
-                        
-                        if (catText.includes('device')) subCat = '디바이스';
-                        else subCat = '화장품';
-                    }
-
-                    if (mappedChannel) {
-                        productsData.push({
-                            id: f.id, 
-                            productId: f.product_id,
-                            name: pName, 
-                            cleanName: pName, 
-                            mainCategory: mainCat,
-                            subCategory: subCat,
-                            imageList: imageList,
-                            currentImgIdx: 0,
-                            msrp: msrp, 
-                            mallPrice: msrp * 0.9, 
-                            price: msrp * 0.7, 
-                            lowestPrice: msrp * 0.8, 
-                            source: '카탈로그', 
-                            cost: cost,
-                            channel: mappedChannel 
-                        });
-                    }
+                    productsData.push({
+                        id: f.id, 
+                        productId: f.product_id,
+                        name: pName, 
+                        cleanName: pName, 
+                        mainCategory: mainCat,
+                        subCategory: subCat,
+                        formCategory: formCat,
+                        imageList: imageList,
+                        currentImgIdx: 0,
+                        msrp: msrp, 
+                        mallPrice: msrp * 0.9, 
+                        price: msrp * 0.7, 
+                        lowestPrice: msrp * 0.8, 
+                        source: '카탈로그', 
+                        cost: cost
+                    });
                 });
             }
+            
+            categoryList = Array.from(catSet).sort();
+            if (!currentCategoryFilter && categoryList.length > 0) {
+                currentCategoryFilter = categoryList[0];
+            }
+            
             document.getElementById('db-status').style.display = 'none';
         } catch (error) {
             console.error(error);
@@ -1637,655 +1387,17 @@
             document.getElementById('db-status').style.borderColor = '#fca5a5';
             document.getElementById('db-status').innerText = '데이터베이스 연동 중 오류가 발생했습니다.';
         } finally {
-            if(productsData.length > 0) selectedProducts.push(productsData[0].id);
+            if(productsData.length > 0 && selectedProducts.length === 0) selectedProducts.push(productsData[0].id);
             populateSelects(); 
+            if(typeof renderCategoryTabs === 'function') renderCategoryTabs();
             renderProducts(); 
             updateAutoSupplyRatio();
             calculate(); 
-            fetchCampaigns(); 
-            setMinBroadcastDate(); 
         }
     }
 
-    function populateSelects() {
-        const sSel = document.getElementById('sampleSelect');
-        const gSel = document.getElementById('giftSelect');
-        sSel.innerHTML = '<option value="">선택</option>';
-        gSel.innerHTML = '<option value="">선택</option>';
-        productsData.forEach(p => {
-            const opt = `<option value="${p.id}">${p.name} (${p.channel})</option>`;
-            sSel.innerHTML += opt;
-            gSel.innerHTML += opt;
-        });
-    }
-
-    function addSample() {
-        const id = document.getElementById('sampleSelect').value;
-        const qty = getNum('sampleQty');
-        if(!id || qty <= 0) return;
-        const p = productsData.find(x => x.id === id);
-        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: (p.imageList && p.imageList.length > 0) ? p.imageList[0] : '' });
-        updateSampleUI();
-    }
-    function removeSample(idx) { addedSamples.splice(idx, 1); updateSampleUI(); }
-    function updateSampleUI() {
-        let listHtml = '', totalCost = 0;
-        addedSamples.forEach((s, idx) => {
-            let lineCost = s.cost * s.qty; totalCost += lineCost;
-            listHtml += `<div class="added-item"><span>${s.name} x ${formatNum(s.qty)}개</span><div><span class="admin-only" style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeSample(${idx})">X</span></div></div>`;
-        });
-        document.getElementById('sampleAddedList').innerHTML = listHtml;
-        document.getElementById('sampleCostDisplay').innerText = formatNum(totalCost);
-        document.getElementById('fcSamples').value = formatNum(totalCost);
-        calculate();
-    }
-
-    function addGift() {
-        const id = document.getElementById('giftSelect').value;
-        const qty = getNum('giftQty');
-        if(!id || qty <= 0) return;
-        const p = productsData.find(x => x.id === id);
-        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, img: (p.imageList && p.imageList.length > 0) ? p.imageList[0] : '' });
-        updateGiftUI();
-    }
-    function removeGift(idx) { addedGifts.splice(idx, 1); updateGiftUI(); }
-    function updateGiftUI() {
-        let listHtml = '', totalCost = 0;
-        addedGifts.forEach((g, idx) => {
-            let lineCost = g.cost * g.qty; totalCost += lineCost;
-            listHtml += `<div class="added-item"><span>${g.name} x ${formatNum(g.qty)}개</span><div><span class="admin-only" style="font-weight:600; margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeGift(${idx})">X</span></div></div>`;
-        });
-        document.getElementById('giftAddedList').innerHTML = listHtml;
-        document.getElementById('giftCostDisplay').innerText = formatNum(totalCost);
-        document.getElementById('fcGifts').value = formatNum(totalCost);
-        calculate();
-    }
-
-    function updateFixedCostsByPeople() {
-        const p = getNum('fcPeople');
-        document.getElementById('fcLabor').value = formatNum(p * 150000);
-        document.getElementById('fcTravel').value = formatNum(p * 50000);
-        document.getElementById('fcFood').value = formatNum(p * 30000);
-        calculate();
-    }
-
-    function updateAutoSupplyRatio() {
-        if (selectedProducts.length === 0) { 
-            document.getElementById('ratioSupply').value = 0; 
-            document.getElementById('displayTotalCost').innerText = '0 원';
-            return; 
-        }
-        let tc = 0, tpVatInc = 0;
-        selectedProducts.forEach(id => {
-            const p = productsData.find(x => x.id === id);
-            if (p) { tc += p.cost; tpVatInc += p.price; }
-        });
-        
-        const tpNet = tpVatInc / 1.1;
-        document.getElementById('displayTotalCost').innerText = formatNum(tc) + ' 원';
-        document.getElementById('ratioSupply').value = tpNet > 0 ? ((tc / tpNet) * 100).toFixed(2) : 0;
-    }
-
-    function renderProducts() {
-        const container = document.getElementById('product-list');
-        container.innerHTML = '';
-        
-        const filteredProducts = productsData.filter(p => p.channel === currentChannelFilter);
-
-        if (filteredProducts.length === 0) {
-            container.innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-muted); font-size:1.05rem;">해당 유통 채널(${currentChannelFilter})에 등록된 제품이 없습니다.</div>`;
-            return;
-        }
-
-        const grouped = {};
-        filteredProducts.forEach(prod => {
-            let mainGroup = prod.mainCategory || '기타';
-            let subGroup = prod.subCategory || '기본';
-
-            if (!grouped[mainGroup]) grouped[mainGroup] = {};
-            if (!grouped[mainGroup][subGroup]) grouped[mainGroup][subGroup] = [];
-            grouped[mainGroup][subGroup].push(prod);
-        });
-
-        for (const [mainName, subGroups] of Object.entries(grouped)) {
-            const hasProducts = Object.values(subGroups).some(arr => arr.length > 0);
-            if (!hasProducts) continue;
-
-            const mainTitle = document.createElement('div');
-            mainTitle.className = 'category-header'; mainTitle.innerText = mainName;
-            container.appendChild(mainTitle);
-
-            for (const [subName, prods] of Object.entries(subGroups)) {
-                if (prods.length === 0) continue;
-                if (subName !== '기본') {
-                    const subTitle = document.createElement('div');
-                    subTitle.className = 'subcategory-header'; subTitle.innerText = subName;
-                    container.appendChild(subTitle);
-                }
-
-                const grid = document.createElement('div');
-                grid.className = 'product-grid-inner';
-
-                prods.forEach(prod => {
-                    const card = document.createElement('div');
-                    card.className = `product-card ${selectedProducts.includes(prod.id) ? 'selected' : ''}`;
-                    card.id = `prod-${prod.id}`;
-                    card.onclick = () => toggleProduct(prod.id);
-                    
-                    // 드래그 앤 드롭 이벤트 추가
-                    card.ondragover = (e) => { 
-                        e.preventDefault(); 
-                        if (document.body.classList.contains('mode-admin') && prod.productId) {
-                            card.classList.add('drag-over'); 
-                        }
-                    };
-                    card.ondragleave = (e) => { 
-                        e.preventDefault(); 
-                        card.classList.remove('drag-over'); 
-                    };
-                    card.ondrop = (e) => { 
-                        e.preventDefault(); 
-                        card.classList.remove('drag-over'); 
-                        if (!document.body.classList.contains('mode-admin') || !prod.productId) return; 
-                        
-                        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-                        if (files.length > 0) {
-                            processImageUpload(files, prod.id, prod.productId);
-                        } else if(e.dataTransfer.files.length > 0) {
-                            customAlert("이미지 파일만 업로드 가능합니다.", "업로드 오류");
-                        }
-                    };
-
-                    const hasImages = prod.imageList && prod.imageList.length > 0;
-                    const currentImg = hasImages ? prod.imageList[prod.currentImgIdx] : null;
-
-                    let imgHtml = '';
-                    if (hasImages) {
-                        imgHtml = `<img src="${currentImg}" alt="${prod.name}">`;
-                        if (prod.imageList.length > 1) {
-                            imgHtml += `
-                                <button class="carousel-btn left" onclick="event.stopPropagation(); window.changeImage('${prod.id}', -1)">&#10094;</button>
-                                <button class="carousel-btn right" onclick="event.stopPropagation(); window.changeImage('${prod.id}', 1)">&#10095;</button>
-                                <div class="carousel-counter">${prod.currentImgIdx + 1} / ${prod.imageList.length}</div>
-                            `;
-                        }
-                    } else {
-                        imgHtml = `<div class="no-img-box">NO IMG</div>`;
-                    }
-                    
-                    let deleteBtnHtml = '';
-                    if (document.body.classList.contains('mode-admin') && hasImages && prod.productId) {
-                        deleteBtnHtml = `
-                            <button class="btn-delete-img admin-only" onclick="event.stopPropagation(); window.deleteProductImage('${prod.id}', '${prod.productId}', ${prod.currentImgIdx})" title="현재 이미지 삭제">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        `;
-                    }
-
-                    let uploadBtnHtml = '';
-                    if (prod.productId) {
-                        uploadBtnHtml = `
-                        <label class="admin-only" style="position:absolute; top:8px; right:8px; cursor:pointer; background:rgba(255,255,255,0.95); border:1px solid var(--border); padding:6px; border-radius:50%; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;" onclick="event.stopPropagation();" title="클릭하여 다중 업로드 또는 이미지를 카드에 바로 드롭하세요">
-                            <svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                            <input type="file" style="display:none;" accept="image/*" multiple onchange="window.handleFileSelect(event, '${prod.id}', '${prod.productId}')">
-                        </label>`;
-                    }
-
-                    card.innerHTML = `
-                        <div class="carousel-container">
-                            ${deleteBtnHtml}
-                            ${uploadBtnHtml}
-                            ${imgHtml}
-                        </div>
-                        <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px;">${prod.name}</div>
-                        
-                        <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
-                        
-                        <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600;">
-                            자사몰가: <span id="mall-${prod.id}">${formatNum(prod.mallPrice)}원</span> 
-                            <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'mall')">수정</span>
-                        </div>
-                        
-                        <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600;">
-                            온라인 최저가: <span id="lowest-${prod.id}">${formatNum(prod.lowestPrice)}원</span> 
-                            <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'lowest')">수정</span>
-                        </div>
-                        
-                        <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold);">
-                            프로모션가: ${formatNum(prod.price)}원 
-                            <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'price')">수정</span>
-                        </div>
-                        
-                        <div class="cost-badge admin-only" style="cursor:pointer; display:inline-block; margin-top:8px;" onclick="event.stopPropagation(); window.editCost('${prod.id}', '${prod.productId}')" title="클릭하여 원가 수정">
-                            원가: ${formatNum(prod.cost)}원
-                            <span style="font-size:0.75rem; cursor:pointer; color:var(--danger); text-decoration:underline; font-weight:normal; margin-left:4px;">수정</span>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-                container.appendChild(grid);
-            }
-        }
-    }
-
-    function toggleProduct(id) {
-        const index = selectedProducts.indexOf(id);
-        if (index > -1) {
-            if (selectedProducts.length > 1) { selectedProducts.splice(index, 1); document.getElementById(`prod-${id}`).classList.remove('selected'); }
-        } else {
-            selectedProducts.push(id); document.getElementById(`prod-${id}`).classList.add('selected');
-        }
-        updateAutoSupplyRatio(); calculate();
-    }
-
-    window.changeImage = function(catalogId, direction) {
-        const prod = productsData.find(p => p.id === catalogId);
-        if (!prod || !prod.imageList || prod.imageList.length <= 1) return;
-
-        prod.currentImgIdx += direction;
-        if (prod.currentImgIdx < 0) prod.currentImgIdx = prod.imageList.length - 1;
-        if (prod.currentImgIdx >= prod.imageList.length) prod.currentImgIdx = 0;
-
-        renderProducts();
-    };
-
-    window.handleFileSelect = function(event, catalogId, productId) {
-        const files = Array.from(event.target.files);
-        if (files.length > 0) processImageUpload(files, catalogId, productId);
-    }
-
-    async function processImageUpload(files, catalogId, productId) {
-        if(!files || files.length === 0 || !productId) return;
-        
-        const card = document.getElementById(`prod-${catalogId}`);
-        if(card) {
-            card.style.opacity = '0.5';
-            card.classList.remove('drag-over');
-        }
-
-        try {
-            const prod = productsData.find(p => p.id === catalogId);
-            let currentImages = [...(prod.imageList || [])];
-
-            for (const file of files) {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${productId}-${Date.now()}-${Math.floor(Math.random()*1000)}.${fileExt}`;
-                const filePath = `public/${fileName}`;
-
-                const { error: uploadError } = await supabaseClient.storage
-                    .from('product_images')
-                    .upload(filePath, file, { upsert: true });
-
-                if (uploadError) throw uploadError;
-
-                const { data: publicUrlData } = supabaseClient.storage
-                    .from('product_images')
-                    .getPublicUrl(filePath);
-                    
-                const newImageUrl = publicUrlData.publicUrl + '?t=' + Date.now();
-                currentImages.push(newImageUrl);
-            }
-
-            const { error: dbError } = await supabaseClient
-                .from('products')
-                .update({ image_url: JSON.stringify(currentImages) })
-                .eq('id', productId);
-
-            if (dbError) throw dbError;
-
-            if(prod) {
-                prod.imageList = currentImages;
-                prod.currentImgIdx = currentImages.length - 1; 
-                renderProducts();
-                calculate(); 
-                updateSampleUI();
-                updateGiftUI();
-            }
-            
-            customAlert("이미지가 성공적으로 저장되었습니다.\n(재접속 시에도 유지됩니다.)", "업로드 완료");
-
-        } catch(e) {
-            console.error(e);
-            customAlert("이미지 업로드 실패: " + e.message + "\n\n(DB 업데이트 권한이 없거나 네트워크 오류입니다.)", "오류");
-        } finally {
-            if(card) card.style.opacity = '1';
-        }
-    }
-
-    window.deleteProductImage = async function(catalogId, productId, imgIdx) {
-        const isConfirmed = await customConfirm("현재 보고 있는 이미지를 삭제하시겠습니까?", "이미지 삭제");
-        if (!isConfirmed) return;
-
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod || !prod.imageList || prod.imageList.length <= imgIdx) return;
-
-        const card = document.getElementById(`prod-${catalogId}`);
-        if(card) card.style.opacity = '0.5';
-
-        try {
-            const urlToDelete = prod.imageList[imgIdx];
-            const newImages = [...prod.imageList];
-            newImages.splice(imgIdx, 1);
-
-            const dbValue = newImages.length > 0 ? JSON.stringify(newImages) : null;
-            const { error: dbError } = await supabaseClient
-                .from('products')
-                .update({ image_url: dbValue })
-                .eq('id', productId);
-
-            if (dbError) throw dbError;
-
-            try {
-                const urlObj = new URL(urlToDelete);
-                const pathParts = urlObj.pathname.split('/product_images/');
-                if (pathParts.length > 1) {
-                    let filePath = pathParts[1].split('?')[0]; 
-                    await supabaseClient.storage.from('product_images').remove([decodeURIComponent(filePath)]);
-                }
-            } catch(e) { console.warn("스토리지 실물 파일 삭제 건너뜀", e); }
-
-            prod.imageList = newImages;
-            if (prod.currentImgIdx >= newImages.length) {
-                prod.currentImgIdx = Math.max(0, newImages.length - 1);
-            }
-            
-            renderProducts();
-            calculate();
-            updateSampleUI();
-            updateGiftUI();
-
-        } catch(e) {
-            console.error(e);
-            customAlert("이미지 삭제 실패: " + e.message, "오류");
-        } finally {
-            if(card) card.style.opacity = '1';
-        }
-    };
-
-    async function editPrice(id, type) {
-        const prod = productsData.find(p => p.id === id);
-        if(!prod) return;
-        
-        const typeName = type === 'price' ? '공구 프로모션가' : (type === 'mall' ? '자사몰가' : '온라인 최저가');
-        const currentVal = type === 'price' ? prod.price : (type === 'mall' ? prod.mallPrice : prod.lowestPrice);
-        
-        const newValStr = await customPrompt(`${typeName} 변경`, `새로운 ${typeName}를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", currentVal.toString());
-        if(!newValStr) return;
-        
-        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
-        if(newVal > 0) {
-            if(type === 'price') {
-                prod.price = newVal;
-            } else if (type === 'mall') {
-                prod.mallPrice = newVal;
-            } else {
-                prod.lowestPrice = newVal;
-                prod.source = '수동입력';
-            }
-            renderProducts();
-            updateAutoSupplyRatio();
-            calculate();
-        }
-    }
-
-    // [신규 추가됨] 관리자가 원가 뱃지를 클릭하여 원가를 수정/입력하는 함수
-    window.editCost = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') {
-            customAlert("이 제품은 마스터 DB에 연결된 제품 ID가 없어 원가를 저장할 수 없습니다.");
-            return;
-        }
-        
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-        
-        const currentVal = prod.cost || 0;
-        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", currentVal.toString());
-        if(!newValStr) return;
-        
-        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
-        if(newVal >= 0) {
-            const card = document.getElementById(`prod-${catalogId}`);
-            if(card) card.style.opacity = '0.5';
-
-            try {
-                const { data: existing, error: fetchErr } = await supabaseClient
-                    .from('product_costs')
-                    .select('id')
-                    .eq('product_id', productId)
-                    .maybeSingle();
-
-                if (fetchErr) throw fetchErr;
-
-                if (existing) {
-                    const { error: updateErr } = await supabaseClient
-                        .from('product_costs')
-                        .update({ 
-                            production_cost: newVal, 
-                            updated_at: new Date().toISOString() 
-                        })
-                        .eq('id', existing.id);
-                    if (updateErr) throw updateErr;
-                } else {
-                    const { error: insertErr } = await supabaseClient
-                        .from('product_costs')
-                        .insert([{
-                            product_id: productId,
-                            currency: 'KRW',
-                            production_cost: newVal,
-                            effective_date: new Date().toISOString().split('T')[0],
-                            created_at: new Date().toISOString(),
-                            updated_at: new Date().toISOString()
-                        }]);
-                    if (insertErr) throw insertErr;
-                }
-
-                prod.cost = newVal;
-                renderProducts();
-                updateAutoSupplyRatio();
-                calculate();
-                
-                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 성공적으로 저장되었습니다.`, "저장 완료");
-                
-            } catch (error) {
-                console.error(error);
-                customAlert("DB 저장 중 오류가 발생했습니다.\n(Supabase 권한 또는 RLS 설정을 확인하세요.)\n\n" + error.message, "오류");
-            } finally {
-                if(card) card.style.opacity = '1';
-            }
-        }
-    };
-
-    function calculate() {
-        const pkgEl = document.getElementById('selected-package-info');
-        const samEl = document.getElementById('selected-sample-info');
-        const gifEl = document.getElementById('selected-gift-info');
-
-        if (selectedProducts.length === 0) return;
-
-        let totalPromo = 0;
-        let totalMsrp = 0;
-        let totalMall = 0;
-        let totalLowest = 0;
-        let itemsHtml = [];
-        
-        selectedProducts.forEach(id => {
-            const p = productsData.find(x => x.id === id);
-            if(p) { 
-                totalPromo += p.price; 
-                totalMsrp += p.msrp;
-                totalMall += p.mallPrice || (p.msrp * 0.9);
-                totalLowest += p.lowestPrice || p.price; 
-                
-                let imgHtml = (p.imageList && p.imageList.length > 0)
-                    ? `<img src="${p.imageList[0]}">` 
-                    : `<div class="no-img-small">NO IMG</div>`;
-                    
-                itemsHtml.push(`<div class="pkg-item">${imgHtml}<span>${p.name}</span></div>`); 
-            }
-        });
-        
-        let discountRate = totalLowest > 0 ? Math.round(((totalLowest - totalPromo) / totalLowest) * 100) : 0;
-        let discountBadge = discountRate > 0 ? `<span style="background: var(--danger); color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; margin-top: 6px; display: inline-block; font-weight: bold; letter-spacing: -0.02em; box-shadow: 0 2px 4px rgba(225,29,72,0.2);">최저가 대비 ${discountRate}% 저렴! ↓</span>` : '';
-
-        pkgEl.innerHTML = `<div style="color: var(--text-bold); margin-right:16px; min-width: 240px; flex-shrink: 0;">
-            <strong style="display:block; margin-bottom: 8px;">패키지 구성 (${selectedProducts.length}종)</strong>
-            <div style="background: #fff; padding: 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 0.9rem; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);">
-                <div style="display:flex; justify-content: space-between; color: var(--text-muted);">
-                    <span>소비자정가</span> <s style="margin-left: 16px;">${formatNum(totalMsrp)}원</s>
-                </div>
-                <div style="display:flex; justify-content: space-between; color: var(--text-main); font-weight: 500;">
-                    <span>자사몰가</span> <span style="margin-left: 16px;">${formatNum(totalMall)}원</span>
-                </div>
-                <div style="display:flex; justify-content: space-between; color: var(--text-main); font-weight: 600;">
-                    <span>온라인최저가</span> <span style="margin-left: 16px;">${formatNum(totalLowest)}원</span>
-                </div>
-                <div style="margin-top: 6px; padding-top: 10px; border-top: 1px dashed var(--border); display:flex; flex-direction:column; align-items: flex-end;">
-                    <div style="display:flex; justify-content: space-between; width: 100%; color: var(--accent); font-weight: 800; font-size: 1.1rem;">
-                        <span>프로모션가</span> <span>${formatNum(totalPromo)}원</span>
-                    </div>
-                    ${discountBadge}
-                </div>
-            </div>
-        </div>${itemsHtml.join('<div class="pkg-plus">+</div>')}`;
-
-        if (addedSamples.length > 0) {
-            samEl.style.display = 'flex';
-            let samHtml = addedSamples.map(s => {
-                let sImgHtml = s.img ? `<img src="${s.img}" style="border-color:var(--border);">` : `<div class="no-img-small">NO IMG</div>`;
-                return `<div class="pkg-item">${sImgHtml}<span>${s.name}<br><span style="color:var(--text-bold);">(${formatNum(s.qty)}개)</span></span></div>`;
-            }).join('');
-            samEl.innerHTML = `<div style="color:var(--text-bold); margin-right:16px;"><strong>제공 신청 샘플:</strong></div>${samHtml}`;
-        } else { samEl.style.display = 'none'; }
-
-        if (addedGifts.length > 0) {
-            gifEl.style.display = 'flex';
-            let gifHtml = addedGifts.map(g => {
-                let gImgHtml = g.img ? `<img src="${g.img}" style="border-color:var(--border);">` : `<div class="no-img-small">NO IMG</div>`;
-                return `<div class="pkg-item">${gImgHtml}<span>${g.name}<br><span style="color:var(--text-muted);">(${formatNum(g.qty)}개)</span><br><span style="color:var(--accent); font-size:0.75rem;">정가 ${formatNum(g.msrp)}원</span></span></div>`;
-            }).join('');
-            gifEl.innerHTML = `<div style="color:var(--text-muted); margin-right:16px;"><strong>본사 제공 사은품:</strong></div>${gifHtml}`;
-        } else { gifEl.style.display = 'none'; }
-
-        const packagePriceNet = totalPromo / 1.1;
-        const unitRev = packagePriceNet;
-
-        const targetQty = getNum('targetQtyAdmin'); 
-        const gongguRate = Number(document.getElementById('ratioGonggu').value);
-        const contractFee = getNum('fcContract'); 
-        
-        const totalVcRatio = (
-            Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + 
-            Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + 
-            gongguRate + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)
-        ) / 100; 
-        
-        const unitVc = unitRev * totalVcRatio;
-        const unitCm = unitRev * (1 - totalVcRatio);
-
-        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
-        const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
-        
-        document.getElementById('fcContractDisplay').value = formatNum(contractFee);
-        document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
-        document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
-
-        const totalFixedAndCommon = totalFc + totalCc;
-        const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
-
-        const partnerProfit = ((targetQty * unitRev) * (gongguRate / 100)) + contractFee;
-        const hqTargetOp = (targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc;
-        const hqCm = (targetQty * unitRev) - (targetQty * unitVc);
-
-        currentSimulationState.partnerProfit = partnerProfit;
-        currentSimulationState.hqProfit = hqTargetOp;
-        currentSimulationState.hqCm = hqCm;
-        
-        document.querySelectorAll('.partnerProfitAmount').forEach(el => el.textContent = formatNum(partnerProfit));
-        document.querySelectorAll('.partnerProfitRate').forEach(el => el.textContent = gongguRate);
-        document.querySelectorAll('.partnerProfitContract').forEach(el => el.textContent = formatNum(contractFee));
-        
-        document.querySelectorAll('.hqProfitAmount').forEach(el => el.textContent = formatNum(hqTargetOp));
-        document.querySelectorAll('.partnerProfitQty').forEach(el => el.textContent = formatNum(targetQty));
-
-        document.getElementById('resUnitRev').textContent = formatNum(unitRev);
-        document.getElementById('resUnitVc').textContent = formatNum(unitVc);
-        document.getElementById('resUnitCm').textContent = formatNum(unitCm);
-
-        document.getElementById('resBepRev').innerHTML = `${formatNum(bepQty * unitRev)}<br><span style="font-size:0.85em; color:var(--text-muted);">(${formatNum(Math.ceil(bepQty))}개)</span>`;
-        document.getElementById('resBepVc').textContent = formatNum(bepQty * unitVc);
-        document.getElementById('resBepCm').textContent = formatNum((bepQty * unitRev) - (bepQty * unitVc));
-        document.getElementById('resBepFc').textContent = formatNum(totalFc);
-        document.getElementById('resBepCc').textContent = formatNum(totalCc);
-        document.getElementById('resBepOp').textContent = 0; 
-
-        document.getElementById('resTargetRev').textContent = formatNum(targetQty * unitRev);
-        document.getElementById('resTargetVc').textContent = formatNum(targetQty * unitVc);
-        document.getElementById('resTargetCm').textContent = formatNum(hqCm);
-        document.getElementById('resTargetFc').textContent = formatNum(totalFc);
-        document.getElementById('resTargetCc').textContent = formatNum(totalCc);
-        document.getElementById('resTargetOp').textContent = formatNum(hqTargetOp);
-
-        document.getElementById('resTargetQtyText').textContent = formatNum(targetQty);
-        document.getElementById('resBepQtyText').textContent = formatNum(Math.ceil(bepQty)); 
-    }
-
-    // --- 회원 가입 승인 관련 함수 ---
-    async function fetchPendingUsers() {
-        try {
-            const { data, error } = await supabaseClient.from('user_profiles').select('*').eq('is_approved', false).order('created_at', { ascending: false });
-            if (error) throw error;
-            
-            const tbody = document.getElementById('userApprovalListBody');
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">승인 대기 중인 사용자가 없습니다.</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            data.forEach(u => {
-                const reqDate = new Date(u.created_at).toLocaleDateString();
-                html += `
-                    <tr style="background:#fff;">
-                        <td style="text-align:center; vertical-align:middle;">${reqDate}</td>
-                        <td style="text-align:center; font-weight:600; color:var(--text-bold); vertical-align:middle;">${u.email}</td>
-                        <td style="text-align:center; vertical-align:middle;">
-                            <button class="btn-approve-admin" onclick="approveUser('${u.id}')" style="margin:0 4px;">승인</button>
-                            <button class="btn-reject-admin" onclick="rejectUser('${u.id}')" style="margin:0 4px;">거절</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tbody.innerHTML = html;
-        } catch (e) {
-            console.error("대기자 목록 조회 실패:", e);
-        }
-    }
-
-    async function approveUser(id) {
-        try {
-            const { error } = await supabaseClient.from('user_profiles').update({ is_approved: true }).eq('id', id);
-            if (error) throw error;
-            customAlert("해당 사용자의 가입이 승인되었습니다.", "승인 완료");
-            fetchPendingUsers();
-        } catch (e) {
-            console.error(e);
-            customAlert("승인 처리 중 오류가 발생했습니다.", "오류");
-        }
-    }
-
-    async function rejectUser(id) {
-        const isConfirmed = await customConfirm("해당 사용자의 가입 요청을 거절(데이터 삭제)하시겠습니까?", "가입 거절");
-        if (!isConfirmed) return;
-        try {
-            const { error } = await supabaseClient.from('user_profiles').delete().eq('id', id);
-            if (error) throw error;
-            customAlert("가입 요청이 거절 처리되었습니다.", "처리 완료");
-            fetchPendingUsers();
-        } catch (e) {
-            console.error(e);
-            customAlert("거절 처리 중 오류가 발생했습니다.", "오류");
-        }
-    }
+    function fetchCampaigns() {}
+    function renderInfluencerCampaigns() {}
 </script>
 </body>
 </html>
