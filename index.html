@@ -521,6 +521,25 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- 추가: 관리자 권한 관리 (수퍼관리자 전용) -->
+        <div id="admin-management-section" style="display: none; margin-top: 40px; border-top: 2px solid var(--border); padding-top: 24px;">
+            <h2 style="margin-bottom: 24px; border-bottom: none;">관리자 권한 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(최고 관리자 전용)</span></h2>
+            <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
+                <table style="margin-top: 0; min-width: 600px; border: none; border-radius: 0;">
+                    <thead>
+                        <tr>
+                            <th>이메일 주소</th>
+                            <th style="width: 150px;">현재 권한</th>
+                            <th style="width: 150px;">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminListBody">
+                        <tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">등록된 일반 관리자가 없습니다.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- 패널 7: 인플루언서 확정 대시보드 (관리자 전용) -->
@@ -578,20 +597,29 @@
 
     var currentChannelFilter = '일반';
 
-    const BASE_ADMINS = ['wjshin2450@gmail.com'];
-    let adminEmails = [...BASE_ADMINS];
+    const SUPER_ADMIN = 'wjshin2450@gmail.com';
+    let currentUserRole = 'user';
 
-    try {
-        const savedAdmins = JSON.parse(localStorage.getItem('additional_admins')) || [];
-        adminEmails = [...new Set([...adminEmails, ...savedAdmins])];
-    } catch(e) {}
-
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
         const overlay = document.getElementById('authOverlay');
         if (session) {
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.style.display = 'none'; }, 400);
-            applyUserRole(session.user.email);
+            
+            try {
+                // DB에서 현재 유저의 상태 및 권한(role)을 불러옴
+                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved, role').eq('id', session.user.id).single();
+                
+                if (session.user.email === SUPER_ADMIN) {
+                    currentUserRole = 'super_admin';
+                } else if (profile && profile.role === 'admin') {
+                    currentUserRole = 'admin';
+                } else {
+                    currentUserRole = 'user';
+                }
+            } catch(e) { console.error(e); currentUserRole = 'user'; }
+            
+            applyUserRole(session.user.email, currentUserRole);
             if(productsData.length === 0) fetchProducts();
         } else {
             overlay.style.display = 'flex';
@@ -672,10 +700,9 @@
 
             // 가입 승인 여부 체크 로직 추가
             if (data && data.user) {
-                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved').eq('id', data.user.id).single();
+                const { data: profile } = await supabaseClient.from('user_profiles').select('is_approved, role').eq('id', data.user.id).single();
                 
-                // 최고 관리자 계정들은 예외적으로 무조건 통과 (안전장치)
-                const isSuperAdmin = adminEmails.includes(data.user.email);
+                const isSuperAdmin = data.user.email === SUPER_ADMIN;
                 
                 if (!isSuperAdmin && (!profile || profile.is_approved !== true)) {
                     await supabaseClient.auth.signOut(); // 승인 안된 경우 강제 로그아웃
@@ -694,44 +721,118 @@
         window.location.reload(); 
     }
 
-    function applyUserRole(email) {
+    function applyUserRole(email, role) {
         document.getElementById('userEmailDisplay').innerText = email;
         const btnInfluencer = document.getElementById('btn-mode-influencer');
         const btnAdmin = document.getElementById('btn-mode-admin');
         const btnAddAdmin = document.getElementById('btn-add-admin');
+        const adminMgmtSection = document.getElementById('admin-management-section');
         
-        if (adminEmails.includes(email)) {
+        if (role === 'admin' || role === 'super_admin') {
             btnInfluencer.style.display = 'block';
             btnAdmin.style.display = 'block';
-            btnAddAdmin.style.display = 'block'; 
+            
+            // 최고 관리자만 관리자 추가 버튼 및 관리자 목록 섹션 노출
+            if (role === 'super_admin') {
+                btnAddAdmin.style.display = 'block';
+                if (adminMgmtSection) adminMgmtSection.style.display = 'block';
+                fetchAdmins();
+            } else {
+                btnAddAdmin.style.display = 'none';
+                if (adminMgmtSection) adminMgmtSection.style.display = 'none';
+            }
+            
             setMode('admin', false);
             fetchPendingUsers(); // 관리자 뷰일 때 가입 대기자 목록 갱신
         } else {
             btnInfluencer.style.display = 'none';
             btnAdmin.style.display = 'none';
             btnAddAdmin.style.display = 'none';
+            if (adminMgmtSection) adminMgmtSection.style.display = 'none';
             setMode('influencer', false); 
         }
         renderInfluencerCampaigns();
     }
 
+    async function fetchAdmins() {
+        try {
+            const { data, error } = await supabaseClient.from('user_profiles').select('*').eq('role', 'admin');
+            if (error) throw error;
+            
+            const tbody = document.getElementById('adminListBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px; color:var(--text-muted);">등록된 일반 관리자가 없습니다.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            data.forEach(u => {
+                html += `
+                    <tr style="background:#fff;">
+                        <td style="text-align:center; font-weight:600; color:var(--text-bold); vertical-align:middle;">${u.email}</td>
+                        <td style="text-align:center; vertical-align:middle;"><span class="badge-approved">일반 관리자</span></td>
+                        <td style="text-align:center; vertical-align:middle;">
+                            <button class="btn-reject-admin" onclick="revokeAdmin('${u.id}', '${u.email}')" style="margin:0;">권한 회수</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        } catch (e) {
+            console.error("관리자 목록 조회 실패:", e);
+        }
+    }
+
     async function addNewAdmin() {
-        const newEmail = await customPrompt("관리자 추가", "새로운 관리자의 이메일 주소를 입력해주세요.\n(현재 접속 중인 브라우저에 권한이 임시 저장됩니다.)", "예: admin@medifab.com");
+        const newEmail = await customPrompt("관리자 추가", "추가할 관리자의 이메일 주소를 입력해주세요.\n(해당 사용자는 이미 회원가입이 되어 있어야 합니다.)", "예: admin@medifab.com");
         if (!newEmail || newEmail.trim() === '') return;
         
         const email = newEmail.trim();
-        if (adminEmails.includes(email)) {
-            customAlert("이미 등록된 관리자 계정입니다.");
-            return;
-        }
-
-        let savedAdmins = [];
-        try { savedAdmins = JSON.parse(localStorage.getItem('additional_admins')) || []; } catch(e){}
-        savedAdmins.push(email);
-        localStorage.setItem('additional_admins', JSON.stringify(savedAdmins));
         
-        adminEmails.push(email);
-        customAlert(`[${email}]\n계정이 관리자로 추가되었습니다.\n해당 브라우저에서 이 계정으로 로그인 시 관리자 메뉴를 볼 수 있습니다.`, "관리자 추가 완료");
+        try {
+            // DB에서 유저 프로필 조회
+            const { data: users, error: findErr } = await supabaseClient.from('user_profiles').select('id, role').eq('email', email);
+            if (findErr) throw findErr;
+            
+            if (!users || users.length === 0) {
+                customAlert(`[${email}] 계정을 찾을 수 없습니다.\n해당 사용자가 먼저 이메일 회원가입을 완료해야 합니다.`);
+                return;
+            }
+            
+            const user = users[0];
+            if (user.role === 'admin' || user.role === 'super_admin') {
+                customAlert("이미 관리자 권한을 가진 계정입니다.");
+                return;
+            }
+            
+            // 해당 유저의 권한(role)을 admin으로 변경 및 자동 가입승인 처리
+            const { error: updateErr } = await supabaseClient.from('user_profiles').update({ role: 'admin', is_approved: true }).eq('id', user.id);
+            if (updateErr) throw updateErr;
+            
+            customAlert(`[${email}]\n계정이 성공적으로 관리자로 추가되었습니다.`, "관리자 추가 완료");
+            fetchAdmins(); // 목록 새로고침
+            
+        } catch(e) {
+            console.error(e);
+            customAlert("관리자 추가 중 오류가 발생했습니다.\n" + e.message, "오류");
+        }
+    }
+
+    async function revokeAdmin(userId, email) {
+        const isConfirmed = await customConfirm(`[${email}]\n해당 계정의 관리자 권한을 회수하시겠습니까?\n(권한 회수 시 일반 사용자(인플루언서)로 강등됩니다.)`, "권한 회수 확인");
+        if (!isConfirmed) return;
+        
+        try {
+            // role을 일반 user로 변경
+            const { error } = await supabaseClient.from('user_profiles').update({ role: 'user' }).eq('id', userId);
+            if (error) throw error;
+            
+            customAlert("관리자 권한이 성공적으로 회수되었습니다.", "회수 완료");
+            fetchAdmins(); // 목록 새로고침
+        } catch(e) {
+            console.error(e);
+            customAlert("권한 회수 중 오류가 발생했습니다.", "오류");
+        }
     }
 
     function setMode(mode, showMsg = false) {
