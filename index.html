@@ -1621,7 +1621,10 @@
                             <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); editPrice('${prod.id}', 'price')">수정</span>
                         </div>
                         
-                        <div class="cost-badge admin-only">원가: ${formatNum(prod.cost)}원</div>
+                        <div class="cost-badge admin-only" style="cursor:pointer; display:inline-block; margin-top:8px;" onclick="event.stopPropagation(); window.editCost('${prod.id}', '${prod.productId}')" title="클릭하여 원가 수정">
+                            원가: ${formatNum(prod.cost)}원
+                            <span style="font-size:0.75rem; cursor:pointer; color:var(--danger); text-decoration:underline; font-weight:normal; margin-left:4px;">수정</span>
+                        </div>
                     `;
                     grid.appendChild(card);
                 });
@@ -1789,6 +1792,73 @@
             calculate();
         }
     }
+
+    // [신규 추가됨] 관리자가 원가 뱃지를 클릭하여 원가를 수정/입력하는 함수
+    window.editCost = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') {
+            customAlert("이 제품은 마스터 DB에 연결된 제품 ID가 없어 원가를 저장할 수 없습니다.");
+            return;
+        }
+        
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        const currentVal = prod.cost || 0;
+        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", currentVal.toString());
+        if(!newValStr) return;
+        
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            const card = document.getElementById(`prod-${catalogId}`);
+            if(card) card.style.opacity = '0.5';
+
+            try {
+                const { data: existing, error: fetchErr } = await supabaseClient
+                    .from('product_costs')
+                    .select('id')
+                    .eq('product_id', productId)
+                    .maybeSingle();
+
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient
+                        .from('product_costs')
+                        .update({ 
+                            production_cost: newVal, 
+                            updated_at: new Date().toISOString() 
+                        })
+                        .eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient
+                        .from('product_costs')
+                        .insert([{
+                            product_id: productId,
+                            currency: 'KRW',
+                            production_cost: newVal,
+                            effective_date: new Date().toISOString().split('T')[0],
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        }]);
+                    if (insertErr) throw insertErr;
+                }
+
+                prod.cost = newVal;
+                renderProducts();
+                updateAutoSupplyRatio();
+                calculate();
+                
+                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 성공적으로 저장되었습니다.`, "저장 완료");
+                
+            } catch (error) {
+                console.error(error);
+                customAlert("DB 저장 중 오류가 발생했습니다.\n(Supabase 권한 또는 RLS 설정을 확인하세요.)\n\n" + error.message, "오류");
+            } finally {
+                if(card) card.style.opacity = '1';
+            }
+        }
+    };
 
     function calculate() {
         const pkgEl = document.getElementById('selected-package-info');
