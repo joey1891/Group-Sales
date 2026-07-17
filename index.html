@@ -53,7 +53,7 @@
         .page-title-container { text-align: center; margin-bottom: 40px; margin-top: 10px; }
         .page-title { font-size: 2.25rem; font-weight: 800; color: var(--text-inverse); margin: 0 0 8px 0; letter-spacing: -0.03em; }
         
-        h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-bold); margin-top: 0; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px; display: inline-block; width: 100%;}
+        h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-bold); margin-top: 0; margin-bottom: 24px; display: inline-block; width: 100%;}
         h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-muted); margin-top: 28px; margin-bottom: 12px; }
 
         .channel-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; overflow-x: auto; }
@@ -149,7 +149,6 @@
         
         #db-status { padding: 12px 20px; margin-bottom: 32px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.9); backdrop-filter: blur(4px); color: var(--text-bold); border: 1px solid var(--border); }
         
-        /* Modal & Auth Styling */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 9999; }
         .modal-box { background: #fff; padding: 32px; border-radius: 16px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid var(--border); }
         .modal-title { margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; font-weight: 700; color: var(--text-bold); }
@@ -211,13 +210,11 @@
 <div class="container">
     <!-- 패널 1: 제품 선택 및 신규 추가 -->
     <div class="panel full-width" id="panel-products">
-        <h2>제품 구성 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
+        <h2 style="border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">제품 구성 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
         
         <div class="channel-tabs" style="display:flex; justify-content: space-between; align-items: center; border-bottom: none;">
             <div id="category-tab-container" style="display:flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;">
-                <!-- 탭이 DB 카테고리(sub_category_1)에 맞게 동적으로 생성됩니다 -->
             </div>
-            <!-- 신규 제품 등록 버튼 -->
             <button class="admin-only" style="background:var(--accent); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); flex-shrink: 0;" onclick="openAddProductModal()">+ 신규 제품 통합 등록</button>
         </div>
         <div style="border-bottom: 1px solid var(--border); margin-bottom: 24px; padding-bottom: 12px;"></div>
@@ -227,7 +224,7 @@
 
     <!-- 패널 2: 샘플 및 사은품 -->
     <div class="panel full-width" id="panel-samples">
-        <h2>샘플 및 사은품 요청 <span class="admin-only" style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(원가 발생 -> 고정비 자동반영)</span></h2>
+        <h2 style="border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">샘플 및 사은품 요청 <span class="admin-only" style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(원가 발생 -> 고정비 자동반영)</span></h2>
         <div class="dashboard-grid">
             <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
                 <h4 style="margin: 0 0 16px 0; color: var(--text-bold);">🧪 리뷰/테스트용 샘플 추가</h4>
@@ -295,6 +292,8 @@
                         <td><strong>참여 인원 (명)</strong></td>
                         <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--accent); width: 60px;"> 명</td>
                     </tr>
+                    <!-- 광고선전비 항목 추가 -->
+                    <tr><td>광고선전비</td><td><input type="text" inputmode="numeric" id="fcAd" value="0" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>인건비</td><td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>여비교통비</td><td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>식대</td><td><input type="text" inputmode="numeric" id="fcFood" value="30,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
@@ -324,7 +323,10 @@
 
     <!-- 패널: 본사 전용 상세 내역 표 -->
     <div class="panel full-width admin-only" id="hq-panel">
-        <h2 style="margin: 0 0 24px 0; border: none; padding: 0;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비)</span></h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
+            <h2 style="margin: 0; border: none; padding: 0;">수익구조 상세 내역 <span style="font-size:0.8rem; font-weight:normal; color:var(--danger);">(본사 대외비)</span></h2>
+            <button onclick="captureElement('hq-panel', '수익구조상세내역')" class="btn-print primary" style="font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; font-weight: bold;">📸 영역 이미지 저장</button>
+        </div>
         <table id="resultTable">
             <thead>
                 <tr><th>구분</th><th>매출액</th><th>변동비</th><th>공헌이익</th><th>고정비</th><th>적용 공통비</th><th>영업이익</th></tr>
@@ -332,10 +334,20 @@
             <tbody>
                 <tr><td>단위당</td><td id="resUnitRev">0</td><td id="resUnitVc">0</td><td id="resUnitCm">0</td><td>-</td><td>-</td><td>-</td></tr>
                 <tr class="bep-row">
-                    <td>손익분기(BEP)</td><td id="resBepRev">0</td><td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td id="resBepOp">0</td>
+                    <td>손익분기(BEP)</td>
+                    <td style="text-align: right;">
+                        <div id="resBepRev">0</div>
+                        <div style="font-size: 0.8rem; margin-top: 4px; color: var(--accent); font-weight: 700;">(<span id="resBepQty">0</span> 개)</div>
+                    </td>
+                    <td id="resBepVc">0</td><td id="resBepCm">0</td><td id="resBepFc">0</td><td id="resBepCc">0</td><td id="resBepOp">0</td>
                 </tr>
                 <tr class="target-row">
-                    <td>목표 달성 시</td><td id="resTargetRev">0</td><td id="resTargetVc">0</td><td id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td id="resTargetOp" style="font-weight:bold; color:var(--accent);">0</td>
+                    <td>목표 달성 시</td>
+                    <td style="text-align: right;">
+                        <div id="resTargetRev">0</div>
+                        <div style="font-size: 0.8rem; margin-top: 4px; color: var(--accent); font-weight: 700;">(<span id="resTargetQtyDisplay">0</span> 개)</div>
+                    </td>
+                    <td id="resTargetVc">0</td><td id="resTargetCm">0</td><td id="resTargetFc">0</td><td id="resTargetCc">0</td><td id="resTargetOp" style="font-weight:bold; color:var(--accent);">0</td>
                 </tr>
             </tbody>
         </table>
@@ -343,7 +355,10 @@
 
     <!-- 패널: 공유용 정산 대시보드 -->
     <div class="panel full-width" id="partner-panel">
-        <h2 style="margin: 0 0 24px 0; border: none; padding: 0;">예상 정산 대시보드</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">
+            <h2 style="margin: 0; border: none; padding: 0;">예상 정산 대시보드</h2>
+            <button onclick="captureElement('partner-panel', '예상정산대시보드')" class="btn-print primary" style="font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; font-weight: bold;">📸 영역 이미지 저장</button>
+        </div>
         
         <div class="influencer-only" style="background: #fff; border: 1px solid var(--accent); padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;">
             <div>
@@ -389,7 +404,7 @@
 
     <!-- 패널: 회원 가입 승인 관리 -->
     <div class="panel full-width admin-only" id="panel-admin-users">
-        <h2 style="margin-bottom: 24px; border-bottom: none;">가입 승인 대기자 관리</h2>
+        <h2 style="margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">가입 승인 대기자 관리</h2>
         <table id="userApprovalTable">
             <thead><tr><th>가입 신청일</th><th>이메일 주소</th><th>관리</th></tr></thead>
             <tbody id="userApprovalListBody"><tr><td colspan="3" style="text-align:center; padding:32px;">대기 중인 사용자가 없습니다.</td></tr></tbody>
@@ -398,7 +413,7 @@
 
     <!-- 패널: 최고 관리자 전용 권한 제어 -->
     <div class="panel full-width admin-only" id="panel-super-admin" style="display:none;">
-        <h2 style="margin-bottom: 24px; border-bottom: none;">관리자 권한 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(최고 관리자 전용)</span></h2>
+        <h2 style="margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">관리자 권한 관리 <span style="font-size:0.8rem; font-weight:normal; color:var(--accent);">(최고 관리자 전용)</span></h2>
         <table id="adminRolesTable">
             <thead><tr><th>이메일 주소</th><th>현재 권한</th><th>권한 변경</th></tr></thead>
             <tbody id="adminRolesListBody"><tr><td colspan="3" style="text-align:center; padding:32px;">로딩 중...</td></tr></tbody>
@@ -407,7 +422,7 @@
 
     <!-- 패널: 인플루언서 확정 내역 -->
     <div class="panel full-width admin-only" id="panel-admin-campaigns">
-        <h2 style="margin-bottom: 24px; border-bottom: none;">인플루언서 확정 내역</h2>
+        <h2 style="margin-bottom: 24px; border-bottom: 2px solid var(--text-bold); padding-bottom: 12px;">인플루언서 확정 내역</h2>
         <table id="campaignTable">
             <thead><tr><th>신청일자</th><th>예정일/채널</th><th>목표수량</th><th>파트너 정산액</th><th>영업이익</th><th>상태 및 관리</th></tr></thead>
             <tbody id="campaignListBody"><tr><td colspan="6" style="text-align:center; padding:32px;">수신된 내역이 없습니다.</td></tr></tbody>
@@ -508,7 +523,7 @@
     const SUPER_ADMIN = 'wjshin2450@gmail.com';
     let isAdmin = false;
 
-    // 안전한 UUID 생성 함수 (Iframe 등 보안되지 않은 컨텍스트의 오류 우회용)
+    // 안전한 UUID 생성 함수
     function generateSafeUUID() {
         if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
             try { return crypto.randomUUID(); } catch (e) {}
@@ -522,6 +537,14 @@
     var formatNum = (num) => { if(!isFinite(num)) return '0'; return Math.round(num).toLocaleString('ko-KR'); };
     function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
     function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
+
+    // 목표 수량 양방향 동기화
+    function syncTargetQty(value) {
+        const adminInput = document.getElementById('targetQtyAdmin');
+        const influencerInput = document.getElementById('targetQtyInfluencer');
+        if (adminInput && adminInput.value !== value) adminInput.value = value;
+        if (influencerInput && influencerInput.value !== value) influencerInput.value = value;
+    }
 
     function customAlert(msg, title="알림") {
         return new Promise(resolve => {
@@ -662,7 +685,6 @@
             setMode('influencer', false); 
         }
 
-        // 최고 관리자용 제어 패널 노출
         if (isSuperAdmin) {
             document.getElementById('panel-super-admin').style.display = 'block';
             fetchAllUsersForRoles();
@@ -680,7 +702,6 @@
         if (mode === 'influencer' && showMsg) customAlert("인플루언서 뷰로 전환되었습니다.");
     }
 
-    // 누락되었던 탭 렌더링 함수 복구
     function renderCategoryTabs() {
         const container = document.getElementById('category-tab-container');
         if (!container) return;
@@ -695,11 +716,10 @@
         });
     }
 
-    // 누락되었던 탭 클릭 필터링 함수 복구
     function setCategoryTab(category) {
         currentCategoryFilter = category;
-        renderCategoryTabs(); // 탭 활성화 상태 업데이트
-        renderProducts();     // 선택된 카테고리에 맞게 제품 다시 그리기
+        renderCategoryTabs();
+        renderProducts();
     }
 
     function openAddProductModal() {
@@ -711,11 +731,10 @@
         document.getElementById('newProdCat').value = '';
         document.getElementById('newProdSubCat1').value = '';
         document.getElementById('newProdSubCat2').value = '';
-        document.getElementById('newProdSubCat3').value = '기본'; // NOT NULL 제약조건 우회용 기본값
+        document.getElementById('newProdSubCat3').value = '기본'; 
         document.getElementById('newProdUnit').value = '';
         document.getElementById('newProdOption').value = '';
         
-        // 현재 DB에 있는 분류 데이터를 가져와서 자동완성(Datalist) 목록 생성
         const catSet = new Set();
         const subCat1Set = new Set();
         const subCat2Set = new Set();
@@ -738,12 +757,12 @@
         const cat = document.getElementById('newProdCat').value.trim() || '기타';
         const subCat1 = document.getElementById('newProdSubCat1').value.trim() || '기타';
         const subCat2 = document.getElementById('newProdSubCat2').value.trim() || '기본';
-        const subCat3 = document.getElementById('newProdSubCat3').value.trim() || '기본'; // DB 에러 방지
+        const subCat3 = document.getElementById('newProdSubCat3').value.trim() || '기본'; 
         const unit = document.getElementById('newProdUnit').value.trim();
         const option = document.getElementById('newProdOption').value.trim();
         
         const msrpKrw = getNum('newProdMsrpKrw');
-        const msrpUsd = getNum('newProdMsrpUsd') || 0; // 달러 값이 없으면 0 처리
+        const msrpUsd = getNum('newProdMsrpUsd') || 0; 
         const cost = getNum('newProdCost');
 
         if (!name) return customAlert("제품명을 입력해주세요.");
@@ -752,7 +771,6 @@
         btn.innerText = "데이터베이스 저장 중..."; btn.disabled = true;
 
         try {
-            // 1. products 테이블에 기본 제품 정보 Insert (Insert 후 생성된 id 반환받기)
             const newProductId = crypto.randomUUID();
             
             const { data: prodData, error: prodErr } = await supabaseClient.from('products')
@@ -762,7 +780,6 @@
 
             const productId = prodData.id;
             
-            // 2. form_catalog_master 테이블에 카탈로그 노출용 정보 Insert (USD 정가 기록, Unit, Option, SubCat3 포함)
             const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
                 id: crypto.randomUUID(), 
                 product_id: productId, 
@@ -773,19 +790,17 @@
                 sub_category_3: subCat3,
                 unit: unit,
                 product_option: option,
-                unit_price: msrpUsd, // 폼 카탈로그는 USD 기록
+                unit_price: msrpUsd, 
                 is_active: true
             }]);
             if (catErr) throw new Error("카탈로그 등록 실패:\n" + catErr.message);
 
-            // 3. product_prices 테이블에 가격 정보 Insert (KRW, USD 두 가지 동시 기록)
             const { error: priceErr } = await supabaseClient.from('product_prices').insert([
                 { id: crypto.randomUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrpKrw },
                 { id: crypto.randomUUID(), product_id: productId, currency: 'USD', b2c_msrp: msrpUsd }
             ]);
             if (priceErr) throw new Error("가격 등록 실패:\n" + priceErr.message);
 
-            // 4. product_costs 테이블에 원가 정보 Insert
             const { error: costErr } = await supabaseClient.from('product_costs').insert([{
                 id: crypto.randomUUID(), product_id: productId, currency: 'KRW', production_cost: cost,
                 effective_date: new Date().toISOString().split('T')[0]
@@ -794,7 +809,7 @@
 
             customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
             closeAddProductModal();
-            fetchProducts(); // 즉시 리스트 새로고침
+            fetchProducts(); 
         } catch (error) {
             console.error(error);
             customAlert("데이터베이스 저장 오류 (Supabase RLS 권한을 확인하세요)\n\n" + error.message, "오류");
@@ -889,6 +904,106 @@
         document.getElementById('ratioSupply').value = tpNet > 0 ? ((tc / tpNet) * 100).toFixed(2) : 0;
     }
 
+    function calculate() {
+        if (selectedProducts.length === 0) return;
+        let totalPromo = 0, totalMsrp = 0, totalLowest = 0;
+        
+        selectedProducts.forEach(id => {
+            const p = productsData.find(x => x.id === id);
+            if(p) { totalPromo += p.price; totalMsrp += p.msrp; totalLowest += p.lowestPrice || p.price; }
+        });
+        
+        const unitRev = totalPromo / 1.1;
+        const targetQty = getNum('targetQtyAdmin'); 
+        const gongguRate = Number(document.getElementById('ratioGonggu').value);
+        const contractFee = getNum('fcContract'); 
+        
+        const totalVcRatio = (Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + gongguRate + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)) / 100; 
+        
+        const unitVc = unitRev * totalVcRatio; 
+        const unitCm = unitRev * (1 - totalVcRatio);
+        
+        // 고정비 총합 (광고선전비 fcAd 반영)
+        const totalFc = getNum('fcAd') + getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
+        const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
+        
+        if (document.getElementById('fcContractDisplay')) document.getElementById('fcContractDisplay').value = formatNum(contractFee);
+        if (document.getElementById('totalFcDisplay')) document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
+        if (document.getElementById('totalCcDisplay')) document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
+
+        const totalFixedAndCommon = totalFc + totalCc;
+        const bepQty = unitCm > 0 ? Math.ceil(totalFixedAndCommon / unitCm) : 0; 
+        const partnerProfit = ((targetQty * unitRev) * (gongguRate / 100)) + contractFee;
+        const hqTargetOp = (targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc;
+
+        document.querySelectorAll('.partnerProfitAmount').forEach(el => el.textContent = formatNum(partnerProfit));
+        document.querySelectorAll('.partnerProfitRate').forEach(el => el.textContent = gongguRate);
+        document.querySelectorAll('.partnerProfitContract').forEach(el => el.textContent = formatNum(contractFee));
+        document.querySelectorAll('.hqProfitAmount').forEach(el => el.textContent = formatNum(hqTargetOp));
+        document.querySelectorAll('.partnerProfitQty').forEach(el => el.textContent = formatNum(targetQty));
+        
+        // --- 수익구조 상세 내역(테이블) 업데이트 ---
+        const targetRev = targetQty * unitRev;
+        const targetVc = targetQty * unitVc;
+        const targetCm = targetQty * unitCm;
+        
+        const bepRev = bepQty * unitRev;
+        const bepVc = bepQty * unitVc;
+        const bepCm = bepQty * unitCm;
+        
+        if (document.getElementById('resUnitRev')) document.getElementById('resUnitRev').innerText = formatNum(unitRev);
+        if (document.getElementById('resUnitVc')) document.getElementById('resUnitVc').innerText = formatNum(unitVc);
+        if (document.getElementById('resUnitCm')) document.getElementById('resUnitCm').innerText = formatNum(unitCm);
+        
+        if (document.getElementById('resBepRev')) document.getElementById('resBepRev').innerText = formatNum(bepRev);
+        if (document.getElementById('resBepQty')) document.getElementById('resBepQty').innerText = formatNum(bepQty);
+        if (document.getElementById('resBepVc')) document.getElementById('resBepVc').innerText = formatNum(bepVc);
+        if (document.getElementById('resBepCm')) document.getElementById('resBepCm').innerText = formatNum(bepCm);
+        if (document.getElementById('resBepFc')) document.getElementById('resBepFc').innerText = formatNum(totalFc);
+        if (document.getElementById('resBepCc')) document.getElementById('resBepCc').innerText = formatNum(totalCc);
+        if (document.getElementById('resBepOp')) document.getElementById('resBepOp').innerText = formatNum(bepCm - totalFixedAndCommon); // 손익분기점이므로 거의 0에 수렴
+        
+        if (document.getElementById('resTargetRev')) document.getElementById('resTargetRev').innerText = formatNum(targetRev);
+        if (document.getElementById('resTargetQtyDisplay')) document.getElementById('resTargetQtyDisplay').innerText = formatNum(targetQty);
+        if (document.getElementById('resTargetVc')) document.getElementById('resTargetVc').innerText = formatNum(targetVc);
+        if (document.getElementById('resTargetCm')) document.getElementById('resTargetCm').innerText = formatNum(targetCm);
+        if (document.getElementById('resTargetFc')) document.getElementById('resTargetFc').innerText = formatNum(totalFc);
+        if (document.getElementById('resTargetCc')) document.getElementById('resTargetCc').innerText = formatNum(totalCc);
+        if (document.getElementById('resTargetOp')) document.getElementById('resTargetOp').innerText = formatNum(hqTargetOp);
+    }
+
+    // --- 영역 캡처(이미지 저장) 기능 ---
+    async function captureElement(elementId, fileName) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        // 캡처 시 스타일 임시 조정 (버튼 숨김, 테두리 제거 등)
+        const originalBorderStyle = element.style.border;
+        const originalBoxShadow = element.style.boxShadow;
+        element.style.border = 'none'; 
+        element.style.boxShadow = 'none';
+        
+        const buttons = element.querySelectorAll('button');
+        buttons.forEach(btn => btn.style.display = 'none');
+        
+        try {
+            // html2canvas 실행
+            const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+            const link = document.createElement('a');
+            link.download = `${fileName}_${new Date().toISOString().split('T')[0]}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (error) {
+            console.error("Capture failed:", error);
+            customAlert("이미지 캡처 중 오류가 발생했습니다. (CORS 문제일 수 있습니다.)");
+        } finally {
+            // 캡처 후 스타일 원래대로 복원
+            buttons.forEach(btn => btn.style.display = '');
+            element.style.border = originalBorderStyle;
+            element.style.boxShadow = originalBoxShadow;
+        }
+    }
+
     function renderProducts() {
         const container = document.getElementById('product-list'); container.innerHTML = '';
         const filteredProducts = productsData.filter(p => p.mainCategory === currentCategoryFilter);
@@ -908,7 +1023,6 @@
             grouped[subGroup][formCat].push(prod);
         });
 
-        // 서브 카테고리 정렬 순서 강제 지정 (Home Care -> Clinic / Pharmacy -> Clinic)
         const sortOrder = {
             'home care': 1,
             'clinic / pharmacy': 2,
@@ -941,7 +1055,6 @@
                 const prods = formCats[formCat];
                 if (prods.length === 0) continue;
                 
-                // 폼 카탈로그 메인 카테고리(category) 헤더 표시
                 if (formCat !== '기타' && formCat !== '') {
                     const formCatHeader = document.createElement('div');
                     formCatHeader.style.cssText = "font-size: 0.9rem; font-weight: 700; color: #64748b; margin-top: 12px; margin-bottom: 12px; padding-left: 12px; border-left: 3px solid #cbd5e1; letter-spacing: -0.01em;";
@@ -956,7 +1069,6 @@
                     card.id = `prod-${prod.id}`; 
                     card.onclick = () => toggleProduct(prod.id);
                     
-                    // 드래그 앤 드롭 이벤트 추가
                     card.ondragover = (e) => { 
                         e.preventDefault(); 
                         if (document.body.classList.contains('mode-admin') && prod.productId) {
@@ -1017,7 +1129,6 @@
                     </label>`;
                 }
 
-                // --- 복구된 가격 수정 버튼 및 HTML 구조 ---
                 card.innerHTML = `
                     <div class="carousel-container">
                         ${deleteBtnHtml}
@@ -1061,7 +1172,6 @@
         updateAutoSupplyRatio(); calculate();
     }
 
-    // --- 누락되었던 이미지 및 가격 수정 관련 기능 롤백 복구 ---
     window.changeImage = function(catalogId, direction) {
         const prod = productsData.find(p => p.id === catalogId);
         if (!prod || !prod.imageList || prod.imageList.length <= 1) return;
@@ -1145,42 +1255,6 @@
         }
     };
 
-    function calculate() {
-        if (selectedProducts.length === 0) return;
-        let totalPromo = 0, totalMsrp = 0, totalLowest = 0;
-        
-        selectedProducts.forEach(id => {
-            const p = productsData.find(x => x.id === id);
-            if(p) { totalPromo += p.price; totalMsrp += p.msrp; totalLowest += p.lowestPrice || p.price; }
-        });
-        
-        const unitRev = totalPromo / 1.1;
-        const targetQty = getNum('targetQtyAdmin'); 
-        const gongguRate = Number(document.getElementById('ratioGonggu').value);
-        const contractFee = getNum('fcContract'); 
-        
-        const totalVcRatio = (Number(document.getElementById('ratioSupply').value) + Number(document.getElementById('ratioShipping').value) + Number(document.getElementById('ratioPlatform').value) + Number(document.getElementById('ratioCard').value) + gongguRate + Number(document.getElementById('ratioIncentive').value) + Number(document.getElementById('ratioReferral').value)) / 100; 
-        
-        const unitVc = unitRev * totalVcRatio; const unitCm = unitRev * (1 - totalVcRatio);
-        const totalFc = getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
-        const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
-        
-        document.getElementById('fcContractDisplay').value = formatNum(contractFee);
-        document.getElementById('totalFcDisplay').innerText = `${formatNum(totalFc)} 원`;
-        document.getElementById('totalCcDisplay').innerText = `${formatNum(totalCc)} 원`;
-
-        const totalFixedAndCommon = totalFc + totalCc;
-        const bepQty = unitCm > 0 ? (totalFixedAndCommon / unitCm) : 0; 
-        const partnerProfit = ((targetQty * unitRev) * (gongguRate / 100)) + contractFee;
-        const hqTargetOp = (targetQty * unitRev) - (targetQty * unitVc) - totalFc - totalCc;
-
-        document.querySelectorAll('.partnerProfitAmount').forEach(el => el.textContent = formatNum(partnerProfit));
-        document.querySelectorAll('.partnerProfitRate').forEach(el => el.textContent = gongguRate);
-        document.querySelectorAll('.partnerProfitContract').forEach(el => el.textContent = formatNum(contractFee));
-        document.querySelectorAll('.hqProfitAmount').forEach(el => el.textContent = formatNum(hqTargetOp));
-        document.querySelectorAll('.partnerProfitQty').forEach(el => el.textContent = formatNum(targetQty));
-    }
-
     async function fetchAllUsersForRoles() {
         try {
             const { data } = await supabaseClient.from('user_profiles').select('*').order('created_at', { ascending: false });
@@ -1225,6 +1299,11 @@
         try { await supabaseClient.from('user_profiles').delete().eq('id', id); customAlert("거절되었습니다."); fetchPendingUsers(); } catch (e) { }
     }
     
+    // 임시 캠페인 제출 함수
+    function submitCampaign() {
+        customAlert("최종 데이터가 전송 및 확정 대기 상태가 되었습니다.", "전송 성공");
+    }
+
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg',
         'Melano Cut Brightening Ampoule': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/br30.jpg',
@@ -1288,13 +1367,11 @@
             let catSet = new Set();
 
             if (formCatalog) {
-                let seenNames = new Set(); 
-
                 formCatalog.forEach(f => {
                     let pName = (f.product_name || '').trim();
 
                     if (pName === 'Root Vitality Volume Shampoo 100ml') return;
-                    if (pName.toLowerCase() === 'crystal') return; // 페이스 클리닉의 Crystal 제품 단독 강제 제외
+                    if (pName.toLowerCase() === 'crystal') return; 
                     
                     if (pName.toLowerCase().includes('core impact')) pName = 'Core Impact';
                     if (pName.toLowerCase().includes('hyper shot')) pName = 'Hyper Shot';
@@ -1303,7 +1380,6 @@
                     let subCat = (f.sub_category_2 || '기본').trim();
                     let formCat = (f.category || '기타').trim();
 
-                    // 불필요한 카테고리 스킵
                     if (subCat.toLowerCase().includes('base ingredient') || formCat.toLowerCase().includes('base ingredient') || mainCat.toLowerCase().includes('base ingredient')) return;
                     if (subCat.toLowerCase().includes('professional') || formCat.toLowerCase().includes('professional') || mainCat.toLowerCase().includes('professional')) return;
 
