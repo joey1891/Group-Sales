@@ -954,6 +954,33 @@
                     const card = document.createElement('div');
                     card.className = `product-card ${selectedProducts.includes(prod.id) ? 'selected' : ''}`;
                     card.id = `prod-${prod.id}`; 
+                    card.onclick = () => toggleProduct(prod.id);
+                    
+                    // 드래그 앤 드롭 이벤트 추가
+                    card.ondragover = (e) => { 
+                        e.preventDefault(); 
+                        if (document.body.classList.contains('mode-admin') && prod.productId) {
+                            card.classList.add('drag-over'); 
+                        }
+                    };
+                    card.ondragleave = (e) => { 
+                        e.preventDefault(); 
+                        card.classList.remove('drag-over'); 
+                    };
+                    card.ondrop = (e) => { 
+                        e.preventDefault(); 
+                        card.classList.remove('drag-over'); 
+                        if (!document.body.classList.contains('mode-admin') || !prod.productId) return; 
+                        
+                        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                        if (files.length > 0) {
+                            if (typeof window.processImageUpload === 'function') {
+                                window.processImageUpload(files, prod.id, prod.productId);
+                            }
+                        } else if(e.dataTransfer.files.length > 0) {
+                            customAlert("이미지 파일만 업로드 가능합니다.", "업로드 오류");
+                        }
+                    };
 
                 const hasImages = prod.imageList && prod.imageList.length > 0;
                 const currentImg = hasImages ? prod.imageList[prod.currentImgIdx || 0] : null;
