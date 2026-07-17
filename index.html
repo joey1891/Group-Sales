@@ -275,10 +275,13 @@
     <div class="panel full-width" id="panel-products">
         <h2>제품 구성 선택 <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(다중 선택 가능)</span></h2>
         
-        <div class="channel-tabs">
-            <div class="channel-tab active" onclick="setChannelTab('일반', this)">일반</div>
-            <div class="channel-tab" onclick="setChannelTab('약국용', this)">약국용</div>
-            <div class="channel-tab" onclick="setChannelTab('병의원용', this)">병의원용</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+            <div class="channel-tabs" style="border: none; padding: 0; margin: 0; margin-bottom: -12px;">
+                <div class="channel-tab active" onclick="setChannelTab('일반', this)">일반</div>
+                <div class="channel-tab" onclick="setChannelTab('약국용', this)">약국용</div>
+                <div class="channel-tab" onclick="setChannelTab('병의원용', this)">병의원용</div>
+            </div>
+            <button class="btn-print primary admin-only" onclick="openAddProductModal()" style="padding: 6px 12px; font-size: 0.85rem; margin-bottom: 4px;">+ 신규 제품 등록</button>
         </div>
 
         <div id="product-list" style="max-height: 600px; overflow-y: auto; padding-right: 8px;"></div>
@@ -578,6 +581,54 @@
         <div class="modal-actions">
             <button id="modalCancelBtn" class="modal-btn modal-btn-cancel">취소</button>
             <button id="modalOkBtn" class="modal-btn modal-btn-ok">확인</button>
+        </div>
+    </div>
+</div>
+
+<!-- 신규 제품 등록 Modal -->
+<div id="addProductModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 500px;">
+        <h3 class="modal-title">신규 제품 통합 등록</h3>
+        <p class="modal-msg" style="margin-bottom: 16px;">새로운 제품을 데이터베이스(마스터, 카탈로그, 가격, 원가)에 즉시 등록합니다.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">제품명</label>
+                <input type="text" id="newProdName" class="modal-input" style="display: block; margin-bottom: 0;" placeholder="예: 엑소좀 리페어 크림">
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">유통 채널</label>
+                    <select id="newProdChannel" style="width: 100%; display: block; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-weight: bold; color: var(--text-bold);">
+                        <option value="일반">일반</option>
+                        <option value="약국용">약국용</option>
+                        <option value="병의원용">병의원용</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">소비자정가 (원)</label>
+                    <input type="text" inputmode="numeric" id="newProdMsrp" class="modal-input" style="display: block; margin-bottom: 0; text-align: right;" placeholder="0" oninput="formatInput(this)">
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">메인 카테고리</label>
+                    <input type="text" id="newProdMainCat" class="modal-input" style="display: block; margin-bottom: 0;" placeholder="예: 페이스, 스칼프">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">서브 카테고리</label>
+                    <input type="text" id="newProdSubCat" class="modal-input" style="display: block; margin-bottom: 0;" placeholder="예: 화장품, 디바이스">
+                </div>
+            </div>
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">초기 원가 (원)</label>
+                <input type="text" inputmode="numeric" id="newProdCost" class="modal-input" style="display: block; margin-bottom: 0; text-align: right;" placeholder="0" oninput="formatInput(this)">
+            </div>
+        </div>
+        
+        <div class="modal-actions">
+            <button onclick="closeAddProductModal()" class="modal-btn modal-btn-cancel">취소</button>
+            <button onclick="submitNewProduct()" class="modal-btn modal-btn-ok" id="btnSubmitNewProd">DB에 통합 등록하기</button>
         </div>
     </div>
 </div>
@@ -1275,6 +1326,84 @@
     function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
     function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
 
+    /* --- 신규 제품 등록 로직 --- */
+    function openAddProductModal() { document.getElementById('addProductModal').style.display = 'flex'; }
+    function closeAddProductModal() {
+        document.getElementById('addProductModal').style.display = 'none';
+        document.getElementById('newProdName').value = '';
+        document.getElementById('newProdChannel').value = '일반';
+        document.getElementById('newProdMainCat').value = '';
+        document.getElementById('newProdSubCat').value = '';
+        document.getElementById('newProdMsrp').value = '';
+        document.getElementById('newProdCost').value = '';
+    }
+
+    async function submitNewProduct() {
+        const name = document.getElementById('newProdName').value.trim();
+        const channel = document.getElementById('newProdChannel').value;
+        const mainCat = document.getElementById('newProdMainCat').value.trim() || '기타';
+        const subCat = document.getElementById('newProdSubCat').value.trim() || '기본';
+        const msrp = getNum('newProdMsrp');
+        const cost = getNum('newProdCost');
+
+        if (!name) return customAlert("제품명을 입력해주세요.");
+
+        const btn = document.getElementById('btnSubmitNewProd');
+        btn.innerText = "데이터베이스 저장 중...";
+        btn.disabled = true;
+
+        try {
+            // 1. products 테이블에 기본 제품 정보 Insert (Insert 후 생성된 id 반환받기)
+            const { data: prodData, error: prodErr } = await supabaseClient
+                .from('products')
+                .insert([{ clean_name: name, main_category: mainCat, sub_category: subCat }])
+                .select('id').single();
+
+            if (prodErr) throw new Error("Product 마스터 등록 실패:\n" + prodErr.message);
+            const productId = prodData.id;
+
+            // 2. form_catalog_master 테이블에 카탈로그 노출용 정보 Insert
+            const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
+                product_id: productId,
+                product_name: name,
+                category: channel, // '일반', '약국용', '병의원용' 직접 저장
+                sub_category_1: mainCat,
+                sub_category_2: subCat,
+                unit_price: msrp,
+                is_active: true
+            }]);
+            if (catErr) throw new Error("카탈로그 등록 실패:\n" + catErr.message);
+
+            // 3. product_prices 테이블에 가격 정보 Insert
+            const { error: priceErr } = await supabaseClient.from('product_prices').insert([{
+                product_id: productId,
+                currency: 'KRW',
+                b2c_msrp: msrp
+            }]);
+            if (priceErr) throw new Error("가격 등록 실패:\n" + priceErr.message);
+
+            // 4. product_costs 테이블에 원가 정보 Insert
+            const { error: costErr } = await supabaseClient.from('product_costs').insert([{
+                product_id: productId,
+                currency: 'KRW',
+                production_cost: cost,
+                effective_date: new Date().toISOString().split('T')[0]
+            }]);
+            if (costErr) throw new Error("원가 등록 실패:\n" + costErr.message);
+
+            customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
+            closeAddProductModal();
+            fetchProducts(); // 즉시 리스트 새로고침
+
+        } catch (error) {
+            console.error(error);
+            customAlert("데이터베이스 저장 오류 (Supabase RLS 권한을 확인하세요)\n\n" + error.message, "오류");
+        } finally {
+            btn.innerText = "DB에 통합 등록하기";
+            btn.disabled = false;
+        }
+    }
+
     function customAlert(msg, title="알림") {
         return new Promise(resolve => {
             const modal = document.getElementById('customModal');
@@ -1447,7 +1576,11 @@
 
                     let mappedChannel = null;
 
-                    if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
+                    // 신규 등록된 직관적인 카테고리명을 바로 인식하도록 최상단에 추가
+                    if (['일반', '약국용', '병의원용'].includes(f.category)) {
+                        mappedChannel = f.category;
+                    }
+                    else if ((catText.includes('cosmetic') || catText.includes('device')) && subCat2Text.includes('home care')) {
                         mappedChannel = '일반';
                     }
                     else if (subCat2NoSpace.includes('clinic/pharmacy') || catText.includes('pharmacy') || catText.includes('약국')) {
@@ -1464,9 +1597,10 @@
                     }
 
                     let mainCat = f.sub_category_1 || '기타';
-                    let subCat = '기본';
+                    let subCat = f.sub_category_2 || '기본';
 
-                    if (mappedChannel === '일반') {
+                    // 신규 등록한 제품은 원래 입력값을 보존하고, 기존 카탈로그 매핑만 덮어쓰기 적용
+                    if (mappedChannel === '일반' && !['일반', '약국용', '병의원용'].includes(f.category)) {
                         if (subCat1Text.includes('face')) mainCat = '페이스';
                         else if (subCat1Text.includes('scalp') || subCat1Text.includes('hair')) mainCat = '스칼프';
                         
