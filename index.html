@@ -79,6 +79,7 @@
         .carousel-btn.left { left: 4px; }
         .carousel-btn.right { right: 4px; }
         .carousel-counter { position: absolute; bottom: 4px; right: 8px; background: rgba(0,0,0,0.4); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; z-index: 5; font-weight: 600;}
+        
         .btn-delete-img { position: absolute; top: 8px; left: 8px; background: rgba(225,29,72,0.9); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .btn-delete-img:hover { background: var(--danger); transform: scale(1.1); }
         
@@ -104,7 +105,7 @@
         td:first-child { text-align: left; font-weight: 500; background: var(--bg-light); border-right: 1px solid var(--border); width: 40%; color: var(--text-bold); }
         tr:last-child th, tr:last-child td { border-bottom: none; }
         
-        input[type="number"], input[type="text"], input[type="date"], input[type="password"], input[type="email"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
+        input[type="number"], input[type="text"], input[type="date"], input[type="password"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
         input[type="date"] { text-align: left; width: auto; }
         input[type="password"], input[type="email"] { text-align: left; width: 100%; }
         input[type="text"].text-input { text-align: left; width: 160px; }
@@ -173,6 +174,7 @@
     </style>
 </head>
 <body class="mode-admin">
+
 <div id="authOverlay" class="auth-overlay">
     <div class="auth-box">
         <div class="auth-logo"><svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
@@ -504,6 +506,43 @@
     </div>
 </div>
 
+<!-- 자료 관리 모달 -->
+<div id="materialsModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 500px;">
+        <h3 class="modal-title" id="materialsModalTitle">자료 관리</h3>
+        <p class="modal-msg" style="margin-bottom: 16px;">제품과 관련된 소개서(PDF, 이미지) 및 영상(MP4, 유튜브 링크)을 등록하세요.</p>
+        
+        <div id="materialsList" style="margin-bottom: 20px; max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+            <!-- 자료 리스트 -->
+        </div>
+
+        <div style="background: var(--bg-light); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            <h4 style="margin-top: 0; font-size: 0.95rem; margin-bottom: 12px; color: var(--text-bold);">새 자료 추가</h4>
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <select id="newMaterialCategory" style="width: 100px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit;">
+                    <option value="doc">소개자료</option>
+                    <option value="video">영상자료</option>
+                </select>
+                <input type="text" id="newMaterialName" placeholder="자료명 (예: 브랜드 소개서)" style="flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 6px; text-align: left; font-family: inherit;">
+            </div>
+            
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 16px;">
+                <select id="newMaterialType" style="width: 100px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit;" onchange="toggleMaterialInput()">
+                    <option value="url">URL 링크</option>
+                    <option value="file">파일 첨부</option>
+                </select>
+                <input type="text" id="newMaterialUrl" placeholder="https://" style="flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 6px; text-align: left; font-family: inherit;">
+                <input type="file" id="newMaterialFile" style="flex: 1; padding: 8px; display: none; font-family: inherit;" accept="*/*">
+            </div>
+            <button class="btn-confirm" id="btnSaveMaterial" style="width: 100%; padding: 10px; font-size: 0.95rem;" onclick="addNewMaterial()">+ 추가 및 자동 저장</button>
+        </div>
+        
+        <div class="modal-actions" style="margin-top: 24px;">
+            <button class="modal-btn modal-btn-cancel" onclick="closeMaterialsModal()">닫기</button>
+        </div>
+    </div>
+</div>
+
 <script>
     var SUPABASE_URL = 'https://rayhgqcpupwmwpymtkwg.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheWhncWNwdXB3bXdweW10a3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNjc2MTEsImV4cCI6MjA4NDg0MzYxMX0.Ng4K86amltnarVwbQ8FVfw1rTJK03NTE5g3QDoLMFTc';
@@ -521,7 +560,6 @@
     const SUPER_ADMIN = 'wjshin2450@gmail.com';
     let isAdmin = false;
 
-    // 안전한 UUID 생성 함수
     function generateSafeUUID() {
         if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
             try { return crypto.randomUUID(); } catch (e) {}
@@ -536,7 +574,6 @@
     function formatInput(el) { let val = el.value.replace(/[^0-9]/g, ''); el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR'); }
     function getNum(id) { let val = document.getElementById(id).value; if(!val) return 0; return Number(val.toString().replace(/,/g, '')) || 0; }
 
-    // 목표 수량 양방향 동기화
     function syncTargetQty(value) {
         const adminInput = document.getElementById('targetQtyAdmin');
         const influencerInput = document.getElementById('targetQtyInfluencer');
@@ -813,7 +850,74 @@
             customAlert("데이터베이스 저장 오류 (Supabase RLS 권한을 확인하세요)\n\n" + error.message, "오류");
         } finally { btn.innerText = "DB에 통합 등록하기"; btn.disabled = false; }
     }
-    
+
+    window.editProductName = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+
+        const newVal = await customPrompt(`제품명 변경`, `새로운 제품명을 입력해주세요.`, "제품명 입력", prod.name);
+        if(!newVal || newVal.trim() === '') return;
+
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) card.style.opacity = '0.5';
+
+        try {
+            const { error: err1 } = await supabaseClient.from('products').update({ clean_name: newVal.trim() }).eq('id', productId);
+            if(err1) throw err1;
+            
+            const { error: err2 } = await supabaseClient.from('form_catalog_master').update({ product_name: newVal.trim() }).eq('product_id', productId);
+            if(err2) throw err2;
+            
+            prod.name = newVal.trim();
+            prod.cleanName = newVal.trim();
+            renderProducts();
+            customAlert(`제품명이 [${prod.name}]으로 변경되었습니다.`, "저장 완료");
+        } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); }
+        finally { if(card) card.style.opacity = '1'; }
+    };
+
+    window.editMsrp = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+
+        const newValStr = await customPrompt(`소비자정가 변경`, `새로운 소비자정가(원)를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", prod.msrp.toString());
+        if(!newValStr) return;
+
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            const card = document.getElementById(`prod-${catalogId}`);
+            if(card) card.style.opacity = '0.5';
+
+            try {
+                const { data: existing, error: fetchErr } = await supabaseClient.from('product_prices').select('id').eq('product_id', productId).eq('currency', 'KRW').maybeSingle();
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient.from('product_prices').update({ b2c_msrp: newVal }).eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient.from('product_prices').insert([{
+                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: newVal
+                    }]);
+                    if (insertErr) throw insertErr;
+                }
+                
+                prod.msrp = newVal;
+                // mallPrice 등을 같이 재계산 (원하는 경우)
+                prod.mallPrice = newVal * 0.9;
+                prod.price = newVal * 0.7;
+                prod.lowestPrice = newVal * 0.8;
+                
+                renderProducts();
+                calculate();
+                customAlert(`[${prod.name}]\n소비자정가가 ${formatNum(newVal)}원으로 변경되었습니다.`, "저장 완료");
+            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); }
+            finally { if(card) card.style.opacity = '1'; }
+        }
+    };
+
     window.editCost = async function(catalogId, productId) {
         if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
         const prod = productsData.find(p => p.id === catalogId);
@@ -845,82 +949,6 @@
                 customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
             } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); } 
             finally { if(card) card.style.opacity = '1'; }
-        }
-    };
-
-    // 추가된 제품명 수정 함수
-    window.editProductName = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-        
-        const newVal = await customPrompt(`제품명 변경`, `새로운 제품명을 입력해주세요.`, "제품명을 입력하세요", prod.name);
-        if(!newVal || newVal.trim() === '') return;
-        
-        const card = document.getElementById(`prod-${catalogId}`);
-        if(card) card.style.opacity = '0.5';
-        try {
-            // 1. products 테이블 업데이트
-            const { error: prodErr } = await supabaseClient.from('products').update({ clean_name: newVal.trim() }).eq('id', productId);
-            if (prodErr) throw prodErr;
-            
-            // 2. form_catalog_master 테이블 업데이트
-            const { error: catErr } = await supabaseClient.from('form_catalog_master').update({ product_name: newVal.trim() }).eq('product_id', productId);
-            if (catErr) throw catErr;
-
-            prod.name = newVal.trim();
-            renderProducts();
-            populateSelects(); // 셀렉트 박스도 업데이트
-            customAlert(`제품명이 [${prod.name}](으)로 DB에 저장되었습니다.`, "저장 완료");
-        } catch (error) { 
-            customAlert("DB 저장 오류:\n\n" + error.message, "오류"); 
-        } finally { 
-            if(card) card.style.opacity = '1'; 
-        }
-    };
-
-    // 추가된 소비자 정가 수정 함수
-    window.editMsrp = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-        
-        const newValStr = await customPrompt(`소비자정가 변경`, `새로운 소비자정가를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", (prod.msrp||0).toString());
-        if(!newValStr) return;
-        
-        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
-        if(newVal >= 0) {
-            const card = document.getElementById(`prod-${catalogId}`);
-            if(card) card.style.opacity = '0.5';
-            try {
-                // product_prices 테이블 (KRW) 업데이트 또는 인서트
-                const { data: existing, error: fetchErr } = await supabaseClient.from('product_prices')
-                                                            .select('id')
-                                                            .eq('product_id', productId)
-                                                            .eq('currency', 'KRW')
-                                                            .maybeSingle();
-                if (fetchErr) throw fetchErr;
-
-                if (existing) {
-                    const { error: updateErr } = await supabaseClient.from('product_prices')
-                                                    .update({ b2c_msrp: newVal })
-                                                    .eq('id', existing.id);
-                    if (updateErr) throw updateErr;
-                } else {
-                    const { error: insertErr } = await supabaseClient.from('product_prices').insert([{
-                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: newVal
-                    }]);
-                    if (insertErr) throw insertErr;
-                }
-                
-                prod.msrp = newVal;
-                renderProducts(); calculate();
-                customAlert(`[${prod.name}]\n소비자정가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
-            } catch (error) { 
-                customAlert("DB 저장 오류:\n\n" + error.message, "오류"); 
-            } finally { 
-                if(card) card.style.opacity = '1'; 
-            }
         }
     };
 
@@ -997,7 +1025,6 @@
         const unitVc = unitRev * totalVcRatio; 
         const unitCm = unitRev * (1 - totalVcRatio);
         
-        // 고정비 총합 (광고선전비 fcAd 반영)
         const totalFc = getNum('fcAd') + getNum('fcLabor') + getNum('fcRent') + getNum('fcTravel') + getNum('fcFood') + getNum('fcProps') + getNum('fcSamples') + getNum('fcGifts') + getNum('fcOther') + contractFee;
         const totalCc = getNum('ccTotal') * (Number(document.getElementById('ccAllocationRate').value) / 100);
         
@@ -1016,7 +1043,6 @@
         document.querySelectorAll('.hqProfitAmount').forEach(el => el.textContent = formatNum(hqTargetOp));
         document.querySelectorAll('.partnerProfitQty').forEach(el => el.textContent = formatNum(targetQty));
         
-        // --- 수익구조 상세 내역(테이블) 업데이트 ---
         const targetRev = targetQty * unitRev;
         const targetVc = targetQty * unitVc;
         const targetCm = targetQty * unitCm;
@@ -1035,7 +1061,7 @@
         if (document.getElementById('resBepCm')) document.getElementById('resBepCm').innerText = formatNum(bepCm);
         if (document.getElementById('resBepFc')) document.getElementById('resBepFc').innerText = formatNum(totalFc);
         if (document.getElementById('resBepCc')) document.getElementById('resBepCc').innerText = formatNum(totalCc);
-        if (document.getElementById('resBepOp')) document.getElementById('resBepOp').innerText = formatNum(bepCm - totalFixedAndCommon); // 손익분기점이므로 거의 0에 수렴
+        if (document.getElementById('resBepOp')) document.getElementById('resBepOp').innerText = formatNum(bepCm - totalFixedAndCommon); 
         
         if (document.getElementById('resTargetRev')) document.getElementById('resTargetRev').innerText = formatNum(targetRev);
         if (document.getElementById('resTargetQtyDisplay')) document.getElementById('resTargetQtyDisplay').innerText = formatNum(targetQty);
@@ -1046,12 +1072,10 @@
         if (document.getElementById('resTargetOp')) document.getElementById('resTargetOp').innerText = formatNum(hqTargetOp);
     }
 
-    // --- 영역 캡처(이미지 저장) 기능 ---
     async function captureElement(elementId, fileName) {
         const element = document.getElementById(elementId);
         if (!element) return;
         
-        // 캡처 시 스타일 임시 조정 (버튼 숨김, 테두리 제거 등)
         const originalBorderStyle = element.style.border;
         const originalBoxShadow = element.style.boxShadow;
         element.style.border = 'none'; 
@@ -1061,7 +1085,6 @@
         buttons.forEach(btn => btn.style.display = 'none');
         
         try {
-            // html2canvas 실행
             const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
             const link = document.createElement('a');
             link.download = `${fileName}_${new Date().toISOString().split('T')[0]}.png`;
@@ -1071,7 +1094,6 @@
             console.error("Capture failed:", error);
             customAlert("이미지 캡처 중 오류가 발생했습니다. (CORS 문제일 수 있습니다.)");
         } finally {
-            // 캡처 후 스타일 원래대로 복원
             buttons.forEach(btn => btn.style.display = '');
             element.style.border = originalBorderStyle;
             element.style.boxShadow = originalBoxShadow;
@@ -1209,28 +1231,27 @@
                         ${uploadBtnHtml}
                         ${imgHtml}
                     </div>
-                    
-                    <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap;">
-                        <span>${prod.name}</span>
-                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editProductName === 'function') editProductName('${prod.id}', '${prod.productId}')">수정</span>
+                    <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px;">
+                        ${prod.name}
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof window.editProductName === 'function') window.editProductName('${prod.id}', '${prod.productId}')">수정</span>
                     </div>
                     
-                    <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px; display: flex; align-items: center; justify-content: center;">
-                        소비자정가: <span id="msrp-${prod.id}">${formatNum(prod.msrp)}원</span>
-                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editMsrp === 'function') editMsrp('${prod.id}', '${prod.productId}')">수정</span>
+                    <div style="font-size:0.85rem; color:#9ca3af; margin-bottom:2px;">
+                        <span style="text-decoration:line-through;">소비자정가: ${formatNum(prod.msrp)}원</span>
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof window.editMsrp === 'function') window.editMsrp('${prod.id}', '${prod.productId}')">수정</span>
                     </div>
                     
-                    <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600; display: flex; align-items: center; justify-content: center;">
+                    <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600;">
                         자사몰가: <span id="mall-${prod.id}">${formatNum(prod.mallPrice)}원</span> 
                         <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'mall')">수정</span>
                     </div>
                     
-                    <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600; display: flex; align-items: center; justify-content: center;">
+                    <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600;">
                         온라인 최저가: <span id="lowest-${prod.id}">${formatNum(prod.lowestPrice)}원</span> 
                         <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'lowest')">수정</span>
                     </div>
                     
-                    <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold); display: flex; align-items: center; justify-content: center;">
+                    <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold);">
                         프로모션가: ${formatNum(prod.price)}원 
                         <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'price')">수정</span>
                     </div>
@@ -1239,12 +1260,201 @@
                         원가: ${formatNum(prod.cost)}원 <span style="font-size:0.75rem; text-decoration:underline; font-weight:normal; margin-left:4px; color:var(--danger);">수정</span>
                     </div>
                 `;
+
+                // 자료(Materials) 렌더링
+                let materialsHtml = '';
+                const materials = prod.materials || [];
+                if (materials.length > 0) {
+                    materialsHtml = '<div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; width: 100%; border-top: 1px dashed var(--border); padding-top: 12px;">';
+                    materials.forEach(m => {
+                        const icon = m.category === 'video' ? '🎬' : '📄';
+                        materialsHtml += `<a href="${m.url}" target="_blank" onclick="event.stopPropagation();" style="font-size: 0.75rem; background: var(--bg-light); border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; text-decoration: none; color: var(--text-bold); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">${icon} ${m.name}</a>`;
+                    });
+                    materialsHtml += '</div>';
+                }
+
+                let manageMaterialsBtn = '';
+                if (document.body.classList.contains('mode-admin') && prod.productId) {
+                    manageMaterialsBtn = `<button class="admin-only" style="margin-top: ${materials.length > 0 ? '8px' : '12px'}; width: 100%; padding: 8px; font-size: 0.85rem; background: #fff; border: 1px dashed var(--accent); color: var(--accent); font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onclick="event.stopPropagation(); openMaterialsModal('${prod.id}', '${prod.productId}')" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background='#fff'">+ 소개/영상 자료 관리</button>`;
+                }
+                
+                card.innerHTML += materialsHtml + manageMaterialsBtn;
+
                 grid.appendChild(card);
             });
             container.appendChild(grid);
             }
         }
     }
+
+    let currentMaterialCatalogId = null;
+    let currentMaterialProductId = null;
+
+    window.openMaterialsModal = function(catalogId, productId) {
+        currentMaterialCatalogId = catalogId;
+        currentMaterialProductId = productId;
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        document.getElementById('materialsModalTitle').innerText = `[${prod.name}] 자료 관리`;
+        document.getElementById('newMaterialName').value = '';
+        document.getElementById('newMaterialUrl').value = '';
+        document.getElementById('newMaterialFile').value = '';
+        document.getElementById('newMaterialType').value = 'url';
+        toggleMaterialInput();
+        
+        renderMaterialsList();
+        document.getElementById('materialsModal').style.display = 'flex';
+    };
+
+    window.closeMaterialsModal = function() {
+        document.getElementById('materialsModal').style.display = 'none';
+    };
+
+    window.toggleMaterialInput = function() {
+        const type = document.getElementById('newMaterialType').value;
+        if (type === 'url') {
+            document.getElementById('newMaterialUrl').style.display = 'block';
+            document.getElementById('newMaterialFile').style.display = 'none';
+        } else {
+            document.getElementById('newMaterialUrl').style.display = 'none';
+            document.getElementById('newMaterialFile').style.display = 'block';
+        }
+    };
+
+    window.renderMaterialsList = function() {
+        const prod = productsData.find(p => p.id === currentMaterialCatalogId);
+        const listContainer = document.getElementById('materialsList');
+        if (!prod || !prod.materials || prod.materials.length === 0) {
+            listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 16px;">등록된 자료가 없습니다.</div>';
+            return;
+        }
+        
+        let html = '';
+        prod.materials.forEach((m, idx) => {
+            const icon = m.category === 'video' ? '🎬' : '📄';
+            const catName = m.category === 'video' ? '영상' : '소개서';
+            html += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                        <span style="font-size: 1.2rem;">${icon}</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-bold);">${m.name} <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(${catName})</span></span>
+                            <a href="${m.url}" target="_blank" style="font-size: 0.8rem; color: var(--accent); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">${m.url}</a>
+                        </div>
+                    </div>
+                    <button onclick="deleteMaterial(${idx})" style="background: #fee2e2; color: var(--danger); border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer;">삭제</button>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+    };
+
+    window.addNewMaterial = async function() {
+        const name = document.getElementById('newMaterialName').value.trim();
+        const category = document.getElementById('newMaterialCategory').value;
+        const type = document.getElementById('newMaterialType').value;
+        
+        if (!name) return customAlert("자료명을 입력해주세요.");
+        
+        const btn = document.getElementById('btnSaveMaterial');
+        btn.innerText = "저장 중..."; btn.disabled = true;
+        
+        try {
+            let finalUrl = '';
+            
+            if (type === 'url') {
+                finalUrl = document.getElementById('newMaterialUrl').value.trim();
+                if (!finalUrl) throw new Error("URL을 입력해주세요.");
+                if (!finalUrl.startsWith('http')) finalUrl = 'https://' + finalUrl;
+            } else {
+                const fileInput = document.getElementById('newMaterialFile');
+                if (!fileInput.files || fileInput.files.length === 0) throw new Error("파일을 선택해주세요.");
+                
+                const file = fileInput.files[0];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `materials/${currentMaterialProductId}-${Date.now()}-${Math.floor(Math.random()*1000)}.${fileExt}`;
+                
+                const { error: uploadError } = await supabaseClient.storage.from('product_images').upload(fileName, file, { upsert: true });
+                if (uploadError) throw new Error("파일 업로드 실패: " + uploadError.message);
+                
+                const { data: publicUrlData } = supabaseClient.storage.from('product_images').getPublicUrl(fileName);
+                finalUrl = publicUrlData.publicUrl;
+            }
+            
+            const prod = productsData.find(p => p.id === currentMaterialCatalogId);
+            if (!prod.materials) prod.materials = [];
+            
+            const newMaterial = {
+                id: crypto.randomUUID(),
+                name: name,
+                category: category,
+                type: type,
+                url: finalUrl,
+                addedAt: new Date().toISOString()
+            };
+            
+            const updatedMaterials = [...prod.materials, newMaterial];
+            
+            const { error: dbError } = await supabaseClient.from('products').update({ materials: JSON.stringify(updatedMaterials) }).eq('id', currentMaterialProductId);
+            
+            if (dbError) {
+                if (dbError.message.includes('materials')) {
+                    throw new Error("데이터베이스에 'materials' 컬럼이 존재하지 않습니다. Supabase의 products 테이블에 JSONB 타입으로 materials 컬럼을 추가해주세요.");
+                }
+                throw dbError;
+            }
+            
+            prod.materials = updatedMaterials;
+            
+            document.getElementById('newMaterialName').value = '';
+            document.getElementById('newMaterialUrl').value = '';
+            document.getElementById('newMaterialFile').value = '';
+            
+            renderMaterialsList();
+            renderProducts();
+            
+        } catch (error) {
+            customAlert(error.message, "오류");
+        } finally {
+            btn.innerText = "+ 추가 및 자동 저장"; btn.disabled = false;
+        }
+    };
+
+    window.deleteMaterial = async function(idx) {
+        const isConfirmed = await customConfirm("이 자료를 삭제하시겠습니까?");
+        if (!isConfirmed) return;
+        
+        const prod = productsData.find(p => p.id === currentMaterialCatalogId);
+        if (!prod || !prod.materials || prod.materials.length <= idx) return;
+        
+        try {
+            const materialToDelete = prod.materials[idx];
+            const updatedMaterials = [...prod.materials];
+            updatedMaterials.splice(idx, 1);
+            
+            const { error: dbError } = await supabaseClient.from('products').update({ materials: JSON.stringify(updatedMaterials) }).eq('id', currentMaterialProductId);
+            if (dbError) throw dbError;
+            
+            if (materialToDelete.type === 'file') {
+                try {
+                    const urlObj = new URL(materialToDelete.url);
+                    const pathParts = urlObj.pathname.split('/product_images/');
+                    if (pathParts.length > 1) {
+                        let filePath = pathParts[1].split('?')[0]; 
+                        await supabaseClient.storage.from('product_images').remove([decodeURIComponent(filePath)]);
+                    }
+                } catch(e) {}
+            }
+            
+            prod.materials = updatedMaterials;
+            renderMaterialsList();
+            renderProducts();
+            
+        } catch (error) {
+            customAlert("삭제 실패: " + error.message, "오류");
+        }
+    };
 
     function toggleProduct(id) {
         const index = selectedProducts.indexOf(id);
@@ -1380,7 +1590,6 @@
         try { await supabaseClient.from('user_profiles').delete().eq('id', id); customAlert("거절되었습니다."); fetchPendingUsers(); } catch (e) { }
     }
     
-    // 임시 캠페인 제출 함수
     function submitCampaign() {
         customAlert("최종 데이터가 전송 및 확정 대기 상태가 되었습니다.", "전송 성공");
     }
@@ -1400,6 +1609,7 @@
         'Core Impact': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/coreimpact.jpg'
     };
 
+    // 가장 중요한 메인 비동기 함수
     async function fetchProducts() {
         try {
             document.getElementById('db-status').style.display = 'block';
@@ -1410,7 +1620,19 @@
 
             const { data: pricesData, error: pricesErr } = await supabaseClient.from('product_prices').select('product_id, currency, b2c_msrp');
             const { data: costsRes, error: costsErr } = await supabaseClient.from('product_costs').select('product_id, currency, production_cost');
-            const { data: productsRes, error: prodErr } = await supabaseClient.from('products').select('id, image_url');
+            
+            // image_url과 함께 materials 컬럼을 조회 (컬럼이 없을 경우를 대비한 롤백 처리 포함)
+            let productsRes = [];
+            let prodErr = null;
+            const resWithMaterials = await supabaseClient.from('products').select('id, image_url, materials');
+            if (resWithMaterials.error && resWithMaterials.error.message.includes('materials')) {
+                const resWithout = await supabaseClient.from('products').select('id, image_url');
+                productsRes = resWithout.data;
+                prodErr = resWithout.error;
+            } else {
+                productsRes = resWithMaterials.data;
+                prodErr = resWithMaterials.error;
+            }
 
             let priceMapByProdId = {};
             if (!pricesErr && pricesData) {
@@ -1430,6 +1652,7 @@
             }
 
             let imageUrlMapByProdId = {};
+            let materialsMapByProdId = {};
             if (!prodErr && productsRes) {
                 productsRes.forEach(p => {
                     if (p.image_url) {
@@ -1439,6 +1662,15 @@
                         } catch(e) { imageUrlMapByProdId[p.id] = [p.image_url]; }
                     } else {
                         imageUrlMapByProdId[p.id] = [];
+                    }
+                    
+                    if (p.materials) {
+                        try {
+                            let parsed = JSON.parse(p.materials);
+                            materialsMapByProdId[p.id] = Array.isArray(parsed) ? parsed : [];
+                        } catch(e) { materialsMapByProdId[p.id] = []; }
+                    } else {
+                        materialsMapByProdId[p.id] = [];
                     }
                 });
             }
@@ -1480,6 +1712,11 @@
                     } else if (typeof productImageMap !== 'undefined' && productImageMap[pName]) {
                         imageList = [productImageMap[pName]];
                     }
+
+                    let materials = [];
+                    if (f.product_id && materialsMapByProdId[f.product_id]) {
+                        materials = materialsMapByProdId[f.product_id];
+                    }
                     
                     if (mainCat && mainCat !== '기타') catSet.add(mainCat);
 
@@ -1493,6 +1730,7 @@
                         formCategory: formCat,
                         imageList: imageList,
                         currentImgIdx: 0,
+                        materials: materials,
                         msrp: msrp, 
                         mallPrice: msrp * 0.9, 
                         price: msrp * 0.7, 
