@@ -104,7 +104,7 @@
         td:first-child { text-align: left; font-weight: 500; background: var(--bg-light); border-right: 1px solid var(--border); width: 40%; color: var(--text-bold); }
         tr:last-child th, tr:last-child td { border-bottom: none; }
         
-        input[type="number"], input[type="text"], input[type="date"], input[type="password"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
+        input[type="number"], input[type="text"], input[type="date"], input[type="password"], input[type="email"] { width: 120px; padding: 8px 12px; text-align: right; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--text-bold); background: #fff; transition: border-color 0.2s, box-shadow 0.2s; outline: none;}
         input[type="date"] { text-align: left; width: auto; }
         input[type="password"], input[type="email"] { text-align: left; width: 100%; }
         input[type="text"].text-input { text-align: left; width: 160px; }
@@ -173,7 +173,6 @@
     </style>
 </head>
 <body class="mode-admin">
-
 <div id="authOverlay" class="auth-overlay">
     <div class="auth-box">
         <div class="auth-logo"><svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
@@ -292,7 +291,6 @@
                         <td><strong>참여 인원 (명)</strong></td>
                         <td><input type="text" inputmode="numeric" id="fcPeople" value="1" oninput="formatInput(this); updateFixedCostsByPeople()" style="font-weight:bold; color:var(--accent); width: 60px;"> 명</td>
                     </tr>
-                    <!-- 광고선전비 항목 추가 -->
                     <tr><td>광고선전비</td><td><input type="text" inputmode="numeric" id="fcAd" value="0" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>인건비</td><td><input type="text" inputmode="numeric" id="fcLabor" value="150,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
                     <tr><td>여비교통비</td><td><input type="text" inputmode="numeric" id="fcTravel" value="50,000" oninput="formatInput(this); calculate()" style="width: 90px;"></td></tr>
@@ -850,6 +848,82 @@
         }
     };
 
+    // 추가된 제품명 수정 함수
+    window.editProductName = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        const newVal = await customPrompt(`제품명 변경`, `새로운 제품명을 입력해주세요.`, "제품명을 입력하세요", prod.name);
+        if(!newVal || newVal.trim() === '') return;
+        
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) card.style.opacity = '0.5';
+        try {
+            // 1. products 테이블 업데이트
+            const { error: prodErr } = await supabaseClient.from('products').update({ clean_name: newVal.trim() }).eq('id', productId);
+            if (prodErr) throw prodErr;
+            
+            // 2. form_catalog_master 테이블 업데이트
+            const { error: catErr } = await supabaseClient.from('form_catalog_master').update({ product_name: newVal.trim() }).eq('product_id', productId);
+            if (catErr) throw catErr;
+
+            prod.name = newVal.trim();
+            renderProducts();
+            populateSelects(); // 셀렉트 박스도 업데이트
+            customAlert(`제품명이 [${prod.name}](으)로 DB에 저장되었습니다.`, "저장 완료");
+        } catch (error) { 
+            customAlert("DB 저장 오류:\n\n" + error.message, "오류"); 
+        } finally { 
+            if(card) card.style.opacity = '1'; 
+        }
+    };
+
+    // 추가된 소비자 정가 수정 함수
+    window.editMsrp = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        const newValStr = await customPrompt(`소비자정가 변경`, `새로운 소비자정가를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", (prod.msrp||0).toString());
+        if(!newValStr) return;
+        
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            const card = document.getElementById(`prod-${catalogId}`);
+            if(card) card.style.opacity = '0.5';
+            try {
+                // product_prices 테이블 (KRW) 업데이트 또는 인서트
+                const { data: existing, error: fetchErr } = await supabaseClient.from('product_prices')
+                                                            .select('id')
+                                                            .eq('product_id', productId)
+                                                            .eq('currency', 'KRW')
+                                                            .maybeSingle();
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient.from('product_prices')
+                                                    .update({ b2c_msrp: newVal })
+                                                    .eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient.from('product_prices').insert([{
+                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: newVal
+                    }]);
+                    if (insertErr) throw insertErr;
+                }
+                
+                prod.msrp = newVal;
+                renderProducts(); calculate();
+                customAlert(`[${prod.name}]\n소비자정가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
+            } catch (error) { 
+                customAlert("DB 저장 오류:\n\n" + error.message, "오류"); 
+            } finally { 
+                if(card) card.style.opacity = '1'; 
+            }
+        }
+    };
+
     function populateSelects() {
         const sSel = document.getElementById('sampleSelect'); const gSel = document.getElementById('giftSelect');
         sSel.innerHTML = '<option value="">선택</option>'; gSel.innerHTML = '<option value="">선택</option>';
@@ -1135,21 +1209,28 @@
                         ${uploadBtnHtml}
                         ${imgHtml}
                     </div>
-                    <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px;">${prod.name}</div>
                     
-                    <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px;">소비자정가: ${formatNum(prod.msrp)}원</div>
+                    <div style="font-weight:700; font-size:1.05rem; margin-bottom:12px; margin-top:2px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap;">
+                        <span>${prod.name}</span>
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editProductName === 'function') editProductName('${prod.id}', '${prod.productId}')">수정</span>
+                    </div>
                     
-                    <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600;">
+                    <div style="font-size:0.85rem; color:#9ca3af; text-decoration:line-through; margin-bottom:2px; display: flex; align-items: center; justify-content: center;">
+                        소비자정가: <span id="msrp-${prod.id}">${formatNum(prod.msrp)}원</span>
+                        <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editMsrp === 'function') editMsrp('${prod.id}', '${prod.productId}')">수정</span>
+                    </div>
+                    
+                    <div style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px; font-weight:600; display: flex; align-items: center; justify-content: center;">
                         자사몰가: <span id="mall-${prod.id}">${formatNum(prod.mallPrice)}원</span> 
                         <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'mall')">수정</span>
                     </div>
                     
-                    <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600;">
+                    <div style="font-size:0.85rem; color:var(--danger); margin-bottom:4px; font-weight:600; display: flex; align-items: center; justify-content: center;">
                         온라인 최저가: <span id="lowest-${prod.id}">${formatNum(prod.lowestPrice)}원</span> 
                         <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--text-muted); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'lowest')">수정</span>
                     </div>
                     
-                    <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold);">
+                    <div class="price" id="price-${prod.id}" style="margin-bottom:4px; color:var(--text-bold); display: flex; align-items: center; justify-content: center;">
                         프로모션가: ${formatNum(prod.price)}원 
                         <span class="admin-only" style="font-size:0.75rem; cursor:pointer; color:var(--accent); text-decoration:underline; font-weight:normal; margin-left:4px;" onclick="event.stopPropagation(); if(typeof editPrice === 'function') editPrice('${prod.id}', 'price')">수정</span>
                     </div>
