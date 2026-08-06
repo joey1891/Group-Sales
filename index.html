@@ -385,12 +385,14 @@
             </div>
         </div>
 
+        <!-- 시각화 영역 -->
         <div id="selected-package-info" class="package-visualizer"></div>
         <div id="selected-sample-info" class="package-visualizer" style="display: none;"></div>
         <div id="selected-gift-info" class="package-visualizer" style="display: none;"></div>
 
-        <div class="influencer-only" style="text-align: center; margin-top: 32px; border-top: 1px dashed var(--border); padding-top: 24px;">
-            <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="width: 100%; max-width: 400px;">최종 데이터 전송 및 확정</button>
+        <div class="influencer-only" style="text-align: center; margin-top: 32px; border-top: 1px dashed var(--border); padding-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+            <button class="btn-confirm" id="btn-draft-campaign" onclick="saveDraftCampaign()" style="background: var(--bg-light); color: var(--text-bold); border: 1px solid var(--border); width: 100%; max-width: 190px; box-shadow: none;">임시 저장</button>
+            <button class="btn-confirm" id="btn-submit-campaign" onclick="submitCampaign()" style="width: 100%; max-width: 190px;">최종 확정 전송</button>
         </div>
 
         <div class="influencer-only" style="margin-top: 40px; border-top: 2px solid var(--border); padding-top: 24px;">
@@ -552,7 +554,7 @@
     var selectedProducts = [];
     var addedSamples = [];
     var addedGifts = [];
-    var currentSimulationState = { partnerProfit: 0, hqProfit: 0, hqCm: 0 };
+    var currentSimulationState = { partnerProfit: 0, hqProfit: 0, hqCm: 0, products: [], samples: [], gifts: [] };
     var mockCampaigns = [];
     var currentCategoryFilter = '';
     var categoryList = [];
@@ -757,201 +759,6 @@
         renderProducts();
     }
 
-    function openAddProductModal() {
-        document.getElementById('addProductModal').style.display = 'flex';
-        document.getElementById('newProdName').value = '';
-        document.getElementById('newProdMsrpKrw').value = '';
-        document.getElementById('newProdMsrpUsd').value = '';
-        document.getElementById('newProdCost').value = '';
-        document.getElementById('newProdCat').value = '';
-        document.getElementById('newProdSubCat1').value = '';
-        document.getElementById('newProdSubCat2').value = '';
-        document.getElementById('newProdSubCat3').value = '기본'; 
-        document.getElementById('newProdUnit').value = '';
-        document.getElementById('newProdOption').value = '';
-        
-        const catSet = new Set();
-        const subCat1Set = new Set();
-        const subCat2Set = new Set();
-
-        productsData.forEach(p => {
-            if(p.formCategory && p.formCategory !== '기타') catSet.add(p.formCategory);
-            if(p.mainCategory) subCat1Set.add(p.mainCategory);
-            if(p.subCategory && p.subCategory !== '기본') subCat2Set.add(p.subCategory);
-        });
-
-        document.getElementById('catList').innerHTML = Array.from(catSet).map(c => `<option value="${c}">`).join('');
-        document.getElementById('subCat1List').innerHTML = Array.from(subCat1Set).map(c => `<option value="${c}">`).join('');
-        document.getElementById('subCat2List').innerHTML = Array.from(subCat2Set).map(c => `<option value="${c}">`).join('');
-    }
-    
-    function closeAddProductModal() { document.getElementById('addProductModal').style.display = 'none'; }
-
-    async function submitNewProduct() {
-        const name = document.getElementById('newProdName').value.trim();
-        const cat = document.getElementById('newProdCat').value.trim() || '기타';
-        const subCat1 = document.getElementById('newProdSubCat1').value.trim() || '기타';
-        const subCat2 = document.getElementById('newProdSubCat2').value.trim() || '기본';
-        const subCat3 = document.getElementById('newProdSubCat3').value.trim() || '기본'; 
-        const unit = document.getElementById('newProdUnit').value.trim();
-        const option = document.getElementById('newProdOption').value.trim();
-        
-        const msrpKrw = getNum('newProdMsrpKrw');
-        const msrpUsd = getNum('newProdMsrpUsd') || 0; 
-        const cost = getNum('newProdCost');
-
-        if (!name) return customAlert("제품명을 입력해주세요.");
-
-        const btn = document.getElementById('btnSubmitNewProd');
-        btn.innerText = "데이터베이스 저장 중..."; btn.disabled = true;
-
-        try {
-            const newProductId = crypto.randomUUID();
-            
-            const { data: prodData, error: prodErr } = await supabaseClient.from('products')
-                .insert([{ id: newProductId, clean_name: name, main_category: subCat1, sub_category: subCat2 }])
-                .select('id').single();
-            if (prodErr) throw new Error("Product 마스터 등록 실패:\n" + prodErr.message);
-
-            const productId = prodData.id;
-            
-            const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
-                id: crypto.randomUUID(), 
-                product_id: productId, 
-                product_name: name, 
-                category: cat, 
-                sub_category_1: subCat1, 
-                sub_category_2: subCat2, 
-                sub_category_3: subCat3,
-                unit: unit,
-                product_option: option,
-                unit_price: msrpUsd, 
-                is_active: true
-            }]);
-            if (catErr) throw new Error("카탈로그 등록 실패:\n" + catErr.message);
-
-            const { error: priceErr } = await supabaseClient.from('product_prices').insert([
-                { id: crypto.randomUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrpKrw },
-                { id: crypto.randomUUID(), product_id: productId, currency: 'USD', b2c_msrp: msrpUsd }
-            ]);
-            if (priceErr) throw new Error("가격 등록 실패:\n" + priceErr.message);
-
-            const { error: costErr } = await supabaseClient.from('product_costs').insert([{
-                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', production_cost: cost,
-                effective_date: new Date().toISOString().split('T')[0]
-            }]);
-            if (costErr) throw new Error("원가 등록 실패:\n" + costErr.message);
-
-            customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
-            closeAddProductModal();
-            fetchProducts(); 
-        } catch (error) {
-            console.error(error);
-            customAlert("데이터베이스 저장 오류 (Supabase RLS 권한을 확인하세요)\n\n" + error.message, "오류");
-        } finally { btn.innerText = "DB에 통합 등록하기"; btn.disabled = false; }
-    }
-
-    window.editProductName = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-
-        const newVal = await customPrompt(`제품명 변경`, `새로운 제품명을 입력해주세요.`, "제품명 입력", prod.name);
-        if(!newVal || newVal.trim() === '') return;
-
-        const card = document.getElementById(`prod-${catalogId}`);
-        if(card) card.style.opacity = '0.5';
-
-        try {
-            const { error: err1 } = await supabaseClient.from('products').update({ clean_name: newVal.trim() }).eq('id', productId);
-            if(err1) throw err1;
-            
-            const { error: err2 } = await supabaseClient.from('form_catalog_master').update({ product_name: newVal.trim() }).eq('product_id', productId);
-            if(err2) throw err2;
-            
-            prod.name = newVal.trim();
-            prod.cleanName = newVal.trim();
-            renderProducts();
-            customAlert(`제품명이 [${prod.name}]으로 변경되었습니다.`, "저장 완료");
-        } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); }
-        finally { if(card) card.style.opacity = '1'; }
-    };
-
-    window.editMsrp = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-
-        const newValStr = await customPrompt(`소비자정가 변경`, `새로운 소비자정가(원)를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", prod.msrp.toString());
-        if(!newValStr) return;
-
-        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
-        if(newVal >= 0) {
-            const card = document.getElementById(`prod-${catalogId}`);
-            if(card) card.style.opacity = '0.5';
-
-            try {
-                const { data: existing, error: fetchErr } = await supabaseClient.from('product_prices').select('id').eq('product_id', productId).eq('currency', 'KRW').maybeSingle();
-                if (fetchErr) throw fetchErr;
-
-                if (existing) {
-                    const { error: updateErr } = await supabaseClient.from('product_prices').update({ b2c_msrp: newVal }).eq('id', existing.id);
-                    if (updateErr) throw updateErr;
-                } else {
-                    const { error: insertErr } = await supabaseClient.from('product_prices').insert([{
-                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: newVal
-                    }]);
-                    if (insertErr) throw insertErr;
-                }
-                
-                prod.msrp = newVal;
-                // mallPrice 등을 같이 재계산 (원하는 경우)
-                prod.mallPrice = newVal * 0.9;
-                prod.price = newVal * 0.7;
-                prod.lowestPrice = newVal * 0.8;
-                
-                renderProducts();
-                calculate();
-                customAlert(`[${prod.name}]\n소비자정가가 ${formatNum(newVal)}원으로 변경되었습니다.`, "저장 완료");
-            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); }
-            finally { if(card) card.style.opacity = '1'; }
-        }
-    };
-
-    window.editCost = async function(catalogId, productId) {
-        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
-        const prod = productsData.find(p => p.id === catalogId);
-        if(!prod) return;
-        
-        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", (prod.cost||0).toString());
-        if(!newValStr) return;
-        
-        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
-        if(newVal >= 0) {
-            const card = document.getElementById(`prod-${catalogId}`);
-            if(card) card.style.opacity = '0.5';
-            try {
-                const { data: existing, error: fetchErr } = await supabaseClient.from('product_costs').select('id').eq('product_id', productId).maybeSingle();
-                if (fetchErr) throw fetchErr;
-
-                if (existing) {
-                    const { error: updateErr } = await supabaseClient.from('product_costs').update({ production_cost: newVal, updated_at: new Date().toISOString() }).eq('id', existing.id);
-                    if (updateErr) throw updateErr;
-                } else {
-                    const { error: insertErr } = await supabaseClient.from('product_costs').insert([{
-                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', production_cost: newVal,
-                        effective_date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString(), updated_at: new Date().toISOString()
-                    }]);
-                    if (insertErr) throw insertErr;
-                }
-                prod.cost = newVal;
-                renderProducts(); updateAutoSupplyRatio(); calculate();
-                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
-            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); } 
-            finally { if(card) card.style.opacity = '1'; }
-        }
-    };
-
     function populateSelects() {
         const sSel = document.getElementById('sampleSelect'); const gSel = document.getElementById('giftSelect');
         sSel.innerHTML = '<option value="">선택</option>'; gSel.innerHTML = '<option value="">선택</option>';
@@ -962,9 +769,17 @@
         const id = document.getElementById('sampleSelect').value; const qty = getNum('sampleQty');
         if(!id || qty <= 0) return;
         const p = productsData.find(x => x.id === id);
-        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty }); updateSampleUI();
+        addedSamples.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, image: (p.imageList && p.imageList.length > 0) ? p.imageList[0] : null }); 
+        updateSampleUI();
+        updateVisualizer();
     }
-    function removeSample(idx) { addedSamples.splice(idx, 1); updateSampleUI(); }
+    
+    function removeSample(idx) { 
+        addedSamples.splice(idx, 1); 
+        updateSampleUI(); 
+        updateVisualizer();
+    }
+    
     function updateSampleUI() {
         let listHtml = '', totalCost = 0;
         addedSamples.forEach((s, idx) => {
@@ -972,16 +787,26 @@
             listHtml += `<div class="added-item"><span>${s.name} x ${formatNum(s.qty)}개</span><div><span class="admin-only" style="margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeSample(${idx})">X</span></div></div>`;
         });
         document.getElementById('sampleAddedList').innerHTML = listHtml;
-        document.getElementById('sampleCostDisplay').innerText = formatNum(totalCost); document.getElementById('fcSamples').value = formatNum(totalCost); calculate();
+        document.getElementById('sampleCostDisplay').innerText = formatNum(totalCost); 
+        document.getElementById('fcSamples').value = formatNum(totalCost); 
+        calculate();
     }
 
     function addGift() {
         const id = document.getElementById('giftSelect').value; const qty = getNum('giftQty');
         if(!id || qty <= 0) return;
         const p = productsData.find(x => x.id === id);
-        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty }); updateGiftUI();
+        addedGifts.push({ id: p.id, name: p.name, cost: p.cost, msrp: p.msrp, qty: qty, image: (p.imageList && p.imageList.length > 0) ? p.imageList[0] : null }); 
+        updateGiftUI();
+        updateVisualizer();
     }
-    function removeGift(idx) { addedGifts.splice(idx, 1); updateGiftUI(); }
+    
+    function removeGift(idx) { 
+        addedGifts.splice(idx, 1); 
+        updateGiftUI(); 
+        updateVisualizer();
+    }
+    
     function updateGiftUI() {
         let listHtml = '', totalCost = 0;
         addedGifts.forEach((g, idx) => {
@@ -989,7 +814,9 @@
             listHtml += `<div class="added-item"><span>${g.name} x ${formatNum(g.qty)}개</span><div><span class="admin-only" style="margin-right:12px;">${formatNum(lineCost)}원</span><span class="added-item-del" onclick="removeGift(${idx})">X</span></div></div>`;
         });
         document.getElementById('giftAddedList').innerHTML = listHtml;
-        document.getElementById('giftCostDisplay').innerText = formatNum(totalCost); document.getElementById('fcGifts').value = formatNum(totalCost); calculate();
+        document.getElementById('giftCostDisplay').innerText = formatNum(totalCost); 
+        document.getElementById('fcGifts').value = formatNum(totalCost); 
+        calculate();
     }
 
     function updateFixedCostsByPeople() {
@@ -1007,7 +834,12 @@
     }
 
     function calculate() {
-        if (selectedProducts.length === 0) return;
+        if (selectedProducts.length === 0) {
+            currentSimulationState = { products: [], samples: addedSamples, gifts: addedGifts };
+            updateVisualizer();
+            return;
+        }
+        
         let totalPromo = 0, totalMsrp = 0, totalLowest = 0;
         
         selectedProducts.forEach(id => {
@@ -1070,6 +902,84 @@
         if (document.getElementById('resTargetFc')) document.getElementById('resTargetFc').innerText = formatNum(totalFc);
         if (document.getElementById('resTargetCc')) document.getElementById('resTargetCc').innerText = formatNum(totalCc);
         if (document.getElementById('resTargetOp')) document.getElementById('resTargetOp').innerText = formatNum(hqTargetOp);
+
+        currentSimulationState = {
+            partnerProfit: partnerProfit,
+            hqProfit: hqTargetOp,
+            hqCm: targetCm,
+            targetQty: targetQty,
+            totalRev: targetRev,
+            products: [...selectedProducts], 
+            samples: [...addedSamples],
+            gifts: [...addedGifts]
+        };
+        
+        updateVisualizer();
+    }
+
+    function updateVisualizer() {
+        const pkgContainer = document.getElementById('selected-package-info');
+        if (selectedProducts.length === 0) {
+            pkgContainer.innerHTML = '<div style="color:var(--text-muted);">선택된 제품이 없습니다. 상단에서 제품을 선택해주세요.</div>';
+        } else {
+            let html = '';
+            selectedProducts.forEach((id, idx) => {
+                const prod = productsData.find(p => p.id === id);
+                if (prod) {
+                    if (idx > 0) html += '<div class="pkg-plus">+</div>';
+                    const hasImages = prod.imageList && prod.imageList.length > 0;
+                    const imgSrc = hasImages ? prod.imageList[0] : null;
+                    const imgElement = imgSrc ? `<img src="${imgSrc}" alt="${prod.name}">` : `<div class="no-img-small">NO IMG</div>`;
+                    html += `
+                        <div class="pkg-item">
+                            ${imgElement}
+                            <span>${prod.name}</span>
+                        </div>
+                    `;
+                }
+            });
+            pkgContainer.innerHTML = html;
+        }
+
+        const sampleContainer = document.getElementById('selected-sample-info');
+        if (addedSamples.length === 0) {
+            sampleContainer.style.display = 'none';
+        } else {
+            sampleContainer.style.display = 'flex';
+            let html = '';
+            addedSamples.forEach((s, idx) => {
+                if (idx > 0) html += '<div class="pkg-plus">+</div>';
+                const imgElement = s.image ? `<img src="${s.image}" alt="${s.name}">` : `<div class="no-img-small">NO IMG</div>`;
+                html += `
+                    <div class="pkg-item">
+                        ${imgElement}
+                        <span>${s.name}</span>
+                        <span style="color: var(--danger); font-size: 0.75rem;">${formatNum(s.qty)}개</span>
+                    </div>
+                `;
+            });
+            sampleContainer.innerHTML = html;
+        }
+
+        const giftContainer = document.getElementById('selected-gift-info');
+        if (addedGifts.length === 0) {
+            giftContainer.style.display = 'none';
+        } else {
+            giftContainer.style.display = 'flex';
+            let html = '';
+            addedGifts.forEach((g, idx) => {
+                if (idx > 0) html += '<div class="pkg-plus">+</div>';
+                const imgElement = g.image ? `<img src="${g.image}" alt="${g.name}">` : `<div class="no-img-small">NO IMG</div>`;
+                html += `
+                    <div class="pkg-item">
+                        ${imgElement}
+                        <span>${g.name}</span>
+                        <span style="color: var(--accent); font-size: 0.75rem;">${formatNum(g.qty)}개 제공</span>
+                    </div>
+                `;
+            });
+            giftContainer.innerHTML = html;
+        }
     }
 
     async function captureElement(elementId, fileName) {
@@ -1098,6 +1008,175 @@
             element.style.border = originalBorderStyle;
             element.style.boxShadow = originalBoxShadow;
         }
+    }
+
+    function submitCampaign() {
+        const channel = document.getElementById('broadcastChannel').value.trim();
+        const broadcastDate = document.getElementById('broadcastDate').value;
+        const targetQty = getNum('targetQtyInfluencer');
+
+        if (!channel) return customAlert("방송 채널을 입력해주세요.");
+        if (!broadcastDate) return customAlert("예정일을 입력해주세요.");
+        if (selectedProducts.length === 0) return customAlert("제품을 1개 이상 선택해주세요.");
+        
+        const newCampaign = {
+            id: generateSafeUUID(),
+            date: new Date().toLocaleDateString('ko-KR'),
+            channel: channel,
+            broadcastDate: broadcastDate,
+            targetQty: targetQty,
+            partnerProfit: currentSimulationState.partnerProfit || 0,
+            hqProfit: currentSimulationState.hqProfit || 0,
+            status: 'pending' 
+        };
+
+        mockCampaigns.push(newCampaign);
+        renderInfluencerCampaigns();
+        if (isAdmin) renderAdminCampaigns();
+
+        customAlert("최종 데이터가 전송 및 확정 대기 상태가 되었습니다.", "전송 성공");
+        resetCampaignForm();
+    }
+
+    function saveDraftCampaign() {
+        const channel = document.getElementById('broadcastChannel').value.trim();
+        const broadcastDate = document.getElementById('broadcastDate').value;
+        const targetQty = getNum('targetQtyInfluencer');
+
+        if (selectedProducts.length === 0) return customAlert("임시 저장할 제품을 1개 이상 선택해주세요.");
+        
+        const newCampaign = {
+            id: generateSafeUUID(),
+            date: new Date().toLocaleDateString('ko-KR'),
+            channel: channel || '미지정',
+            broadcastDate: broadcastDate || '미지정',
+            targetQty: targetQty,
+            partnerProfit: currentSimulationState.partnerProfit || 0,
+            hqProfit: currentSimulationState.hqProfit || 0,
+            status: 'draft' 
+        };
+
+        mockCampaigns.push(newCampaign);
+        renderInfluencerCampaigns();
+
+        customAlert("현재 구성이 임시 저장되었습니다.\n아래 [나의 방송 신청 내역]에서 확인하세요.", "저장 성공");
+        resetCampaignForm();
+    }
+
+    function submitDraftCampaign(id) {
+        const campaign = mockCampaigns.find(c => c.id === id);
+        if (!campaign) return;
+        
+        if (campaign.channel === '미지정' || campaign.broadcastDate === '미지정') {
+            return customAlert("채널과 예정일이 미지정 상태입니다. 취소/삭제 후 다시 입력하여 진행해주세요.");
+        }
+
+        campaign.status = 'pending';
+        renderInfluencerCampaigns();
+        if (isAdmin) renderAdminCampaigns();
+        customAlert("임시 저장된 프로젝트가 최종 확정 요청되었습니다.", "전송 성공");
+    }
+
+    function resetCampaignForm() {
+        document.getElementById('broadcastChannel').value = '';
+        document.getElementById('broadcastDate').value = '';
+        selectedProducts = [];
+        addedSamples = [];
+        addedGifts = [];
+        document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+        updateSampleUI();
+        updateGiftUI();
+        updateAutoSupplyRatio();
+        calculate();
+    }
+
+    window.deleteCampaign = function(id) {
+        const idx = mockCampaigns.findIndex(c => c.id === id);
+        if(idx > -1) mockCampaigns.splice(idx, 1);
+        renderInfluencerCampaigns();
+        if (isAdmin) renderAdminCampaigns();
+    };
+
+    window.changeCampaignStatus = function(id, status) {
+        const campaign = mockCampaigns.find(c => c.id === id);
+        if(campaign) campaign.status = status;
+        renderInfluencerCampaigns();
+        renderAdminCampaigns();
+    };
+
+    function renderInfluencerCampaigns() {
+        const tbody = document.getElementById('myCampaignListBody');
+        if (!tbody) return;
+        
+        if (mockCampaigns.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:24px;">내역이 없습니다.</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        mockCampaigns.forEach((c) => {
+            let statusBadge = c.status === 'pending' ? '<span class="badge-pending">승인 대기</span>' : 
+                              (c.status === 'approved' ? '<span class="badge-approved">확정됨</span>' : 
+                              (c.status === 'draft' ? '<span style="background:#e2e8f0; color:#475569; padding:4px 8px; border-radius:6px; font-size:0.8rem; font-weight:bold;">임시 저장</span>' : '<span class="badge-rejected">반려됨</span>'));
+            
+            let actionButtons = `<button onclick="deleteCampaign('${c.id}')" style="margin-top:8px; background:var(--bg-light); border:1px solid var(--border); padding:4px 12px; border-radius:4px; cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--danger);">삭제/취소</button>`;
+            
+            if (c.status === 'draft') {
+                actionButtons = `<button onclick="submitDraftCampaign('${c.id}')" style="margin-top:8px; margin-right:4px; background:var(--accent); border:none; color:#fff; padding:4px 12px; border-radius:4px; cursor:pointer; font-size:0.8rem; font-weight:bold;">최종 확정 전송</button>` + actionButtons;
+            }
+
+            html += `<tr style="background:#fff;">
+                <td style="text-align:center;">${c.date}</td>
+                <td style="text-align:center; font-weight:600;">
+                    ${c.broadcastDate} <br>
+                    <span style="font-size:0.85rem; color:var(--text-muted);">${c.channel}</span>
+                </td>
+                <td style="text-align:center;">
+                    ${statusBadge}
+                    <div style="margin-top:8px;">${actionButtons}</div>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+
+    function renderAdminCampaigns() {
+        const tbody = document.getElementById('campaignListBody');
+        if (!tbody) return;
+        
+        const visibleCampaigns = mockCampaigns.filter(c => c.status !== 'draft');
+        
+        if (visibleCampaigns.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:32px;">수신된 내역이 없습니다.</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        visibleCampaigns.forEach((c) => {
+            let statusBadge = c.status === 'pending' ? '<span class="badge-pending">승인 대기</span>' : 
+                              (c.status === 'approved' ? '<span class="badge-approved">확정됨</span>' : '<span class="badge-rejected">반려됨</span>');
+            
+            let actions = c.status === 'pending' ? `
+                <button class="btn-approve-admin" onclick="changeCampaignStatus('${c.id}', 'approved')">승인</button>
+                <button class="btn-reject-admin" onclick="changeCampaignStatus('${c.id}', 'rejected')">반려</button>
+            ` : `<button class="btn-delete-admin" onclick="deleteCampaign('${c.id}')">기록 삭제</button>`;
+            
+            html += `<tr style="background:#fff;">
+                <td style="text-align:center;">${c.date}</td>
+                <td style="text-align:center; font-weight:600;">
+                    ${c.broadcastDate} <br>
+                    <span style="font-size:0.85rem; color:var(--text-muted);">${c.channel}</span>
+                </td>
+                <td style="text-align:right;">${formatNum(c.targetQty)} 개</td>
+                <td style="text-align:right;">${formatNum(c.partnerProfit)} 원</td>
+                <td style="text-align:right; color:var(--text-bold); font-weight:bold;">${formatNum(c.hqProfit)} 원</td>
+                <td style="text-align:center;">
+                    ${statusBadge}
+                    <div style="margin-top:4px;">${actions}</div>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
     }
 
     function renderProducts() {
@@ -1401,7 +1480,6 @@
             
             const updatedMaterials = [...prod.materials, newMaterial];
             
-            // JSONB 또는 Text 컬럼 처리 (호환성 보장)
             let { error: dbError } = await supabaseClient.from('products').update({ materials: updatedMaterials }).eq('id', currentMaterialProductId);
             
             if (dbError && (dbError.message.includes('type') || dbError.message.includes('syntax'))) {
@@ -1561,6 +1639,200 @@
         }
     };
 
+    function openAddProductModal() {
+        document.getElementById('addProductModal').style.display = 'flex';
+        document.getElementById('newProdName').value = '';
+        document.getElementById('newProdMsrpKrw').value = '';
+        document.getElementById('newProdMsrpUsd').value = '';
+        document.getElementById('newProdCost').value = '';
+        document.getElementById('newProdCat').value = '';
+        document.getElementById('newProdSubCat1').value = '';
+        document.getElementById('newProdSubCat2').value = '';
+        document.getElementById('newProdSubCat3').value = '기본'; 
+        document.getElementById('newProdUnit').value = '';
+        document.getElementById('newProdOption').value = '';
+        
+        const catSet = new Set();
+        const subCat1Set = new Set();
+        const subCat2Set = new Set();
+
+        productsData.forEach(p => {
+            if(p.formCategory && p.formCategory !== '기타') catSet.add(p.formCategory);
+            if(p.mainCategory) subCat1Set.add(p.mainCategory);
+            if(p.subCategory && p.subCategory !== '기본') subCat2Set.add(p.subCategory);
+        });
+
+        document.getElementById('catList').innerHTML = Array.from(catSet).map(c => `<option value="${c}">`).join('');
+        document.getElementById('subCat1List').innerHTML = Array.from(subCat1Set).map(c => `<option value="${c}">`).join('');
+        document.getElementById('subCat2List').innerHTML = Array.from(subCat2Set).map(c => `<option value="${c}">`).join('');
+    }
+    
+    function closeAddProductModal() { document.getElementById('addProductModal').style.display = 'none'; }
+
+    async function submitNewProduct() {
+        const name = document.getElementById('newProdName').value.trim();
+        const cat = document.getElementById('newProdCat').value.trim() || '기타';
+        const subCat1 = document.getElementById('newProdSubCat1').value.trim() || '기타';
+        const subCat2 = document.getElementById('newProdSubCat2').value.trim() || '기본';
+        const subCat3 = document.getElementById('newProdSubCat3').value.trim() || '기본'; 
+        const unit = document.getElementById('newProdUnit').value.trim();
+        const option = document.getElementById('newProdOption').value.trim();
+        
+        const msrpKrw = getNum('newProdMsrpKrw');
+        const msrpUsd = getNum('newProdMsrpUsd') || 0; 
+        const cost = getNum('newProdCost');
+
+        if (!name) return customAlert("제품명을 입력해주세요.");
+
+        const btn = document.getElementById('btnSubmitNewProd');
+        btn.innerText = "데이터베이스 저장 중..."; btn.disabled = true;
+
+        try {
+            const newProductId = crypto.randomUUID();
+            
+            const { data: prodData, error: prodErr } = await supabaseClient.from('products')
+                .insert([{ id: newProductId, clean_name: name, main_category: subCat1, sub_category: subCat2 }])
+                .select('id').single();
+            if (prodErr) throw new Error("Product 마스터 등록 실패:\n" + prodErr.message);
+
+            const productId = prodData.id;
+            
+            const { error: catErr } = await supabaseClient.from('form_catalog_master').insert([{
+                id: crypto.randomUUID(), 
+                product_id: productId, 
+                product_name: name, 
+                category: cat, 
+                sub_category_1: subCat1, 
+                sub_category_2: subCat2, 
+                sub_category_3: subCat3,
+                unit: unit,
+                product_option: option,
+                unit_price: msrpUsd, 
+                is_active: true
+            }]);
+            if (catErr) throw new Error("카탈로그 등록 실패:\n" + catErr.message);
+
+            const { error: priceErr } = await supabaseClient.from('product_prices').insert([
+                { id: crypto.randomUUID(), product_id: productId, currency: 'KRW', b2c_msrp: msrpKrw },
+                { id: crypto.randomUUID(), product_id: productId, currency: 'USD', b2c_msrp: msrpUsd }
+            ]);
+            if (priceErr) throw new Error("가격 등록 실패:\n" + priceErr.message);
+
+            const { error: costErr } = await supabaseClient.from('product_costs').insert([{
+                id: crypto.randomUUID(), product_id: productId, currency: 'KRW', production_cost: cost,
+                effective_date: new Date().toISOString().split('T')[0]
+            }]);
+            if (costErr) throw new Error("원가 등록 실패:\n" + costErr.message);
+
+            customAlert(`[${name}]\n제품이 4개의 데이터베이스에 완벽하게 등록되었습니다.`, "통합 등록 완료");
+            closeAddProductModal();
+            fetchProducts(); 
+        } catch (error) {
+            console.error(error);
+            customAlert("데이터베이스 저장 오류 (Supabase RLS 권한을 확인하세요)\n\n" + error.message, "오류");
+        } finally { btn.innerText = "DB에 통합 등록하기"; btn.disabled = false; }
+    }
+
+    window.editProductName = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+
+        const newVal = await customPrompt(`제품명 변경`, `새로운 제품명을 입력해주세요.`, "제품명 입력", prod.name);
+        if(!newVal || newVal.trim() === '') return;
+
+        const card = document.getElementById(`prod-${catalogId}`);
+        if(card) card.style.opacity = '0.5';
+
+        try {
+            const { error: err1 } = await supabaseClient.from('products').update({ clean_name: newVal.trim() }).eq('id', productId);
+            if(err1) throw err1;
+            
+            const { error: err2 } = await supabaseClient.from('form_catalog_master').update({ product_name: newVal.trim() }).eq('product_id', productId);
+            if(err2) throw err2;
+            
+            prod.name = newVal.trim();
+            prod.cleanName = newVal.trim();
+            renderProducts();
+            customAlert(`제품명이 [${prod.name}]으로 변경되었습니다.`, "저장 완료");
+        } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); }
+        finally { if(card) card.style.opacity = '1'; }
+    };
+
+    window.editMsrp = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+
+        const newValStr = await customPrompt(`소비자정가 변경`, `새로운 소비자정가(원)를 입력해주세요. (숫자만 입력)`, "가격을 입력하세요", prod.msrp.toString());
+        if(!newValStr) return;
+
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            const card = document.getElementById(`prod-${catalogId}`);
+            if(card) card.style.opacity = '0.5';
+
+            try {
+                const { data: existing, error: fetchErr } = await supabaseClient.from('product_prices').select('id').eq('product_id', productId).eq('currency', 'KRW').maybeSingle();
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient.from('product_prices').update({ b2c_msrp: newVal }).eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient.from('product_prices').insert([{
+                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', b2c_msrp: newVal
+                    }]);
+                    if (insertErr) throw insertErr;
+                }
+                
+                prod.msrp = newVal;
+                prod.mallPrice = newVal * 0.9;
+                prod.price = newVal * 0.7;
+                prod.lowestPrice = newVal * 0.8;
+                
+                renderProducts();
+                calculate();
+                customAlert(`[${prod.name}]\n소비자정가가 ${formatNum(newVal)}원으로 변경되었습니다.`, "저장 완료");
+            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); }
+            finally { if(card) card.style.opacity = '1'; }
+        }
+    };
+
+    window.editCost = async function(catalogId, productId) {
+        if (!productId || productId === 'undefined') return customAlert("연결된 제품 ID가 없어 DB에 저장할 수 없습니다.");
+        const prod = productsData.find(p => p.id === catalogId);
+        if(!prod) return;
+        
+        const newValStr = await customPrompt(`원가 변경`, `새로운 원가를 입력해주세요. (숫자만 입력)`, "원가를 입력하세요", (prod.cost||0).toString());
+        if(!newValStr) return;
+        
+        const newVal = Number(newValStr.replace(/[^0-9]/g, ''));
+        if(newVal >= 0) {
+            const card = document.getElementById(`prod-${catalogId}`);
+            if(card) card.style.opacity = '0.5';
+            try {
+                const { data: existing, error: fetchErr } = await supabaseClient.from('product_costs').select('id').eq('product_id', productId).maybeSingle();
+                if (fetchErr) throw fetchErr;
+
+                if (existing) {
+                    const { error: updateErr } = await supabaseClient.from('product_costs').update({ production_cost: newVal, updated_at: new Date().toISOString() }).eq('id', existing.id);
+                    if (updateErr) throw updateErr;
+                } else {
+                    const { error: insertErr } = await supabaseClient.from('product_costs').insert([{
+                        id: generateSafeUUID(), product_id: productId, currency: 'KRW', production_cost: newVal,
+                        effective_date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+                    }]);
+                    if (insertErr) throw insertErr;
+                }
+                prod.cost = newVal;
+                renderProducts(); updateAutoSupplyRatio(); calculate();
+                customAlert(`[${prod.name}]\n원가가 ${formatNum(newVal)}원으로 DB에 저장되었습니다.`, "저장 완료");
+            } catch (error) { customAlert("DB 저장 오류:\n\n" + error.message, "오류"); } 
+            finally { if(card) card.style.opacity = '1'; }
+        }
+    };
+
     async function fetchAllUsersForRoles() {
         try {
             const { data } = await supabaseClient.from('user_profiles').select('*').order('created_at', { ascending: false });
@@ -1604,10 +1876,6 @@
         const confirm = await customConfirm("거절하시겠습니까?"); if(!confirm) return;
         try { await supabaseClient.from('user_profiles').delete().eq('id', id); customAlert("거절되었습니다."); fetchPendingUsers(); } catch (e) { }
     }
-    
-    function submitCampaign() {
-        customAlert("최종 데이터가 전송 및 확정 대기 상태가 되었습니다.", "전송 성공");
-    }
 
     var productImageMap = {
         'Lift-Toning Sun Protector Cream': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/Lift-toning%20sun%20protector%20cream.jpg',
@@ -1624,7 +1892,6 @@
         'Core Impact': 'https://rayhgqcpupwmwpymtkwg.supabase.co/storage/v1/object/sign/Medifab%20Global%20Image/coreimpact.jpg'
     };
 
-    // 가장 중요한 메인 비동기 함수
     async function fetchProducts() {
         try {
             document.getElementById('db-status').style.display = 'block';
@@ -1636,7 +1903,6 @@
             const { data: pricesData, error: pricesErr } = await supabaseClient.from('product_prices').select('product_id, currency, b2c_msrp');
             const { data: costsRes, error: costsErr } = await supabaseClient.from('product_costs').select('product_id, currency, production_cost');
             
-            // image_url과 함께 materials 컬럼을 조회 (컬럼이 없을 경우를 대비한 롤백 처리 포함)
             let productsRes = [];
             let prodErr = null;
             const resWithMaterials = await supabaseClient.from('products').select('id, image_url, materials');
@@ -1777,9 +2043,6 @@
             calculate(); 
         }
     }
-
-    function fetchCampaigns() {}
-    function renderInfluencerCampaigns() {}
 </script>
 </body>
 </html>
